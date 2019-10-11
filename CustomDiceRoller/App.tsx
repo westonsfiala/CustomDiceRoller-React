@@ -9,7 +9,7 @@
  */
 
 import React, {
-  useState
+  useState, useEffect
 } from 'react';
 
 import {
@@ -24,6 +24,7 @@ const App = () => {
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Hello, world!</Text>
       <Counter initialCount ={0}/>
+      <Blink text='I Blink!'/>
     </View>
   );
 };
@@ -34,10 +35,43 @@ function Counter({initialCount}) {
     <View>
       <Text>Count: {count}</Text>
       <Button title='Reset' onPress={() => setCount(initialCount)}/>
-      <Button title='-' onPress={() => setCount(count - 1)}/>
-      <Button title='+' onPress={() => setCount(count + 1)}/>
+      <Button title='-' onPress={() => setCount(prevCount => prevCount - 1)}/>
+      <Button title='+' onPress={() => setCount(prevCount => prevCount + 1)}/>
     </View>
   );
 };
+
+function Blink({text}) {
+  const [shown, setShown] = useState(true);
+
+  useEffect(
+    () => {
+      setTimeout(() => (
+        setShown(!shown)
+        ), 1000);
+      }
+    );
+
+  if(shown) {
+    return (
+      <Text>{text}</Text>
+    )
+  };
+
+  return (
+    <Text />
+  )
+}
+
+const styles = StyleSheet.create({
+  bigBlue: {
+    color: 'blue',
+    fontWeight: 'bold',
+    fontSize: 30,
+  },
+  red: {
+    color: 'red',
+  },
+});
 
 export default App;
