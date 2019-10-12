@@ -21,9 +21,9 @@ import {
 
 const App = () => {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Hello, world!</Text>
-      <Counter initialCount ={0}/>
+    <View style={styles.AppBackground}>
+      <Text style={styles.flexRow}>Hello, world!</Text>
+      <Counter initialCount={0}/>
       <Blink text='I Blink!'/>
     </View>
   );
@@ -32,11 +32,13 @@ const App = () => {
 function Counter({initialCount}) {
   const [count, setCount] = useState(initialCount);
   return (
-    <View>
+    <View style={styles.flexColumn}>
       <Text>Count: {count}</Text>
-      <Button title='Reset' onPress={() => setCount(initialCount)}/>
-      <Button title='-' onPress={() => setCount(prevCount => prevCount - 1)}/>
-      <Button title='+' onPress={() => setCount(prevCount => prevCount + 1)}/>
+      <View style={styles.flexRow}>
+        <Button title='Reset' onPress={() => setCount(initialCount)}/>
+        <Button title='-' onPress={() => setCount(prevCount => prevCount - 1)}/>
+        <Button title='+' onPress={() => setCount(prevCount => prevCount + 1)}/>
+      </View>
     </View>
   );
 };
@@ -64,13 +66,24 @@ function Blink({text}) {
 }
 
 const styles = StyleSheet.create({
-  bigBlue: {
-    color: 'blue',
-    fontWeight: 'bold',
-    fontSize: 30,
+  AppBackground: {
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor:'#3f3f3f', // Dark Theme
   },
-  red: {
-    color: 'red',
+  flexRow: {
+    flex: 1, 
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    flexDirection: 'row', 
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'red'
+  },
+  flexColumn: {
+    flex: 1, flexDirection: 'column',
+    padding: 10, backgroundColor: 'blue'
   },
 });
 
