@@ -16,16 +16,17 @@ import {
   View,
   Text,
   Button,
-  StyleSheet,
 } from 'react-native';
+
+import {AppBar} from "./src/appBar";
+import {styles} from "./styles/styles"
 
 const App = () => {
   return (
     <View style={styles.AppBackground}>
-      <Text style={styles.flexRow}>Hello, world!</Text>
-      <Counter initialCount={0}/>
+      <AppBar title='RPG Dice Roller' subtitle='Tap die icons to roll!'/>
       <Blink text='I Blink!'/>
-    </View>
+    </View> 
   );
 };
 
@@ -64,27 +65,5 @@ function Blink({text}) {
     <Text />
   )
 }
-
-const styles = StyleSheet.create({
-  AppBackground: {
-    flex:1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor:'#3f3f3f', // Dark Theme
-  },
-  flexRow: {
-    flex: 1, 
-    flexWrap: 'wrap',
-    alignContent: 'center',
-    flexDirection: 'row', 
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'red'
-  },
-  flexColumn: {
-    flex: 1, flexDirection: 'column',
-    padding: 10, backgroundColor: 'blue'
-  },
-});
 
 export default App;
