@@ -8,7 +8,8 @@
  * @format
  */
 
-// For any Icons go to https://oblador.github.io/react-native-vector-icons/
+// For searchable Icons go to https://oblador.github.io/react-native-vector-icons/
+// For description of how to use icons go to https://github.com/oblador/react-native-vector-icons 
 
 import React from 'react'
 
