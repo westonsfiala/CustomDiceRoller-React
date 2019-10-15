@@ -1,30 +1,36 @@
 
+import React, {
+    useState
+  } from 'react';
+
 import {
     View,
     Text,
     Button,
     StyleSheet,
   } from 'react-native';
-  
-import React, {
-    useState
-  } from 'react';
 
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export function AppBar({title, subtitle}) {
     return (
         <View style={styles.AppBarBackground}>
-            <View>
+            <View style={{padding:4}}>
                 <Text style={[styles.TextWhite, styles.LargeText]}>{title}</Text>
                 <Text style={styles.TextWhite}>{subtitle}</Text>
             </View>
-            <View style={{flexDirection:'row'}}>
-                <View style={{padding:4}}>
-                    <Button title='clear history' onPress={() => null}></Button>
+            <View style={{flexDirection:'row', justifyContent:'center', alignContent:'center'}}>
+                <View style={{}}>
+                    <Button title='clear history' onPress={() => null}/>
                 </View>
-                <View style={{padding:4}}>
-                    <Button title='menu' onPress={() => null}></Button>
+                <View style={{marginStart:10}}>
+                    <Icon.Button 
+                    name='dots-vertical'
+                    size={20}
+                    iconStyle={{marginRight:0}}
+                    color='#ffffff'
+                    backgroundColor='#00000000'
+                    onPress={() => null}/>
                 </View>
             </View>
         </View>

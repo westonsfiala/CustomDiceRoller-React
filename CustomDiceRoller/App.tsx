@@ -8,18 +8,15 @@
  * @format
  */
 
-import React, {
-  useState, useEffect
-} from 'react';
+ import React from 'react'
+
+import {AppBar} from "./src/appBar";
+import {Blink} from "./src/blink"
+import {styles} from "./styles/styles"
 
 import {
   View,
-  Text,
-  Button,
 } from 'react-native';
-
-import {AppBar} from "./src/appBar";
-import {styles} from "./styles/styles"
 
 const App = () => {
   return (
@@ -29,41 +26,5 @@ const App = () => {
     </View> 
   );
 };
-
-function Counter({initialCount}) {
-  const [count, setCount] = useState(initialCount);
-  return (
-    <View style={styles.flexColumn}>
-      <Text>Count: {count}</Text>
-      <View style={styles.flexRow}>
-        <Button title='Reset' onPress={() => setCount(initialCount)}/>
-        <Button title='-' onPress={() => setCount(prevCount => prevCount - 1)}/>
-        <Button title='+' onPress={() => setCount(prevCount => prevCount + 1)}/>
-      </View>
-    </View>
-  );
-};
-
-function Blink({text}) {
-  const [shown, setShown] = useState(true);
-
-  useEffect(
-    () => {
-      setTimeout(() => (
-        setShown(!shown)
-        ), 1000);
-      }
-    );
-
-  if(shown) {
-    return (
-      <Text>{text}</Text>
-    )
-  };
-
-  return (
-    <Text />
-  )
-}
 
 export default App;
