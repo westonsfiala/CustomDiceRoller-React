@@ -8,7 +8,9 @@
  * @format
  */
 
- import React from 'react'
+// For any Icons go to https://oblador.github.io/react-native-vector-icons/
+
+import React from 'react'
 
 import {AppBar} from "./src/appBar";
 import {Blink} from "./src/blink"
