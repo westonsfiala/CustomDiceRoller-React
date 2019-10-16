@@ -13,9 +13,9 @@ export function Blink({text}) {
   
     useEffect(
       () => {
-        setTimeout(() => (
-          setShown(!shown)
-          ), 1000);
+          let timeoutVar = setTimeout(() => ( setShown(!shown) ), 1000);
+
+          return () => clearTimeout(timeoutVar);
         }
       );
   

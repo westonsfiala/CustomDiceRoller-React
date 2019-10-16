@@ -14,8 +14,9 @@
 import React from 'react'
 
 import {AppBar} from "./src/appBar";
-import {Blink} from "./src/blink"
-import {styles} from "./styles/styles"
+import {Blink} from "./src/blink";
+import {styles} from "./styles/styles";
+import {SimpleDieView} from "./src/SimpleDieView";
 
 import {
   View,
@@ -26,6 +27,7 @@ const App = () => {
     <View style={styles.AppBackground}>
       <AppBar title='RPG Dice Roller' subtitle='Tap die icons to roll!'/>
       <Blink text='I Blink!'/>
+      <SimpleDieView imageName='cursor-default-click-outline' name='d20'/>
     </View> 
   );
 };
