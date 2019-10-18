@@ -1,19 +1,19 @@
 
-import React, {} from 'react';
+import React from 'react';
 
 import 
 {
-    View,
     Text,
+    TouchableOpacity,
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export function SimpleDieView({imageName, name}) {
+export function SimpleDieView({imageName, name, size, pressCallback}) {
     return(
-        <View style={{alignItems:'center'}}>
-            <Icon.Button iconStyle={{marginRight:0}} name={imageName} color="#ffffff"/>
-            <Text style={{color:'#ffffff'}}>{name}</Text>
-        </View>
+        <TouchableOpacity style={{ flexDirection:'column', alignItems:'center', width:size}} onPress={() => {pressCallback()}}>
+            <Icon style={{flexDirection:'column'}} iconStyle={{marginRight:0}} name={imageName} size={size} color="#ffffff"/>
+            <Text numberOfLines={3} style={{fontSize:size/4, color:'#ffffff'}}>{name}</Text>
+        </TouchableOpacity>
     );
 };
