@@ -16,8 +16,12 @@ import React, { useState, useEffect } from 'react'
 import {AppBar} from "./src/appBar";
 import {styles} from "./styles/styles";
 import {SimpleDieView} from "./src/SimpleDieView";
-import Modal, { ModalContent } from 'react-native-modals';
-import AsyncStorage from '@react-native-community/async-storage';
+import Modal, { 
+    ModalContent, 
+    ScaleAnimation,
+    ModalFooter,
+    ModalButton
+} from 'react-native-modals';
 
 import {
     View, 
@@ -26,73 +30,72 @@ import {
     Dimensions,
 } from 'react-native';
 import { NumDiceUpDownButtons, ModifierUpDownButtons } from './src/upDownButtons';
+import { getModifierText } from './src/stringHelper';
 
 const standardDice = [
     {
         id:'d4',
+        dieInfo:{
+            type:'simple',
+            value:4,
+        }
     },
     {
         id:'d6',
+        die:{
+            type:'simple',
+            value:6,
+        }
     },
     {
         id:'d8',
+        die:{
+            type:'simple',
+            value:8,
+        }
     },
     {
         id:'d10',
+        die:{
+            type:'simple',
+            value:10,
+        }
     },
     {
         id:'d12',
+        die:{
+            type:'simple',
+            value:12,
+        }
     },
     {
         id:'d20',
+        die:{
+            type:'simple',
+            value:20,
+        }
     },
     {
         id:'d100',
+        die:{
+            type:'simple',
+            value:100,
+        }
     },
 ];
-
-function getNumDice() {
-    let value = 1
-    const getSavedValue = async () => {
-        let temp = '1'
-        try {
-            temp = await AsyncStorage.getItem('NumDiceSimple') || '1';
-        } catch (error) {
-            // Error retrieving data
-            console.log(error.message)
-        }
-        return Number(temp)
-    };
-    getSavedValue().then(output => {value = output});
-    return value;
-}
-
-function getModifier() {
-    let value = 0
-    const getSavedValue = async () => {
-        let temp = '0'
-        try {
-            temp = await AsyncStorage.getItem('ModifierSimple') || '0';
-        } catch (error) {
-            // Error retrieving data
-            console.log(error.message)
-        }
-        return Number(temp)
-    };
-    getSavedValue().then(output => {value = output});
-    return value;
-}
 
 const App = () => {
 
     const [width, setWidth] = useState(Dimensions.get("window").width);
+    const [height, setHeight] = useState(Dimensions.get("window").height);
     const [modalShown, setModalShown] = useState(false);
     const [pressedName, setPressedName] = useState("");
-    const [numDice, setNumDice] = useState(getNumDice())
-    const [modifier, setModifier] = useState(getModifier())
+    const [numDice, setNumDice] = useState(1)
+    const [modifier, setModifier] = useState(0)
 
     function handleScreenChange({window}) {
         setWidth(window.width);
+        setHeight(window.height);
     }
 
     useEffect(() => {
@@ -113,24 +116,31 @@ const App = () => {
                     <SimpleDieView imageName='cursor-default-click-outline' name={item.id} size={width/4} pressCallback={() => {
                         setModalShown(true);
                         setPressedName(item.id);
-                        let gotDice = getNumDice();
-                        setNumDice(gotDice);
-                        setModifier(getModifier())
                     }} />
                 )}
                 extraData={width}
             />
             <View style={{flexDirection:'row'}}>
-                <NumDiceUpDownButtons settingsKey='NumDiceSimple' />
-                <ModifierUpDownButtons settingsKey='ModifierSimple' />
+                <NumDiceUpDownButtons setExternalCount={setNumDice} />
+                <ModifierUpDownButtons setExternalCount={setModifier} />
             </View>
             
-            <Modal onTouch={() => {setModalShown(false);}} onTouchOutside={() => {setModalShown(false);}} visible={modalShown}>
-                <ModalContent>
+            <Modal 
+                onTouchOutside={() => {setModalShown(false);}} 
+                visible={modalShown}
+                modalAnimation={new ScaleAnimation()}
+                width={.5}
+                height={.5}
+            >
+                <ModalContent style={{flex:1, alignItems:'center', justifyContent:'center'}}>
                     <Text>
-                        {pressedName + ' ' + numDice + ' ' + modifier}
+                        {numDice + pressedName + getModifierText(modifier, true)}
                     </Text>
                 </ModalContent>
+                <ModalFooter>
+                    <ModalButton text="CANCEL" onPress={() => {setModalShown(false);}} />
+                    <ModalButton text="OK" onPress={() => {setModalShown(false);}} />
+                </ModalFooter>
             </Modal>
         </View> 
     );

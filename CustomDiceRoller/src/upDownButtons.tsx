@@ -1,54 +1,54 @@
 
 import React, {
-    useState
-  } from 'react';
+        useState
+    } from 'react';
 
 import {
-    View,
-    Text,
-    TouchableOpacity,
-  } from 'react-native';
+        View,
+        Text,
+        TouchableOpacity,
+    } from 'react-native';
 
-  import AsyncStorage from '@react-native-community/async-storage';
   import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { getModifierText } from './stringHelper';
 
-  export function NumDiceUpDownButtons({settingsKey}) {
-      return UpDownButtons({postFix:'d', forcePlusMinus:false, disallowZero:true, settingsKey})
-  }
+  export function NumDiceUpDownButtons({setExternalCount}) {
+        return UpDownButtons({postFix:'d', forcePlusMinus:false, disallowZero:true, setExternalCount})
+    }
 
-  export function ModifierUpDownButtons({settingsKey}) {
-      return UpDownButtons({postFix:'', forcePlusMinus:true, disallowZero:false, settingsKey})
-  }
+  export function ModifierUpDownButtons({setExternalCount}) {
+        return UpDownButtons({postFix:'', forcePlusMinus:true, disallowZero:false, setExternalCount})
+    }
 
-  function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = false, settingsKey}) {
+  function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = false, setExternalCount}) {
 
-        const [count, setCount] = useState( enforceGoodValue(0,0, disallowZero) )
+        const [count, setCount] = useState( enforceGoodValue(0,0, disallowZero) );
 
-        let preFix = ''
-        if(forcePlusMinus && count >= 0) {
-            preFix = '+'
+        let countText = String(count);
+        if(forcePlusMinus) {
+            countText = getModifierText(count, false);
         }
 
         function handleChange(change: number) {
-            let newCount = enforceGoodValue(count, change, disallowZero)
-
-            AsyncStorage.setItem(settingsKey, newCount.toString()).then()
+            let snappedChange = snapToNextIncrement(count, change)
+            let newCount = enforceGoodValue(count, snappedChange, disallowZero)
 
             setCount(newCount);
+            setExternalCount(newCount);
         }
       
         return(
             <View style={{flex:1, flexDirection:'row', alignItems:'center', padding:4}}>
                 <TouchableOpacity 
                     onPress={() => {handleChange(-1)}}
-                    onLongPress={() => {handleChange(snapToNextIncrement(count, -100))}}
+                    onLongPress={() => {handleChange(-100)}}
                 >
                     <Icon style={{backgroundColor:'#5f5f5f', borderRadius:10}} iconStyle={{marginRight:0}} size={50} name='arrow-down-bold'  color="#ffffff"/>
                 </TouchableOpacity>
-                <Text style={{flex:1, fontSize:30, textAlign:'center', color:'#ffffff'}} >{preFix}{count}{postFix}</Text>
+                <Text style={{flex:1, fontSize:30, textAlign:'center', color:'#ffffff'}} >{countText}{postFix}</Text>
                 <TouchableOpacity 
                     onPress={() => {handleChange(1)}}
-                    onLongPress={() => {handleChange(snapToNextIncrement(count, 100))}}
+                    onLongPress={() => {handleChange(100)}}
                 >
                     <Icon style={{backgroundColor:'#5f5f5f', borderRadius:10}} iconStyle={{marginRight:0}} size={50} name='arrow-up-bold' color="#ffffff"/>
                 </TouchableOpacity>
@@ -62,19 +62,19 @@ import {
     let newValue = value + change;
 
     if(newValue != 0 || !disallowZero) {
-      return newValue;
+        return newValue;
     }
 
     if(value < -1 && change > 1) {
-      return -1;
+        return -1;
     }
 
     if(value > 1 && change < -1) {
-      return 1;
+        return 1;
     }
 
     if(change >= 0) {
-      return 1;
+        return 1;
     }
     
     return -1
