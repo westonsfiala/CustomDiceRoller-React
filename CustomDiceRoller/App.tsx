@@ -16,6 +16,8 @@ import React, { useState, useEffect } from 'react'
 import {AppBar} from "./src/appBar";
 import {styles} from "./styles/styles";
 import {SimpleDieView} from "./src/SimpleDieView";
+import {Die} from "./src/dice/die";
+import {SimpleDie} from "./src/dice/simpleDie";
 import Modal, { 
     ModalContent, 
     ScaleAnimation,
@@ -28,59 +30,40 @@ import {
     Text,
     FlatList,
     Dimensions,
+    ScrollView,
 } from 'react-native';
 import { NumDiceUpDownButtons, ModifierUpDownButtons } from './src/upDownButtons';
 import { getModifierText } from './src/stringHelper';
+import { randomIntFromInterval } from './src/rollHelper';
 
 const standardDice = [
     {
         id:'d4',
-        dieInfo:{
-            type:'simple',
-            value:4,
-        }
+        die: new SimpleDie('d4', 4)
     },
     {
         id:'d6',
-        die:{
-            type:'simple',
-            value:6,
-        }
+        die: new SimpleDie('d6', 6)
     },
     {
         id:'d8',
-        die:{
-            type:'simple',
-            value:8,
-        }
+        die: new SimpleDie('d8', 8)
     },
     {
         id:'d10',
-        die:{
-            type:'simple',
-            value:10,
-        }
+        die: new SimpleDie('d10', 10)
     },
     {
         id:'d12',
-        die:{
-            type:'simple',
-            value:12,
-        }
+        die: new SimpleDie('d12', 12)
     },
     {
         id:'d20',
-        die:{
-            type:'simple',
-            value:20,
-        }
+        die: new SimpleDie('d20', 20)
     },
     {
         id:'d100',
-        die:{
-            type:'simple',
-            value:100,
-        }
+        die: new SimpleDie('d100', 100)
     },
 ];
 
@@ -89,9 +72,9 @@ const App = () => {
     const [width, setWidth] = useState(Dimensions.get("window").width);
     const [height, setHeight] = useState(Dimensions.get("window").height);
     const [modalShown, setModalShown] = useState(false);
-    const [pressedName, setPressedName] = useState("");
-    const [numDice, setNumDice] = useState(1)
-    const [modifier, setModifier] = useState(0)
+    const [numDice, setNumDice] = useState(1);
+    const [modifier, setModifier] = useState(0);
+    const [clickedDie, setClickedDie] = useState(new SimpleDie('temp', 0))
 
     function handleScreenChange({window}) {
         setWidth(window.width);
@@ -99,12 +82,35 @@ const App = () => {
     }
 
     useEffect(() => {
-        Dimensions.addEventListener("change", handleScreenChange)
+        Dimensions.addEventListener("change", handleScreenChange);
         
         return () => {
             Dimensions.removeEventListener("change", handleScreenChange);
         }
     });
+
+    let rollName = '';
+    let rollSum = '';
+    let dieResultsString = '';
+
+    if(modalShown && clickedDie !== null) {
+
+        let dieResults = [];
+
+        rollName = numDice + '' + clickedDie.displayName + getModifierText(modifier, true);
+
+        for(var i = 0; i < Math.abs(numDice); ++i) {
+            dieResults.push(clickedDie.roll());
+        }
+
+        const summer = (accumulator: number, current: number) => accumulator + current;
+
+        rollSum = dieResults.reduce(summer);
+
+        const concatter = (accumulator: String, current: number) => accumulator + ', ' + current;
+
+        dieResultsString = dieResults.reduce(concatter);
+    }
 
     return (
         <View style={styles.AppBackground}>
@@ -113,9 +119,9 @@ const App = () => {
                 data={standardDice}
                 numColumns={4}
                 renderItem={({ item }) =>  (
-                    <SimpleDieView imageName='cursor-default-click-outline' name={item.id} size={width/4} pressCallback={() => {
+                    <SimpleDieView imageName='cursor-default-click-outline' name={item.die.displayName} size={width/4} pressCallback={() => {
                         setModalShown(true);
-                        setPressedName(item.id);
+                        setClickedDie(item.die);
                     }} />
                 )}
                 extraData={width}
@@ -129,13 +135,22 @@ const App = () => {
                 onTouchOutside={() => {setModalShown(false);}} 
                 visible={modalShown}
                 modalAnimation={new ScaleAnimation()}
-                width={.5}
+                width={.7}
                 height={.5}
+                onDismiss={() => setClickedDie(null)}
             >
-                <ModalContent style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-                    <Text>
-                        {numDice + pressedName + getModifierText(modifier, true)}
-                    </Text>
+                <ModalContent style={{flex:1, alignItems:'center'}}>
+                    <ScrollView style={{}} contentContainerStyle={{alignItems:'center'}}>
+                        <Text style={{fontSize:25, padding:2}}>
+                            {rollName}
+                        </Text>
+                        <Text style={{fontSize:30, fontWeight:'bold', padding:8}}>
+                            {rollSum}
+                        </Text>
+                        <Text>
+                            {dieResultsString}
+                        </Text>
+                    </ScrollView>
                 </ModalContent>
                 <ModalFooter>
                     <ModalButton text="CANCEL" onPress={() => {setModalShown(false);}} />
