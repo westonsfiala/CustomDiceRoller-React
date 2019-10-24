@@ -15,8 +15,6 @@ export abstract class Die {
 
     abstract clone(newName : String) : Die;
 
-    abstract get saveToString() : String;
-
     abstract roll() : number;
 
     abstract get max() : number;

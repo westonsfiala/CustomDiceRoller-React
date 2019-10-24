@@ -1,5 +1,5 @@
 import { randomIntFromInterval } from "../rollHelper";
-import { Die } from "./die"
+import { Die } from "./Die"
 
 export class SimpleDie extends Die
 {
@@ -20,13 +20,6 @@ export class SimpleDie extends Die
 
     clone(newName: String) : Die {
         return new SimpleDie(newName, this.mDie);
-    }
-
-    get saveToString() : String
-    {
-        // TODO: Is this still necessary?
-        // Look into JSON storage.
-        return '';
     }
 
     roll() :  number

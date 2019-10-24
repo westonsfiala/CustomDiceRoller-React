@@ -16,8 +16,8 @@ import React, { useState, useEffect } from 'react'
 import {AppBar} from "./src/appBar";
 import {styles} from "./styles/styles";
 import {SimpleDieView} from "./src/SimpleDieView";
-import {Die} from "./src/dice/die";
-import {SimpleDie} from "./src/dice/simpleDie";
+import {Die} from "./src/dice/Die";
+import {SimpleDie} from "./src/dice/SimpleDie";
 import Modal, { 
     ModalContent, 
     ScaleAnimation,
@@ -99,7 +99,7 @@ const App = () => {
 
         rollName = numDice + '' + clickedDie.displayName + getModifierText(modifier, true);
 
-        for(var i = 0; i < Math.abs(numDice); ++i) {
+        for(let i = 0; i < Math.abs(numDice); ++i) {
             dieResults.push(clickedDie.roll());
         }
 
