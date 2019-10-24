@@ -107,7 +107,7 @@ const App = () => {
 
         rollSum = dieResults.reduce(summer);
 
-        const concatter = (accumulator: String, current: number) => accumulator + ', ' + current;
+        const concatter = (accumulator: string, current: number) => accumulator + ', ' + current;
 
         dieResultsString = dieResults.reduce(concatter);
     }
