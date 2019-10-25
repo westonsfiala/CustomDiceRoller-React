@@ -9,6 +9,9 @@ import
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+// import { createIconSetFromFontello } from 'react-native-vector-icons';
+// const Icon = createIconSetFromFontello('./config.json');
+
 export function SimpleDieView({imageName, name, size, pressCallback}) {
     return(
         <TouchableOpacity style={{ flexDirection:'column', alignItems:'center', width:size, padding:2}} onPress={() => {pressCallback()}}>

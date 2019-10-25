@@ -7,13 +7,13 @@ export abstract class Die {
 
     public static readonly dieDisplayInHexID = '0x';
 
-    mDieName: String;
+    mDieName: string;
 
-    constructor(dieName: String) {
+    constructor(dieName: string) {
         this.mDieName = dieName;
     }
 
-    abstract clone(newName : String) : Die;
+    abstract clone(newName : string) : Die;
 
     abstract roll() : number;
 
@@ -29,9 +29,9 @@ export abstract class Die {
             this.mDieName.startsWith (Die.dieDisplayInHexID);
     }
 
-    get displayName() : String { return this.mDieName; }
+    get displayName() : string { return this.mDieName; }
 
-    abstract get getInfo() : String;
+    abstract get getInfo() : string;
 
-    abstract get getImageID() : number;
+    abstract get getImageID() : string;
 }

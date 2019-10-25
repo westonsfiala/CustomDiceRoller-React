@@ -1,7 +1,17 @@
 
-import {Die} from './Die'
-import {RollProperties} from './RollProperties'
-import {RollResults} from './RollResults'
+import { Die } from './Die'
+import { RollProperties } from './RollProperties'
+import { RollResults } from './RollResults'
+import { SimpleDie } from './SimpleDie';
+import {
+    getModifierString,
+    getDropHighString,
+    getDropLowString,
+    getKeepHighString,
+    getKeepLowString,
+    getMinimumDieValueString,
+    getReRollString
+ } from '../stringHelper'
 
 export class Roll {
     public static readonly aggregateRollStringStart = "Aggregate"
@@ -14,69 +24,71 @@ export class Roll {
         this.mRollName = rollName;
         this.mRollCategory = rollCategory;
 
-        this.mDieMap = new Map<string, RollProperties>()
+        this.mDieMap = new Map<string, RollProperties>();
     }
 
     clone(newRollName: string, newRollCategory: string) : Roll
     {
-        let retRoll = JSON.parse(JSON.stringify(this)) as Roll
+        let retRoll = JSON.parse(JSON.stringify(this)) as Roll;
 
         retRoll.mRollName = newRollName;
         retRoll.mRollCategory = newRollCategory;
 
-        return retRoll
+        return retRoll;
     }
 
     addDieToRoll(die: Die, properties: RollProperties)
     {
-        let newDieProperties = JSON.parse(JSON.stringify(properties)) as RollProperties
+        let newDieProperties = JSON.parse(JSON.stringify(properties)) as RollProperties;
 
-        this.mDieMap[JSON.stringify(die)] = newDieProperties
+        this.mDieMap[JSON.stringify(die)] = newDieProperties;
     }
 
-    removeDieFromRoll(die: Die) : Boolean
+    removeDieFromRoll(die: Die) : boolean
     {
-        return this.mDieMap.delete(JSON.stringify(die)) != null
+        return this.mDieMap.delete(JSON.stringify(die)) != null;
     }
 
-    containsDie(die: Die) : Boolean
+    containsDie(die: Die) : boolean
     {
-        return this.mDieMap.has(JSON.stringify(die))
+        return this.mDieMap.has(JSON.stringify(die));
     }
 
-    getTotalDiceInRoll() : Number
+    getTotalDiceInRoll() : number
     {
-        let numDice = 0
+        let numDice = 0;
 
         for(let dieProps of this.mDieMap.values())
         {
-            numDice += Math.abs(dieProps.mDieCount)
+            numDice += Math.abs(dieProps.mDieCount);
         }
 
-        return numDice
+        return numDice;
     }
 
     getDice() : Map<Die, RollProperties>
     {
-        let outputMap = new Map<Die, RollProperties>()
+        let outputMap = new Map<Die, RollProperties>();
 
         for(let [dieJson, properties] of this.mDieMap.entries())
         {
-            outputMap[JSON.parse(dieJson)] = properties
+            outputMap[JSON.parse(dieJson)] = properties;
         }
 
-        return outputMap
+        return outputMap;
     }
 
-    overrideDieAt(die: Die, position: number) : Boolean {
-
-        // TODO: Check this.
+    overrideDieAt(die: Die, position: number) : boolean 
+    {
         let curPos = 0;
         for(let dieJson of this.mDieMap.keys())
         {
             if(curPos === position) {
-                dieJson = JSON.stringify(die);
-                return true
+                let newDieJson = JSON.stringify(die);
+                let props = this.mDieMap.get(dieJson);
+                this.mDieMap.delete(dieJson);
+                this.mDieMap[newDieJson] = props;
+                return true;
             }
             curPos++
         }
@@ -84,140 +96,156 @@ export class Roll {
         return false;
     }
 
-    getDieAt(position: Int) : Die
+    getDieAt(position: number) : Die
     {
-        let possibleDie = mDieMap.toList().elementAtOrNull(position)
-
-        return if(possibleDie != null)
+        let curPos = 0;
+        for(let dieJson of this.mDieMap.keys())
         {
-            DieFactory().createUnknownDie(possibleDie.first)
-        } else {
-            MinMaxDie("INletID", 0,0)
+            if(curPos === position) {
+                return JSON.parse(dieJson);
+            }
+            curPos++;
         }
+
+        return new SimpleDie('Invlaid', 1);
     }
 
-    moveDieUp(position: Int) : Boolean
+    moveDieUp(position: number) : boolean
     {
         // Can't move something up when its already at the top
         // Or if there is nothing
         // Or if there is only one thing
         // Or if its past where we can access
-        if(position <= 0 || mDieMap.isEmpty() || mDieMap.size == 1 || position >= mDieMap.size)
+        if(position <= 0 || this.mDieMap.size == 0 || this.mDieMap.size == 1 || position >= this.mDieMap.size)
         {
-            return false
+            return false;
         }
 
-        let dieList = mDieMap.toList().toMutableList()
+        let iterableEnteries = [...this.mDieMap.entries()];
 
-        let displacedDie = dieList.removeAt(position)
-        dieList.add(position - 1, displacedDie)
+        let movedEntry = iterableEnteries.splice(position, 1);
 
-        mDieMap = dieList.toMap().toMutableMap()
+        let newMapStart = iterableEnteries.slice(0, position-1);
+        let newMapEnd = iterableEnteries.slice(position, iterableEnteries.length);
 
-        return true
+        iterableEnteries = newMapStart.concat(movedEntry).concat(newMapEnd);
+
+        this.mDieMap = new Map(iterableEnteries);
+
+        return true;
     }
 
-    moveDieDown(position: Int) : Boolean
+    moveDieDown(position: number) : boolean
     {
         // Can't move something down when its already at the top
         // Or if there is nothing
         // Or if there is only one thing
         // Or if its past where we can access
-        if(position < 0 || mDieMap.isEmpty() || mDieMap.size == 1 || position >= mDieMap.size - 1)
+        if(position < 0 || this.mDieMap.size == 0 || this.mDieMap.size == 1 || position >= this.mDieMap.size - 1)
         {
-            return false
+            return false;
         }
 
-        let dieList = mDieMap.toList().toMutableList()
+        let iterableEnteries = [...this.mDieMap.entries()];
 
-        let displacedDie = dieList.removeAt(position)
-        dieList.add(position + 1, displacedDie)
+        let movedEntry = iterableEnteries.splice(position, 1);
 
-        mDieMap = dieList.toMap().toMutableMap()
+        let newMapStart = iterableEnteries.slice(0, position);
+        let newMapEnd = iterableEnteries.slice(position+1, iterableEnteries.length);
 
-        return true
+        iterableEnteries = newMapStart.concat(movedEntry).concat(newMapEnd);
+
+        this.mDieMap = new Map(iterableEnteries);
+
+        return true;
     }
 
 
-    getRollPropertiesAt(position: Int) : RollProperties
+    getRollPropertiesAt(position: number) : RollProperties
     {
-        let possibleDie = mDieMap.toList().elementAtOrNull(position)
+        let curPos = 0;
+        for(let prop of this.mDieMap.values())
+        {
+            if(curPos === position) {
+                return prop;
+            }
+            curPos++;
+        }
 
-        return possibleDie?.second ?: RollProperties()
+        return new RollProperties({});
     }
 
     roll() : RollResults
     {
-        let returnResults = RollResults()
+        let returnResults = new RollResults();
 
-        for(diePair in mDieMap) {
+        for(let [dieJson, properties] of this.mDieMap) {
 
-            let die = DieFactory().createUnknownDie(diePair.key)
-            let dieSaveString = die.saveToString()
-            let properties = diePair.letue
+            let die = JSON.parse(dieJson) as Die;
 
-            let rollPair = produceRollLists(die, properties)
+            let rollPair = this.produceRollLists(die, properties);
+            let secondRollPair = this.produceRollLists(die, properties);
 
-            returnResults.mRollModifiers[dieSaveString] = properties.mModifier
+            const summer = (accumulator: number, current: number) => accumulator + current;
 
-            when
+            returnResults.mRollModifiers[dieJson] = properties.mModifier;
+
+            switch(properties.mAdvantageDisadvantage)
             {
-                properties.mAdvantageDisadvantage == rollDisadvantageletue -> {
-                    let secondRollPair = produceRollLists(die, properties)
-                    if(rollPair.first.sum() < secondRollPair.first.sum()) {
-                        returnResults.mRollResults[dieSaveString] = rollPair.first
-                        returnResults.mDroppedRolls[dieSaveString] = rollPair.second
-                        returnResults.mReRolledRolls[dieSaveString] = rollPair.third
-                        returnResults.mStruckRollResults[dieSaveString] = secondRollPair.first
-                        returnResults.mStruckDroppedRolls[dieSaveString] = secondRollPair.second
-                        returnResults.mStruckReRolledRolls[dieSaveString] = secondRollPair.third
+                case RollProperties.rollDisadvantageValue :
+                    if(rollPair.keep.reduce(summer) < secondRollPair.keep.reduce(summer)) {
+                        returnResults.mRollResults[dieJson] = rollPair.keep
+                        returnResults.mDroppedRolls[dieJson] = rollPair.drop
+                        returnResults.mReRolledRolls[dieJson] = rollPair.reroll
+                        returnResults.mStruckRollResults[dieJson] = secondRollPair.keep
+                        returnResults.mStruckDroppedRolls[dieJson] = secondRollPair.drop
+                        returnResults.mStruckReRolledRolls[dieJson] = secondRollPair.reroll
                     } else {
-                        returnResults.mRollResults[dieSaveString] = secondRollPair.first
-                        returnResults.mDroppedRolls[dieSaveString] = secondRollPair.second
-                        returnResults.mReRolledRolls[dieSaveString] = secondRollPair.third
-                        returnResults.mStruckRollResults[dieSaveString] = rollPair.first
-                        returnResults.mStruckDroppedRolls[dieSaveString] = rollPair.second
-                        returnResults.mStruckReRolledRolls[dieSaveString] = rollPair.third
+                        returnResults.mRollResults[dieJson] = secondRollPair.keep
+                        returnResults.mDroppedRolls[dieJson] = secondRollPair.drop
+                        returnResults.mReRolledRolls[dieJson] = secondRollPair.reroll
+                        returnResults.mStruckRollResults[dieJson] = rollPair.keep
+                        returnResults.mStruckDroppedRolls[dieJson] = rollPair.drop
+                        returnResults.mStruckReRolledRolls[dieJson] = rollPair.reroll
                     }
-                }
-                properties.mAdvantageDisadvantage == rollNaturalletue -> {
-                    returnResults.mRollResults[dieSaveString] = rollPair.first
-                    returnResults.mDroppedRolls[dieSaveString] = rollPair.second
-                    returnResults.mReRolledRolls[dieSaveString] = rollPair.third
-                    returnResults.mStruckRollResults[dieSaveString] = mutableListOf()
-                    returnResults.mStruckDroppedRolls[dieSaveString] = mutableListOf()
-                    returnResults.mStruckReRolledRolls[dieSaveString] = mutableListOf()
-                }
-                properties.mAdvantageDisadvantage == rollAdvantageletue -> {
-                    let secondRollPair = produceRollLists(die, properties)
-                    if(rollPair.first.sum() > secondRollPair.first.sum()) {
-                        returnResults.mRollResults[dieSaveString] = rollPair.first
-                        returnResults.mDroppedRolls[dieSaveString] = rollPair.second
-                        returnResults.mReRolledRolls[dieSaveString] = rollPair.third
-                        returnResults.mStruckRollResults[dieSaveString] = secondRollPair.first
-                        returnResults.mStruckDroppedRolls[dieSaveString] = secondRollPair.second
-                        returnResults.mStruckReRolledRolls[dieSaveString] = secondRollPair.third
+                    break;
+
+                case RollProperties.rollNaturalValue : 
+                    returnResults.mRollResults[dieJson] = rollPair.keep
+                    returnResults.mDroppedRolls[dieJson] = rollPair.drop
+                    returnResults.mReRolledRolls[dieJson] = rollPair.reroll
+                    break;
+
+                case RollProperties.rollAdvantageValue : 
+                    if(rollPair.keep.reduce(summer) > secondRollPair.keep.reduce(summer)) {
+                        returnResults.mRollResults[dieJson] = rollPair.keep
+                        returnResults.mDroppedRolls[dieJson] = rollPair.drop
+                        returnResults.mReRolledRolls[dieJson] = rollPair.reroll
+                        returnResults.mStruckRollResults[dieJson] = secondRollPair.keep
+                        returnResults.mStruckDroppedRolls[dieJson] = secondRollPair.drop
+                        returnResults.mStruckReRolledRolls[dieJson] = secondRollPair.reroll
                     } else {
-                        returnResults.mRollResults[dieSaveString] = secondRollPair.first
-                        returnResults.mDroppedRolls[dieSaveString] = secondRollPair.second
-                        returnResults.mReRolledRolls[dieSaveString] = secondRollPair.third
-                        returnResults.mStruckRollResults[dieSaveString] = rollPair.first
-                        returnResults.mStruckDroppedRolls[dieSaveString] = rollPair.second
-                        returnResults.mStruckReRolledRolls[dieSaveString] = rollPair.third
+                        returnResults.mRollResults[dieJson] = secondRollPair.keep
+                        returnResults.mDroppedRolls[dieJson] = secondRollPair.drop
+                        returnResults.mReRolledRolls[dieJson] = secondRollPair.reroll
+                        returnResults.mStruckRollResults[dieJson] = rollPair.keep
+                        returnResults.mStruckDroppedRolls[dieJson] = rollPair.drop
+                        returnResults.mStruckReRolledRolls[dieJson] = rollPair.reroll
                     }
-                }
+                    break
             }
         }
 
+        // TODO: move this elsewhere & generalize it.
         // Check for rolling critical success or critical failures
-        let d20SaveString = SimpleDie("d20", 20).saveToString()
-        if(returnResults.mRollResults.containsKey(d20SaveString)) {
-            let results = returnResults.mRollResults.getletue(d20SaveString)
-            if(results.size == 1) {
+        let d20SaveString = JSON.stringify(new SimpleDie("d20", 20));
+        if(returnResults.mRollResults.has(d20SaveString)) {
+            let results = returnResults.mRollResults.get(d20SaveString);
+            if(results.length == 1) {
                 if(results[0] == 20) {
-                    returnResults.mRollMaximumletue = true
+                    returnResults.mRollMaximumValue = true;
                 } else if(results[0] == 1) {
-                    returnResults.mRollMinimumletue = true
+                    returnResults.mRollMinimumValue = true;
                 }
             }
         }
@@ -226,231 +254,204 @@ export class Roll {
     }
 
     // Produces an array of 3 lists, a list of taken letues, and a list of dropped letues, and a list of rerolled letues
-    private produceRollLists(die: Die, properties: RollProperties) : Triple<MutableList<Int>,MutableList<Int>,MutableList<Int>> {
+    private produceRollLists(die: Die, properties: RollProperties) : {keep: number[], drop: number[], reroll: number[]} 
+    {
 
-        let keepList = mutableListOf<Int>()
-        let dropList = mutableListOf<Int>()
-        let reRollList = mutableListOf<Int>()
+        let keepList = new Array<number>();
+        let dropList = new Array<number>();
+        let rerollList = new Array<number>();
 
         // No dice to roll, return empty lists.
         if(properties.mDieCount == 0)
         {
-            return Triple(keepList, dropList, reRollList)
+            return {keep:keepList, drop:dropList, reroll:rerollList};
         }
 
         // Roll all of the dice and add them to the return list.
-        let rollNum = 0
-        while (rollNum < abs(properties.mDieCount)) {
-            let dieRoll = die.roll()
+        let rollNum = 0;
+        while (rollNum < Math.abs(properties.mDieCount)) {
+            let dieRoll = die.roll();
 
             // If we are set to explode, have the maximum letue, and actually have a range, roll an extra die
-            if(properties.mExplode && dieRoll == die.max() && die.max() != die.min()) {
-                rollNum -= 1
+            if(properties.mExplode && dieRoll == die.max && die.max != die.min) {
+                rollNum -= 1;
             }
 
             // If we have a minimum letue, drop anything less.
             if(properties.mUseMinimumRoll && dieRoll < properties.mMinimumRoll)
             {
-                reRollList.add(dieRoll)
-                dieRoll = properties.mMinimumRoll
+                rerollList.push(dieRoll);
+                dieRoll = properties.mMinimumRoll;
             }
 
             // If we use reRolls, reRoll under the threshold.
             if(properties.mUseReRoll && dieRoll <= properties.mReRoll)
             {
-                reRollList.add(dieRoll)
-                dieRoll = die.roll()
+                rerollList.push(dieRoll)
+                dieRoll = die.roll();
             }
 
             if(properties.mDieCount > 0) {
-                keepList.add(dieRoll)
+                keepList.push(dieRoll);
             } else {
-                keepList.add(-dieRoll)
+                keepList.push(-dieRoll);
             }
-            rollNum += 1
+            rollNum += 1;
         }
 
         // Drop high letues
-        if(keepList.size <= properties.mDropHigh) {
-            dropList.addAll(keepList)
-            keepList.clear()
+        if(keepList.length <= properties.mDropHigh) {
+            dropList.concat(keepList);
+            keepList = new Array<number>();
         } else {
-            for(dropIndex in 0 until properties.mDropHigh) {
-                let ejectedletue = keepList.max()
-                keepList.remove(ejectedletue!!)
-                dropList.add(ejectedletue)
+            for(let dropIndex = 0; dropIndex < properties.mDropHigh; dropIndex++) {
+                let ejectedValue = Math.max(...keepList);
+                let ejectedIndex = keepList.indexOf(ejectedValue);
+                keepList.splice(ejectedIndex,1);
+                dropList.push(ejectedValue)
             }
         }
 
         // Drop low letues
-        if(keepList.size <= properties.mDropLow) {
-            dropList.addAll(keepList)
-            keepList.clear()
+        if(keepList.length <= properties.mDropLow) {
+            dropList.concat(keepList)
+            keepList = new Array<number>()
         } else {
-            for(dropIndex in 0 until properties.mDropLow) {
-                let ejectedletue = keepList.min()
-                keepList.remove(ejectedletue!!)
-                dropList.add(ejectedletue)
+            for(let dropIndex = 0; dropIndex < properties.mDropLow; dropIndex++) {
+                let ejectedValue = Math.min(...keepList);
+                let ejectedIndex = keepList.indexOf(ejectedValue);
+                keepList.splice(ejectedIndex,1);
+                dropList.push(ejectedValue)
             }
         }
 
         // Only do keep high/low when you have those properties
         if(properties.mKeepHigh != 0 || properties.mKeepLow != 0) {
             // Only keep going if we have more rolls than what we want to keep
-            if(keepList.size > (properties.mKeepHigh + properties.mKeepLow)) {
-                let numberToDrop = keepList.size - (properties.mKeepHigh + properties.mKeepLow)
+            if(keepList.length > (properties.mKeepHigh + properties.mKeepLow)) {
+                let numberToDrop = keepList.length - (properties.mKeepHigh + properties.mKeepLow)
                 let indexToDrop = properties.mKeepLow
-                let tempSorted = keepList.sortedBy {it}
-                for(dropIndex in 0 until numberToDrop) {
-                    let ejectedletue = tempSorted[indexToDrop + dropIndex]
-                    keepList.remove(ejectedletue)
-                    dropList.add(ejectedletue)
+                let tempSorted = keepList.slice().sort()
+                for(let dropIndex = 0; dropIndex < numberToDrop; dropIndex++) {
+                    let ejectedValue = tempSorted[indexToDrop + dropIndex]
+                    let ejectedIndex = keepList.indexOf(ejectedValue);
+                    keepList.splice(ejectedIndex,1);
+                    dropList.push(ejectedValue)
                 }
             }
         }
 
-        return Triple(keepList, dropList, reRollList)
+        return {keep:keepList, drop:dropList, reroll:rerollList};
     }
 
-    average() : Float
+    average() : number
     {
-        let dieAverage = 0f
-        let innerDies = mDieMap
-        for(diePropertyPair in innerDies)
+        let dieAverage = 0
+        for(let [dieJson, prop] of this.mDieMap)
         {
-            dieAverage += DieFactory().createUnknownDie(diePropertyPair.key).average() * diePropertyPair.letue.mDieCount + diePropertyPair.letue.mModifier
+            dieAverage += JSON.parse(dieJson).average() * prop.mDieCount + prop.mModifier
         }
         return dieAverage
     }
 
-    displayInHex(): Boolean {
+    displayInHex(): boolean {
         // Only display hex when you start with "0x" and have more characters after that.
-        return if(mRollName.isNotEmpty()) {
-            mRollName.length > (dieDisplayInHexID.length) && mRollName.startsWith(
-                dieDisplayInHexID
-            )
-        }
-        else
-        {
-            let displayInHex = true
-            let innerDies = mDieMap
-            for(diePropertyPair in innerDies)
-            {
-                if(!DieFactory().createUnknownDie(diePropertyPair.key).displayInHex())
-                {
-                    displayInHex = false
-                }
-            }
-            displayInHex
-        }
+        return this.mRollName.length > (Die.dieDisplayInHexID.length) && this.mRollName.startsWith(
+            Die.dieDisplayInHexID
+        )
     }
 
-    getDisplayName() : string
+    get displayName() : string
     {
-        return mRollName
+        return this.mRollName
     }
 
-    getCategoryName() : string
+    get categoryName() : string
     {
-        return mRollCategory
+        return this.mRollCategory
     }
 
     getDetailedRollName() : string
     {
-        let innerDies = mDieMap
-
         let returnString = ""
 
-        if(innerDies.isEmpty())
+        if(this.mDieMap.size === 0)
         {
             return returnString
         }
 
-        let defaultProps = RollProperties()
+        let defaultProps = new RollProperties({})
 
         let firstDie = true
 
-        for(diePropertyPair in innerDies)
+        for(let [dieJson, props] of this.mDieMap)
         {
             // Don't add the "+" to the first item. Only add "+" to positive count items.
             if(firstDie) {
                 firstDie = false
-            } else if(diePropertyPair.letue.mDieCount > 0) {
+            } else if(props.mDieCount > 0) {
                 returnString += "+"
             }
 
-            let die = DieFactory().createUnknownDie(diePropertyPair.key)
-            returnString += if(die.getDisplayName().startsWith("d"))
+            let die = JSON.parse(dieJson) as Die;
+            if(die.displayName.startsWith("d"))
             {
-                String.format("%d%s",diePropertyPair.letue.mDieCount,die.getDisplayName())
+                returnString += props.mDieCount + die.displayName
             }
             else
             {
-                String.format("%dx%s", diePropertyPair.letue.mDieCount,die.getDisplayName())
+                returnString += props.mDieCount + 'x' + die.displayName
             }
 
-            returnString += when(diePropertyPair.letue.mAdvantageDisadvantage) {
-                rollAdvantageletue -> "(Advantage)"
-                rollDisadvantageletue -> "(Disadvantage)"
-                else -> ""
+            switch(props.mAdvantageDisadvantage) {
+                case RollProperties.rollAdvantageValue : 
+                    returnString += "(Advantage)"
+                    break;
+                case RollProperties.rollDisadvantageValue : 
+                    returnString += "(Disadvantage)"
+                    break;
             }
 
-            returnString += if(diePropertyPair.letue.mDropHigh != 0) {
-                let dropString = getDropHighString(diePropertyPair.letue.mDropHigh)
-                "($dropString)"
-            } else {
-                ""
+            if(props.mDropHigh != 0) {
+                let dropString = getDropHighString(props.mDropHigh)
+                returnString += '(' + dropString + ')';
+            } 
+
+            if(props.mDropLow != 0) {
+                let dropString = getDropLowString(props.mDropLow)
+                returnString += '(' + dropString + ')';
             }
 
-            returnString += if(diePropertyPair.letue.mDropLow != 0) {
-                let dropString = getDropLowString(diePropertyPair.letue.mDropLow)
-                "($dropString)"
-            } else {
-                ""
+            if(props.mKeepHigh != 0) {
+                let keepString = getKeepHighString(props.mKeepHigh)
+                returnString += '(' + keepString + ')';
             }
 
-            returnString += if(diePropertyPair.letue.mKeepHigh != 0) {
-                let keepString = getKeepHighString(diePropertyPair.letue.mKeepHigh)
-                "($keepString)"
-            } else {
-                ""
+            if(props.mKeepLow != 0) {
+                let keepString = getKeepLowString(props.mKeepLow)
+                returnString += '(' + keepString + ')';
             }
 
-            returnString += if(diePropertyPair.letue.mKeepLow != 0) {
-                let keepString = getKeepLowString(diePropertyPair.letue.mKeepLow)
-                "($keepString)"
-            } else {
-                ""
-            }
-
-            returnString += if(diePropertyPair.letue.mModifier != 0) {
-                getModifierString(diePropertyPair.letue.mModifier)
-            } else {
-                ""
-            }
-
-            returnString += if(diePropertyPair.letue.mUseReRoll != defaultProps.mUseReRoll
-                && diePropertyPair.letue.mReRoll != defaultProps.mReRoll)
+            if(props.mUseReRoll != defaultProps.mUseReRoll
+                && props.mReRoll != defaultProps.mReRoll)
             {
-                let reRollString = getReRollString(diePropertyPair.letue.mReRoll)
-                "($reRollString)"
-            } else {
-                ""
+                let reRollString = getReRollString(props.mReRoll)
+                returnString += '(' + reRollString + ')';
             }
 
-            returnString += if(diePropertyPair.letue.mUseMinimumRoll != defaultProps.mUseMinimumRoll
-                && diePropertyPair.letue.mMinimumRoll != defaultProps.mMinimumRoll)
+            if(props.mUseMinimumRoll != defaultProps.mUseMinimumRoll
+                && props.mMinimumRoll != defaultProps.mMinimumRoll)
             {
-                let minString = getMinimumDieletueString(diePropertyPair.letue.mMinimumRoll)
-                "($minString)"
-            } else {
-                ""
+                let minString = getMinimumDieValueString(props.mMinimumRoll)
+                returnString += '(' + minString + ')';
             }
 
-            returnString += if(diePropertyPair.letue.mExplode != defaultProps.mExplode) {
-                "(Explode)"
-            } else {
-                ""
+            if(props.mExplode != defaultProps.mExplode) {
+                returnString += '(Explode)';
+            }
+
+            if(props.mModifier != 0) {
+                returnString += getModifierString(props.mModifier, true)
             }
         }
 

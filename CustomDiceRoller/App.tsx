@@ -16,7 +16,6 @@ import React, { useState, useEffect } from 'react'
 import {AppBar} from "./src/appBar";
 import {styles} from "./styles/styles";
 import {SimpleDieView} from "./src/SimpleDieView";
-import {Die} from "./src/dice/Die";
 import {SimpleDie} from "./src/dice/SimpleDie";
 import Modal, { 
     ModalContent, 
@@ -33,7 +32,7 @@ import {
     ScrollView,
 } from 'react-native';
 import { NumDiceUpDownButtons, ModifierUpDownButtons } from './src/upDownButtons';
-import { getModifierText } from './src/stringHelper';
+import { getModifierString } from './src/stringHelper';
 import { randomIntFromInterval } from './src/rollHelper';
 
 const standardDice = [
@@ -97,7 +96,7 @@ const App = () => {
 
         let dieResults = [];
 
-        rollName = numDice + '' + clickedDie.displayName + getModifierText(modifier, true);
+        rollName = numDice + '' + clickedDie.displayName + getModifierString(modifier, true);
 
         for(let i = 0; i < Math.abs(numDice); ++i) {
             dieResults.push(clickedDie.roll());
