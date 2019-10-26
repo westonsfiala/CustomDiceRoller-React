@@ -3,17 +3,18 @@ import { Die } from "./Die"
 
 export class SimpleDie extends Die
 {
-    public static readonly simpleDieStringStart = "Simple";
+    public static readonly simpleDieIdentifier = "Simple";
 
-    mDie: number;
+    public readonly mDie: number;
 
-    constructor(dieName: string, die: number) {
+    constructor(dieName: string, die: number) 
+    {
         if(dieName.length === 0)
         {
             dieName = 'd' + die;
         }
 
-        super(dieName);
+        super(dieName, SimpleDie.simpleDieIdentifier);
 
         this.mDie = die;
     }

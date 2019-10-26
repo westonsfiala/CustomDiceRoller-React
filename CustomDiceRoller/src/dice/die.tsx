@@ -1,16 +1,20 @@
 
-class DieLoadError extends Error {
-
+export class DieLoadError extends Error {
+    constructor() {
+        super("");
+    }
 }
 
 export abstract class Die {
 
     public static readonly dieDisplayInHexID = '0x';
 
-    mDieName: string;
+    public readonly mDieName: string;
+    public readonly mDieType: string;
 
-    constructor(dieName: string) {
+    constructor(dieName: string, dieType: string) {
         this.mDieName = dieName;
+        this.mDieType = dieType;
     }
 
     abstract clone(newName : string) : Die;

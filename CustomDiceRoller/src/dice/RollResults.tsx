@@ -3,29 +3,29 @@
 // High dropped are values that were dropped because of dropping the highest/lowest values
 // The corresponding low groups are filled out when advantage or disadvantage are in play.
 export class RollResults {
-    public mRollResults : Map<String, Array<number>>;
-    public mDroppedRolls : Map<String, Array<number>>;
-    public mReRolledRolls : Map<String, Array<number>>;
+    public mRollResults : Map<string, Array<number>>;
+    public mDroppedRolls : Map<string, Array<number>>;
+    public mReRolledRolls : Map<string, Array<number>>;
 
-    public mStruckRollResults : Map<String, Array<number>>;
-    public mStruckDroppedRolls : Map<String, Array<number>>;
-    public mStruckReRolledRolls : Map<String, Array<number>>;
+    public mStruckRollResults : Map<string, Array<number>>;
+    public mStruckDroppedRolls : Map<string, Array<number>>;
+    public mStruckReRolledRolls : Map<string, Array<number>>;
 
-    public mRollModifiers : Map<String, number>;
+    public mRollModifiers : Map<string, number>;
 
     public mRollMaximumValue : boolean;
     public mRollMinimumValue : boolean;
 
     constructor() {
-        this.mRollResults = new Map<String, Array<number>>();
-        this.mDroppedRolls = new Map<String, Array<number>>();
-        this.mReRolledRolls = new Map<String, Array<number>>();
+        this.mRollResults = new Map<string, Array<number>>();
+        this.mDroppedRolls = new Map<string, Array<number>>();
+        this.mReRolledRolls = new Map<string, Array<number>>();
     
-        this.mStruckRollResults = new Map<String, Array<number>>();
-        this.mStruckDroppedRolls = new Map<String, Array<number>>();
-        this.mStruckReRolledRolls = new Map<String, Array<number>>();
+        this.mStruckRollResults = new Map<string, Array<number>>();
+        this.mStruckDroppedRolls = new Map<string, Array<number>>();
+        this.mStruckReRolledRolls = new Map<string, Array<number>>();
     
-        this.mRollModifiers = new Map<String, number>();
+        this.mRollModifiers = new Map<string, number>();
     
         this.mRollMaximumValue = false;
         this.mRollMinimumValue = false;
@@ -50,14 +50,14 @@ export class RollResults {
         this.sortMapList(this.mStruckDroppedRolls)
     }
 
-    private sortMapList(rollMap : Map<String, Array<Number>>) {
+    private sortMapList(rollMap : Map<string, Array<number>>) {
         for(let rollList of rollMap.values())
         {
             rollList.sort()
         }
     }
 
-    private reverseMapList(rollMap : Map<String, Array<Number>>) {
+    private reverseMapList(rollMap : Map<string, Array<number>>) {
         for(let rollList of rollMap.values())
         {
             rollList.reverse()

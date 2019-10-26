@@ -1,8 +1,10 @@
 
 import { Die } from './Die'
+import { SimpleDie } from './SimpleDie';
+import { createUnknownDie } from './DieFactory'
 import { RollProperties } from './RollProperties'
 import { RollResults } from './RollResults'
-import { SimpleDie } from './SimpleDie';
+
 import {
     getModifierString,
     getDropHighString,
@@ -41,7 +43,7 @@ export class Roll {
     {
         let newDieProperties = JSON.parse(JSON.stringify(properties)) as RollProperties;
 
-        this.mDieMap[JSON.stringify(die)] = newDieProperties;
+        this.mDieMap.set(JSON.stringify(die), newDieProperties);
     }
 
     removeDieFromRoll(die: Die) : boolean
@@ -72,7 +74,7 @@ export class Roll {
 
         for(let [dieJson, properties] of this.mDieMap.entries())
         {
-            outputMap[JSON.parse(dieJson)] = properties;
+            outputMap.set(createUnknownDie(dieJson), properties);
         }
 
         return outputMap;
@@ -87,7 +89,7 @@ export class Roll {
                 let newDieJson = JSON.stringify(die);
                 let props = this.mDieMap.get(dieJson);
                 this.mDieMap.delete(dieJson);
-                this.mDieMap[newDieJson] = props;
+                this.mDieMap.set(newDieJson, props);
                 return true;
             }
             curPos++
@@ -102,7 +104,7 @@ export class Roll {
         for(let dieJson of this.mDieMap.keys())
         {
             if(curPos === position) {
-                return JSON.parse(dieJson);
+                return createUnknownDie(dieJson);
             }
             curPos++;
         }
@@ -181,56 +183,59 @@ export class Roll {
 
         for(let [dieJson, properties] of this.mDieMap) {
 
-            let die = JSON.parse(dieJson) as Die;
+            let die = createUnknownDie(dieJson);
 
             let rollPair = this.produceRollLists(die, properties);
             let secondRollPair = this.produceRollLists(die, properties);
 
             const summer = (accumulator: number, current: number) => accumulator + current;
 
-            returnResults.mRollModifiers[dieJson] = properties.mModifier;
+            returnResults.mRollModifiers.set(dieJson, properties.mModifier);
 
             switch(properties.mAdvantageDisadvantage)
             {
                 case RollProperties.rollDisadvantageValue :
                     if(rollPair.keep.reduce(summer) < secondRollPair.keep.reduce(summer)) {
-                        returnResults.mRollResults[dieJson] = rollPair.keep
-                        returnResults.mDroppedRolls[dieJson] = rollPair.drop
-                        returnResults.mReRolledRolls[dieJson] = rollPair.reroll
-                        returnResults.mStruckRollResults[dieJson] = secondRollPair.keep
-                        returnResults.mStruckDroppedRolls[dieJson] = secondRollPair.drop
-                        returnResults.mStruckReRolledRolls[dieJson] = secondRollPair.reroll
+                        returnResults.mRollResults.set(dieJson, rollPair.keep);
+                        returnResults.mDroppedRolls.set(dieJson, rollPair.drop);
+                        returnResults.mReRolledRolls.set(dieJson, rollPair.reroll);
+                        returnResults.mStruckRollResults.set(dieJson, secondRollPair.keep);
+                        returnResults.mStruckDroppedRolls.set(dieJson, secondRollPair.drop);
+                        returnResults.mStruckReRolledRolls.set(dieJson, secondRollPair.reroll);
                     } else {
-                        returnResults.mRollResults[dieJson] = secondRollPair.keep
-                        returnResults.mDroppedRolls[dieJson] = secondRollPair.drop
-                        returnResults.mReRolledRolls[dieJson] = secondRollPair.reroll
-                        returnResults.mStruckRollResults[dieJson] = rollPair.keep
-                        returnResults.mStruckDroppedRolls[dieJson] = rollPair.drop
-                        returnResults.mStruckReRolledRolls[dieJson] = rollPair.reroll
+                        returnResults.mRollResults.set(dieJson, secondRollPair.keep);
+                        returnResults.mDroppedRolls.set(dieJson, secondRollPair.drop);
+                        returnResults.mReRolledRolls.set(dieJson, secondRollPair.reroll);
+                        returnResults.mStruckRollResults.set(dieJson, rollPair.keep);
+                        returnResults.mStruckDroppedRolls.set(dieJson, rollPair.drop);
+                        returnResults.mStruckReRolledRolls.set(dieJson, rollPair.reroll);
                     }
                     break;
 
                 case RollProperties.rollNaturalValue : 
-                    returnResults.mRollResults[dieJson] = rollPair.keep
-                    returnResults.mDroppedRolls[dieJson] = rollPair.drop
-                    returnResults.mReRolledRolls[dieJson] = rollPair.reroll
+                    returnResults.mRollResults.set(dieJson, rollPair.keep);
+                    returnResults.mDroppedRolls.set(dieJson, rollPair.drop);
+                    returnResults.mReRolledRolls.set(dieJson, rollPair.reroll);
+                    returnResults.mStruckRollResults.set(dieJson, []);
+                    returnResults.mStruckDroppedRolls.set(dieJson, []);
+                    returnResults.mStruckReRolledRolls.set(dieJson, []);
                     break;
 
                 case RollProperties.rollAdvantageValue : 
                     if(rollPair.keep.reduce(summer) > secondRollPair.keep.reduce(summer)) {
-                        returnResults.mRollResults[dieJson] = rollPair.keep
-                        returnResults.mDroppedRolls[dieJson] = rollPair.drop
-                        returnResults.mReRolledRolls[dieJson] = rollPair.reroll
-                        returnResults.mStruckRollResults[dieJson] = secondRollPair.keep
-                        returnResults.mStruckDroppedRolls[dieJson] = secondRollPair.drop
-                        returnResults.mStruckReRolledRolls[dieJson] = secondRollPair.reroll
+                        returnResults.mRollResults.set(dieJson, rollPair.keep);
+                        returnResults.mDroppedRolls.set(dieJson, rollPair.drop);
+                        returnResults.mReRolledRolls.set(dieJson, rollPair.reroll);
+                        returnResults.mStruckRollResults.set(dieJson, secondRollPair.keep);
+                        returnResults.mStruckDroppedRolls.set(dieJson, secondRollPair.drop);
+                        returnResults.mStruckReRolledRolls.set(dieJson, secondRollPair.reroll);
                     } else {
-                        returnResults.mRollResults[dieJson] = secondRollPair.keep
-                        returnResults.mDroppedRolls[dieJson] = secondRollPair.drop
-                        returnResults.mReRolledRolls[dieJson] = secondRollPair.reroll
-                        returnResults.mStruckRollResults[dieJson] = rollPair.keep
-                        returnResults.mStruckDroppedRolls[dieJson] = rollPair.drop
-                        returnResults.mStruckReRolledRolls[dieJson] = rollPair.reroll
+                        returnResults.mRollResults.set(dieJson, secondRollPair.keep);
+                        returnResults.mDroppedRolls.set(dieJson, secondRollPair.drop);
+                        returnResults.mReRolledRolls.set(dieJson, secondRollPair.reroll);
+                        returnResults.mStruckRollResults.set(dieJson, rollPair.keep);
+                        returnResults.mStruckDroppedRolls.set(dieJson, rollPair.drop);
+                        returnResults.mStruckReRolledRolls.set(dieJson, rollPair.reroll);
                     }
                     break
             }
@@ -256,7 +261,6 @@ export class Roll {
     // Produces an array of 3 lists, a list of taken letues, and a list of dropped letues, and a list of rerolled letues
     private produceRollLists(die: Die, properties: RollProperties) : {keep: number[], drop: number[], reroll: number[]} 
     {
-
         let keepList = new Array<number>();
         let dropList = new Array<number>();
         let rerollList = new Array<number>();
@@ -270,6 +274,9 @@ export class Roll {
         // Roll all of the dice and add them to the return list.
         let rollNum = 0;
         while (rollNum < Math.abs(properties.mDieCount)) {
+
+            let dieType = typeof die;
+
             let dieRoll = die.roll();
 
             // If we are set to explode, have the maximum letue, and actually have a range, roll an extra die
@@ -349,7 +356,7 @@ export class Roll {
         let dieAverage = 0
         for(let [dieJson, prop] of this.mDieMap)
         {
-            dieAverage += JSON.parse(dieJson).average() * prop.mDieCount + prop.mModifier
+            dieAverage += createUnknownDie(dieJson).average * prop.mDieCount + prop.mModifier
         }
         return dieAverage
     }
@@ -384,7 +391,7 @@ export class Roll {
 
         let firstDie = true
 
-        for(let [dieJson, props] of this.mDieMap)
+        for(let [dieJson, props] of this.mDieMap.entries())
         {
             // Don't add the "+" to the first item. Only add "+" to positive count items.
             if(firstDie) {
@@ -393,7 +400,7 @@ export class Roll {
                 returnString += "+"
             }
 
-            let die = JSON.parse(dieJson) as Die;
+            let die = createUnknownDie(dieJson);
             if(die.displayName.startsWith("d"))
             {
                 returnString += props.mDieCount + die.displayName
