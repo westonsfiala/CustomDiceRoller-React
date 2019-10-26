@@ -102,7 +102,17 @@ const App = () => {
         let rollProps = new RollProperties({dieCount:numDice, modifier:modifier});
 
         const summer = (accumulator: number, current: number) => accumulator + current;
-        const concatter = (accumulator: string, current: number) => current + ', ' + accumulator;
+        const concatter = (accumulator: string, current: number, index: number) : string => {
+
+            if(index === 0) 
+            {
+                return current.toString();
+            } 
+            else 
+            {
+                return accumulator + ', ' + current;
+            }
+        }
 
         tempRoll.addDieToRoll(clickedDie, rollProps);
 
@@ -127,9 +137,9 @@ const App = () => {
                 if(mainList && mainList.length !== 0 || strikeList && strikeList.length !== 0) {
 
 
-                    let subTotal = mainList.reduce(summer,0) + modifier
-                    let mainListString = mainList.toString()
-                    let strikeListString = strikeList.toString()
+                    let subTotal = mainList.reduce(summer,0) + modifier;
+                    let mainListString = mainList.reduce(concatter, '');
+                    let strikeListString = strikeList.reduce(concatter, '');
                     let detailString = '';
                     detailString += dieName + ' [' + subTotal + ']: '; 
                     detailString += mainListString;
@@ -144,7 +154,7 @@ const App = () => {
                     if(strikeListString.length !== 0) {
                         detailString += ' ';
                     }
-                    return {id:dieName, regularText: detailString, struckText: strikeListString}
+                    return {id:dieName, regularText: detailString, struckText: strikeListString};
                 }
 
                 return null
@@ -276,38 +286,40 @@ const App = () => {
                 onTouchOutside={() => {setModalShown(false);}} 
                 visible={modalShown}
                 modalAnimation={new ScaleAnimation()}
-                width={.6}
-                height={.5}
+                width={0.6}
+                height={0.45}
                 onDismiss={() => setClickedDie(null)}
             >
                 <ModalContent style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-                    <Text adjustsFontSizeToFit={true} style={{fontSize:21}}>
+                    <Text style={{fontSize:30}}>
                         {rollNameText}
                     </Text>
-                    <View style={{flexDirection:'row'}}>
-                        <Text adjustsFontSizeToFit={true} style={{fontSize:40, fontWeight:'bold', marginTop:4, marginBottom:4 }}>
+                    <View style={{alignContent:'center', alignItems:'center', justifyContent:'center'}}>
+                        <Text style={{fontSize:55, fontWeight:'bold', marginTop:4, marginBottom:4 }}>
                             {rollSumText.regularText}
-                        </Text>
-                        <Text adjustsFontSizeToFit={true} style={{fontSize:40, fontWeight:'bold', marginTop:4, marginBottom:4, textDecorationLine: 'line-through' }}>
-                            {rollSumText.struckText}
+                            <Text style={{fontSize:50, fontWeight:'bold', marginTop:4, marginBottom:4, textDecorationLine: 'line-through' }}>
+                                {rollSumText.struckText}
+                            </Text>
                         </Text>
                     </View>
                     <FlatList 
+                        style={{flex:1}}
+                        contentContainerStyle={{alignContent:'center', justifyContent:'center', alignItems:'center'}}
                         data={dieResultsText}
                         renderItem={({ item }) =>  (
-                            <View style={{flexDirection:'row'}}>
-                                <Text>
+                            <View style={{alignContent:'center', alignItems:'center', justifyContent:'center'}}>
+                                <Text style={{fontSize:16}}>
                                     {item.regularText}
-                                </Text>
-                                <Text style={{textDecorationLine: 'line-through'}}>
-                                    {item.struckText}
+                                    <Text style={{textDecorationLine: 'line-through'}}>
+                                        {item.struckText}
+                                    </Text>
                                 </Text>
                             </View>
                         )}
                     />
                 </ModalContent>
                 <ModalFooter>
-                    <ModalButton text="CANCEL" onPress={() => {setModalShown(false);}} />
+                    <ModalButton text="Roll Again" onPress={() => {setModalShown(true);}} />
                     <ModalButton text="OK" onPress={() => {setModalShown(false);}} />
                 </ModalFooter>
             </Modal>
