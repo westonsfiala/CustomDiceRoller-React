@@ -13,9 +13,9 @@
 
 import React, { useState, useEffect } from 'react'
 
-import {AppBar} from "./src/appBar";
+import {AppBar} from "./src/AppBar";
 import {styles} from "./styles/styles";
-import {SimpleDieView} from "./src/SimpleDieView";
+import {SimpleDieView} from "./src/dice/SimpleDieView";
 import {SimpleDie} from "./src/dice/SimpleDie";
 import Modal, { 
     ModalContent, 
@@ -29,15 +29,12 @@ import {
     Text,
     FlatList,
     Dimensions,
-    ScrollView,
 } from 'react-native';
-import { NumDiceUpDownButtons, ModifierUpDownButtons } from './src/upDownButtons';
-import { getModifierString } from './src/stringHelper';
+import { NumDiceUpDownButtons, ModifierUpDownButtons } from './src/UpDownButtons';
+import { getModifierString } from './src/StringHelper';
 import { Roll } from './src/dice/Roll';
 import { RollProperties } from './src/dice/RollProperties';
-import { Die } from './src/dice/Die';
 import { createUnknownDie } from './src/dice/DieFactory'
-import { string } from 'prop-types';
 
 const standardDice = [
     {
@@ -270,7 +267,7 @@ const App = () => {
                 data={standardDice}
                 numColumns={4}
                 renderItem={({ item }) =>  (
-                    <SimpleDieView imageName='cursor-default-click-outline' name={item.die.displayName} size={width/4} pressCallback={() => {
+                    <SimpleDieView imageID={item.die.imageID} name={item.die.displayName} size={width/4} pressCallback={() => {
                         setModalShown(true);
                         setClickedDie(item.die);
                     }} />

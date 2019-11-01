@@ -10,7 +10,7 @@ import {
     } from 'react-native';
 
   import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { getModifierString } from './stringHelper';
+import { getModifierString } from './StringHelper';
 
   export function NumDiceUpDownButtons({setExternalCount}) {
         return UpDownButtons({postFix:'d', forcePlusMinus:false, disallowZero:true, setExternalCount})

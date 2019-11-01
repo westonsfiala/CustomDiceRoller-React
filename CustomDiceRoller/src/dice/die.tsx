@@ -35,7 +35,7 @@ export abstract class Die {
 
     get displayName() : string { return this.mDieName; }
 
-    abstract get getInfo() : string;
+    abstract get info() : string;
 
-    abstract get getImageID() : string;
+    abstract get imageID() : number;
 }

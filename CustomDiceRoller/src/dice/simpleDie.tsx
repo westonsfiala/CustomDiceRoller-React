@@ -1,5 +1,19 @@
-import { randomIntFromInterval } from "../rollHelper";
+import { randomIntFromInterval } from "./RollHelper";
 import { Die } from "./Die"
+import { 
+    DIE_UNKNOWN,
+    DIE_FATE,
+    DIE_2,
+    DIE_3,
+    DIE_4,
+    DIE_6,
+    DIE_8,
+    DIE_10,
+    DIE_12,
+    DIE_20,
+    DIE_100
+
+} from "./DieImageGetter"
 
 export class SimpleDie extends Die
 {
@@ -45,25 +59,25 @@ export class SimpleDie extends Die
         return (this.mDie + 1) / 2;
     }
 
-    get getInfo() : string
+    get info() : string
     {
         return 'Rolls a number between 1 and ' + this.mDie + '\nAverage of ' + this.average;
     }
-
-    get getImageID() : string
+ 
+    get imageID() : number
     {
         switch(this.mDie)
         {
-            case 2: return 'd2';
-            case 3: return 'd6-up-3';
-            case 4: return 'd4';
-            case 6: return 'd6-up-6';
-            case 8: return 'd8';
-            case 10: return 'd10';
-            case 12: return 'd12';
-            case 20: return 'd20';
-            case 100: return 'd100';
-            default : return 'unknown-die'
+            case 2: return DIE_2;
+            case 3: return DIE_3;
+            case 4: return DIE_4;
+            case 6: return DIE_6;
+            case 8: return DIE_8;
+            case 10: return DIE_10;
+            case 12: return DIE_12;
+            case 20: return DIE_20;
+            case 100: return DIE_100;
+            default : return DIE_UNKNOWN;
         }
     }
 }
