@@ -16,6 +16,7 @@ import React, { useState, useEffect } from 'react'
 import {AppBar} from "./src/AppBar";
 import {styles} from "./styles/styles";
 import {SimpleDieView} from "./src/dice/SimpleDieView";
+import {Die} from "./src/dice/Die";
 import {SimpleDie} from "./src/dice/SimpleDie";
 import Modal, { 
     ModalContent, 
@@ -31,12 +32,15 @@ import {
     Dimensions,
 } from 'react-native';
 import { NumDiceUpDownButtons, ModifierUpDownButtons } from './src/UpDownButtons';
-import { getModifierString } from './src/StringHelper';
 import { Roll } from './src/dice/Roll';
 import { RollProperties } from './src/dice/RollProperties';
-import { createUnknownDie } from './src/dice/DieFactory'
+import { RollDisplayHelper } from './src/dice/RollHelper';
 
 const standardDice = [
+    {
+        id:'d2',
+        die: new SimpleDie('d2', 2)
+    },
     {
         id:'d4',
         die: new SimpleDie('d4', 4)
@@ -71,14 +75,22 @@ const App = () => {
 
     const [width, setWidth] = useState(Dimensions.get("window").width);
     const [height, setHeight] = useState(Dimensions.get("window").height);
-    const [modalShown, setModalShown] = useState(false);
     const [numDice, setNumDice] = useState(1);
     const [modifier, setModifier] = useState(0);
-    const [clickedDie, setClickedDie] = useState(new SimpleDie('temp', 0))
+    const [rollHelper, setRollHelper] = useState(null as RollDisplayHelper)
 
     function handleScreenChange({window}) {
         setWidth(window.width);
         setHeight(window.height);
+    }
+
+    function createNewRollHelper(clickedDie: Die) {
+        let tempRoll = new Roll("","");
+        let rollProps = new RollProperties({dieCount:numDice, modifier:modifier});
+
+        tempRoll.addDieToRoll(clickedDie, rollProps);
+
+        setRollHelper(new RollDisplayHelper(tempRoll));
     }
 
     useEffect(() => {
@@ -89,152 +101,9 @@ const App = () => {
         }
     });
 
-    let rollNameText = '';
-    let rollSumText = {regularText:'', struckText:''};
-    let dieResultsText = [];
+    let modalShown = rollHelper !== null;
 
-    if(modalShown && clickedDie !== null) {
-
-        let tempRoll = new Roll("","");
-        let rollProps = new RollProperties({dieCount:numDice, modifier:modifier});
-
-        const summer = (accumulator: number, current: number) => accumulator + current;
-        const concatter = (accumulator: string, current: number, index: number) : string => {
-
-            if(index === 0) 
-            {
-                return current.toString();
-            } 
-            else 
-            {
-                return accumulator + ', ' + current;
-            }
-        }
-
-        tempRoll.addDieToRoll(clickedDie, rollProps);
-
-        let rollValues = tempRoll.roll();
-
-        rollNameText = tempRoll.getDetailedRollName();
-
-        for(let dieJson of rollValues.mRollResults.keys()) {
-
-            let die = createUnknownDie(dieJson);
-
-            let rollResults = rollValues.mRollResults.get(dieJson);
-            let rollResultsDropped = rollValues.mDroppedRolls.get(dieJson);
-            let rollResultsReRolled = rollValues.mReRolledRolls.get(dieJson);
-            let rollResultsStruck = rollValues.mStruckRollResults.get(dieJson);
-            let rollResultsStruckDropped = rollValues.mStruckDroppedRolls.get(dieJson);
-            let rollResultsStruckReRolled = rollValues.mStruckReRolledRolls.get(dieJson);
-            let rollModifier = rollValues.mRollModifiers.get(dieJson);
-
-            const processRollPair = (dieName: string, mainList: Array<number>, strikeList: Array<number>, modifier?: number | 0) : {id: string, regularText: string, struckText: string} =>
-            {
-                if(mainList && mainList.length !== 0 || strikeList && strikeList.length !== 0) {
-
-
-                    let subTotal = mainList.reduce(summer,0) + modifier;
-                    let mainListString = mainList.reduce(concatter, '');
-                    let strikeListString = strikeList.reduce(concatter, '');
-                    let detailString = '';
-                    detailString += dieName + ' [' + subTotal + ']: '; 
-                    detailString += mainListString;
-                    if(rollModifier !== 0)
-                    {
-                        if(mainListString.length !== 0)
-                        {
-                            detailString += ',';
-                        }
-                        detailString += '(' + getModifierString(rollModifier,true) + ')';
-                    }
-                    if(strikeListString.length !== 0) {
-                        detailString += ' ';
-                    }
-                    return {id:dieName, regularText: detailString, struckText: strikeListString};
-                }
-
-                return null
-            }
-
-            let mainResults = processRollPair(die.displayName, rollResults, rollResultsStruck, rollModifier);
-            if(mainResults !== null)
-            {
-                dieResultsText.push(mainResults)
-            }
-
-            let droppedResults = processRollPair(die.displayName, rollResultsDropped, rollResultsStruckDropped, 0);
-            if(droppedResults !== null)
-            {
-                dieResultsText.push(droppedResults)
-            }
-
-            let rerolledResults = processRollPair(die.displayName, rollResultsReRolled, rollResultsStruckReRolled, 0);
-            if(rerolledResults !== null)
-            {
-                dieResultsText.push(rerolledResults)
-            }
-        }
-
-        // TODO: When settings are made, SHOW AVERAGE
-        if(true) {
-            let averageText = 'Expected Result - [' + tempRoll.average() + ']';
-
-            dieResultsText.push({id:'expected', regularText: averageText, struckText:''})
-        }
-
-        let sumResult = 0;
-        let sumStruck = 0;
-        let displayStruck = false;
-        let displayDropped = false;
-
-        for(let dieRolls of rollValues.mRollResults.values())
-        {
-            sumResult += dieRolls.reduce(summer);
-        }
-
-        for(let dieMod of rollValues.mRollModifiers.values()) {
-            sumResult += dieMod;
-            sumStruck += dieMod;
-        }
-
-        // Only show the struck through text
-        if(rollValues.mStruckRollResults.size !== 0) {
-            for (let struckValues of rollValues.mStruckRollResults.values()) {
-                if(struckValues.length !== 0) {
-                    sumStruck += struckValues.reduce(summer);
-                    displayStruck = true;
-                }
-            }
-        }
-
-        let sumDropped = sumResult
-        if(rollValues.mDroppedRolls.size !== 0) {
-            for (let droppedValues of rollValues.mDroppedRolls.values()) {
-                if(droppedValues.length !== 0) {
-                    sumDropped += droppedValues.reduce(summer);
-                    displayDropped = true;
-                }
-            }
-        }
-
-        let highText = sumResult.toString();
-        let lowText = sumStruck.toString();
-        let droppedText = sumDropped.toString();
-        let struckText = '';
-
-        if(displayStruck) 
-        {
-            struckText = lowText;
-        }
-        else if(displayDropped)
-        {
-            struckText = droppedText;
-        }
-
-        rollSumText.regularText = highText;
-        rollSumText.struckText = struckText;
-
+    if(modalShown) {
         // TODO: Add history fuction with date
         //val time = Calendar.getInstance().time
         //val formatter = SimpleDateFormat("yyyy/MM/dd\nHH:mm:ss", Locale.getDefault())
@@ -268,8 +137,7 @@ const App = () => {
                 numColumns={4}
                 renderItem={({ item }) =>  (
                     <SimpleDieView imageID={item.die.imageID} name={item.die.displayName} size={width/4} pressCallback={() => {
-                        setModalShown(true);
-                        setClickedDie(item.die);
+                        createNewRollHelper(item.die);
                     }} />
                 )}
                 extraData={width}
@@ -280,29 +148,29 @@ const App = () => {
             </View>
             
             <Modal 
-                onTouchOutside={() => {setModalShown(false);}} 
+                onTouchOutside={() => setRollHelper(null)} 
                 visible={modalShown}
                 modalAnimation={new ScaleAnimation()}
                 width={0.6}
                 height={0.45}
-                onDismiss={() => setClickedDie(null)}
+                onDismiss={() => setRollHelper(null)}
             >
                 <ModalContent style={{flex:1, alignItems:'center', justifyContent:'center'}}>
                     <Text style={{fontSize:30}}>
-                        {rollNameText}
+                        {rollHelper && rollHelper.rollNameText || ''}
                     </Text>
                     <View style={{alignContent:'center', alignItems:'center', justifyContent:'center'}}>
                         <Text style={{fontSize:55, fontWeight:'bold', marginTop:4, marginBottom:4 }}>
-                            {rollSumText.regularText}
+                            {rollHelper && rollHelper.rollSumText.regularText || ''}
                             <Text style={{fontSize:50, fontWeight:'bold', marginTop:4, marginBottom:4, textDecorationLine: 'line-through' }}>
-                                {rollSumText.struckText}
+                                {rollHelper && rollHelper.rollSumText.struckText || ''}
                             </Text>
                         </Text>
                     </View>
                     <FlatList 
                         style={{flex:1}}
                         contentContainerStyle={{alignContent:'center', justifyContent:'center', alignItems:'center'}}
-                        data={dieResultsText}
+                        data={rollHelper && rollHelper.rollResultsText || []}
                         renderItem={({ item }) =>  (
                             <View style={{alignContent:'center', alignItems:'center', justifyContent:'center'}}>
                                 <Text style={{fontSize:16}}>
@@ -316,8 +184,8 @@ const App = () => {
                     />
                 </ModalContent>
                 <ModalFooter>
-                    <ModalButton text="Roll Again" onPress={() => {setModalShown(true);}} />
-                    <ModalButton text="OK" onPress={() => {setModalShown(false);}} />
+                    <ModalButton text="Roll Again" onPress={() => setRollHelper(new RollDisplayHelper(rollHelper.storedRoll))} />
+                    <ModalButton text="OK" onPress={() => setRollHelper(null)} />
                 </ModalFooter>
             </Modal>
         </View> 
