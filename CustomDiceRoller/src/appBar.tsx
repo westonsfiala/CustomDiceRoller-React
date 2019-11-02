@@ -12,7 +12,7 @@ import {
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export function AppBar({title, subtitle}) {
+export function AppBar({title, subtitle, clearHistoryHandler}) {
     return (
         <View style={styles.AppBarBackground}>
             <View style={{padding:4}}>
@@ -21,7 +21,7 @@ export function AppBar({title, subtitle}) {
             </View>
             <View style={{flexDirection:'row', justifyContent:'center', alignContent:'center'}}>
                 <View style={{}}>
-                    <Button title='clear history' onPress={() => null}/>
+                    <Button title='clear history' onPress={() => clearHistoryHandler()}/>
                 </View>
                 <View style={{marginStart:10}}>
                     <Icon.Button 

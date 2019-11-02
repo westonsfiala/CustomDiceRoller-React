@@ -1,8 +1,8 @@
-import { randomIntFromInterval } from "./RollHelper";
+
 import { Die } from "./Die"
+import {randomIntFromInterval} from "./RandomNumberRoller"
 import { 
     DIE_UNKNOWN,
-    DIE_FATE,
     DIE_2,
     DIE_3,
     DIE_4,

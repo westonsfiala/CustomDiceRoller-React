@@ -14,7 +14,7 @@ export function createUnknownDie(dieString: string) : Die {
     throw new DieLoadError();
 }
 
-function createSimpleDie(dieJson: Die) : SimpleDie 
+function createSimpleDie(dieJson: SimpleDie) : SimpleDie 
 {
     let dieName = dieJson.mDieName;
     let dieNumber = dieJson.mDie;

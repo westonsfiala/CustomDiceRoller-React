@@ -4,12 +4,7 @@ import {Roll} from "./Roll"
 import {createUnknownDie} from "./DieFactory"
 import {getModifierString} from "../StringHelper"
 
-// Generates a random number between [min,max]
-export function randomIntFromInterval(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-export class StruckStringPair {
+class StruckStringPair {
 
     public id : string;
     public regularText : string;
@@ -24,6 +19,7 @@ export class StruckStringPair {
 
 export class RollDisplayHelper {
 
+    public readonly timeStamp : Date;
     public readonly storedRoll : Roll;
     public readonly rollNameText : string;
     public readonly rollSumText : StruckStringPair;
@@ -31,6 +27,7 @@ export class RollDisplayHelper {
 
     constructor(roll: Roll) {
 
+        this.timeStamp = new Date();
         this.storedRoll = roll;
         this.rollNameText = '';
         this.rollSumText = new StruckStringPair('','');
