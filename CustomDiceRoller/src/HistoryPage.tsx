@@ -14,7 +14,7 @@ function HistoryItemView(rollHelper : RollDisplayHelper) {
         <View style={{}}>
             <View style={{flex:1, flexDirection:'row', padding: 4}}>
                 <View style={{}}>
-                    <Text style={{fontSize:30, fontWeight:'bold', paddingStart:6, paddingEnd:6, textAlign:'center', color:'white', backgroundColor:'black'}}>
+                    <Text style={{fontSize:30, fontWeight:'bold', paddingStart:8, paddingEnd:8, paddingTop:4, paddingBottom:4, textAlign:'center', color:'white', backgroundColor:'black'}}>
                         {rollHelper.rollSumText.regularText}
                         <Text style={{textDecorationLine: 'line-through' }}>
                             {rollHelper.rollSumText.struckText}
@@ -62,6 +62,21 @@ function HistoryItemView(rollHelper : RollDisplayHelper) {
 }
 
 export function HistoryPage({historyItems = [] as Array<RollDisplayHelper>}) {
+
+    if(historyItems.length === 0)
+    {
+        return(
+            <View style={{flex:1, alignItems:'center', justifyContent:'center', alignContent:'center'}}>
+                <Text style={{color:'white', fontSize:20}}>
+                    No history yet.
+                </Text>
+                <Text style={{color:'white', fontSize:20}}>
+                    Roll some dice to fill this tab out.
+                </Text>
+            </View>
+        );
+    }
+
     return (
         <View style={{}}>
             <FlatList 

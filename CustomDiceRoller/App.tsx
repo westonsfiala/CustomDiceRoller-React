@@ -17,6 +17,7 @@ import { View, Text } from 'react-native';
 import { AppBar } from "./src/AppBar";
 import { styles } from "./styles/styles";
 import ViewPager from '@react-native-community/viewpager';
+import { MenuProvider } from 'react-native-popup-menu';
 
 import { SimpleDicePage } from './src/SimpleDicePage';
 import { RollDisplayHelper } from './src/dice/RollDisplayHelper'
@@ -27,10 +28,16 @@ const App = () => {
     const [rollHelper, setRollHelper] = useState(null as RollDisplayHelper)
     const [rollHistory, setRollHistory] = useState(Array<RollDisplayHelper>())
     const previousRollHistory = useRef(null as Array<RollDisplayHelper>)
+    const viewPager = useRef(null as ViewPager);
+    const [currentPage, setCurrentPage] = useState(1);
 
     function clearHistoryHandler() {
         previousRollHistory.current = rollHistory;
         setRollHistory(Array<RollDisplayHelper>())
+    }
+
+    function tabPressHandler(index: number) {
+        viewPager.current.setPage(index);
     }
 
     if(rollHelper !== null) {
@@ -44,18 +51,26 @@ const App = () => {
     }
 
     return (
-        <View style={styles.AppBackground}>
-            <AppBar title='RPG Dice Roller' subtitle='Tap die icons to roll!' clearHistoryHandler={clearHistoryHandler}/>
-            <ViewPager style={{flex:1}} initialPage = {1}>
-                <View key="1" >
-                    <HistoryPage historyItems={rollHistory}/>
-                </View>
-                <View key="2" >
-                    <SimpleDicePage displayRoll={setRollHelper}/>
-                </View>
-            </ViewPager>
-            <RollResultsDialog rollHelper={rollHelper} setRollHelper={setRollHelper}/>
-        </View> 
+        <MenuProvider>
+            <View style={styles.AppBackground}>
+                <AppBar 
+                title='RPG Dice Roller' 
+                subtitle='Tap die icons to roll!' 
+                clearHistoryHandler={clearHistoryHandler} 
+                tabIndex={currentPage} 
+                tabPressHandler={tabPressHandler}
+                />
+                <ViewPager style={{flex:1}} ref={viewPager}  initialPage = {currentPage} onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}>
+                    <View key="1" >
+                        <HistoryPage historyItems={rollHistory}/>
+                    </View>
+                    <View key="2" >
+                        <SimpleDicePage displayRoll={setRollHelper}/>
+                    </View>
+                </ViewPager>
+                <RollResultsDialog rollHelper={rollHelper} setRollHelper={setRollHelper}/>
+            </View> 
+        </MenuProvider>
     );
 };
 
