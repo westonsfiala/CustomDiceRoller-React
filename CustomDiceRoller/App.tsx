@@ -12,7 +12,7 @@
 // For description of how to use icons go to https://github.com/oblador/react-native-vector-icons 
 
 import React, { useState, useRef } from 'react'
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 import { AppBar } from "./src/AppBar";
 import { styles } from "./styles/styles";
