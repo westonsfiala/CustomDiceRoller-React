@@ -1,25 +1,44 @@
 
 
-import React from 'react'
+import React, {
+    useState, useEffect,
+} from 'react'
 
 import Modal, { 
     ModalContent, 
     ScaleAnimation,
-    ModalFooter,
-    ModalButton
 } from 'react-native-modals';
 
 import {
     View, 
     Text,
     TouchableOpacity,
-    FlatList,
+    ScrollView,
+    Dimensions,
 } from 'react-native';
 
 import { RollDisplayHelper } from '../dice/RollDisplayHelper';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import { StruckStringPairView, StruckStringPair } from '../dice/StruckStringPair';
 
 export function RollResultsDialog({rollHelper = null as RollDisplayHelper, setRollHelper}) {
 
+    const [modalHeight, setModalHeight] = useState(.5)
+
+    // This is the only way that I can tell of so far to get the size of the 
+    function handleSizeChange(possibleHeight: number) {
+        let {width, height} = Dimensions.get('window');
+
+        // Arbitrary value that seems to make the contents fit.
+        let newHeight = possibleHeight + 50;
+
+        if(possibleHeight > height * 0.9) {
+            newHeight = height * 0.9;
+        }
+
+        setModalHeight(newHeight);
+    }
+    
     let modalShown = rollHelper !== null;
 
     // TODO: Add history fuction with date
@@ -51,46 +70,61 @@ export function RollResultsDialog({rollHelper = null as RollDisplayHelper, setRo
                 onTouchOutside={() => setRollHelper(null)} 
                 visible={modalShown}
                 modalAnimation={new ScaleAnimation()}
-                width={0.6}
-                height={0.45}
                 onDismiss={() => setRollHelper(null)}
+                height={modalHeight}
             >
-                <ModalContent style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-                    <Text style={{fontSize:30}}>
-                        {rollHelper && rollHelper.rollNameText || ''}
-                    </Text>
-                    <View style={{alignContent:'center', alignItems:'center', justifyContent:'center'}}>
-                        <Text style={{fontSize:55, fontWeight:'bold', marginTop:4, marginBottom:4 }}>
-                            {rollHelper && rollHelper.rollSumText.regularText || ''}
-                            <Text style={{fontSize:50, fontWeight:'bold', marginTop:4, marginBottom:4, textDecorationLine: 'line-through' }}>
-                                {rollHelper && rollHelper.rollSumText.struckText || ''}
-                            </Text>
+                <ModalContent style={styles.Container}>
+                    <ScrollView onContentSizeChange={(width, height) => handleSizeChange(height)}>
+                        <Text style={styles.TitleText}>
+                            {rollHelper && rollHelper.rollNameText || ''}
                         </Text>
-                    </View>
-                    <FlatList 
-                        style={{flex:1}}
-                        contentContainerStyle={{alignContent:'center', justifyContent:'center', alignItems:'center'}}
-                        data={rollHelper && rollHelper.rollResultsText || []}
-                        renderItem={({ item }) =>  (
-                            <View style={{alignContent:'center', alignItems:'center', justifyContent:'center'}}>
-                                <Text style={{fontSize:16}}>
-                                    {item.regularText}
-                                    <Text style={{textDecorationLine: 'line-through'}}>
-                                        {item.struckText}
-                                    </Text>
-                                </Text>
-                            </View>
-                        )}
-                    />
-                    <View style={{flexDirection:'row', alignSelf:'flex-end', marginTop:8}}>
-                        <TouchableOpacity style={{flex:1}} onPress={() => setRollHelper(new RollDisplayHelper(rollHelper.storedRoll))}>
-                            <Text style={{fontSize:20, textAlign:'center'}}>Roll Again</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{flex:1}} onPress={() => setRollHelper(null)}>
-                            <Text style={{fontSize:20, textAlign:'center'}}>Exit</Text>
-                        </TouchableOpacity>
-                    </View>
+                        <StruckStringPairView pair={rollHelper && rollHelper.rollSumText || new StruckStringPair("","")} style={styles.SumText}/>
+                        {(rollHelper && rollHelper.rollResultsText || []).map((item, index) => 
+                            <StruckStringPairView key={index} pair={item} style={styles.DetailText}/>)
+                        }
+                        <View style={styles.ButtonContainer}>
+                            <TouchableOpacity onPress={() => setRollHelper(new RollDisplayHelper(rollHelper.storedRoll))}>
+                                <Text style={styles.ButtonText}>Roll Again</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setRollHelper(null)}>
+                                <Text style={styles.ButtonText}>Exit</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </ScrollView>
                 </ModalContent>
             </Modal>
     );
 }
+
+const styles = EStyleSheet.create({
+    Container:{
+        flex:1, 
+        alignItems:'center', 
+        backgroundColor:'$primaryColor',
+    },
+    TitleText: {
+        fontSize:'30rem',
+        color:'$textColor',
+        textAlign:'center',
+    },
+    SumText: {
+        fontSize:'50rem',
+        color:'$textColor',
+        textAlign:'center',
+    },
+    DetailText: {
+        fontSize:'16rem',
+        color:'$textColor',
+        textAlign:'center',
+    },
+    ButtonContainer: {
+        flexDirection:'row', 
+        justifyContent:'space-around',
+        marginTop:'8rem'
+    },
+    ButtonText: {
+        fontSize:'20rem',
+        color:'$textColor',
+        textAlign:'center',
+    }
+})

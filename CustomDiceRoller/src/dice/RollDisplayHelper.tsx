@@ -3,19 +3,7 @@
 import {Roll} from "./Roll"
 import {createUnknownDie} from "./DieFactory"
 import {getModifierString} from "../StringHelper"
-
-class StruckStringPair {
-
-    public id : string;
-    public regularText : string;
-    public struckText : string;
-
-    constructor(regularText, struckText, id = '') {
-        this.id = id;
-        this.regularText = regularText;
-        this.struckText = struckText;
-    }
-}
+import {StruckStringPair} from "./StruckStringPair"
 
 export class RollDisplayHelper {
 

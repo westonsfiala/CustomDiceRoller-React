@@ -7,7 +7,6 @@ import {
     Dimensions,
 } from 'react-native';
 
-import {styles} from "../styles/styles";
 import {SimpleDieView} from "./dice/SimpleDieView";
 import {Die} from "./dice/Die";
 import { NumDiceUpDownButtons, ModifierUpDownButtons } from './UpDownButtons';
@@ -15,6 +14,7 @@ import { Roll } from './dice/Roll';
 import { RollProperties } from './dice/RollProperties';
 import { RollDisplayHelper } from './dice/RollDisplayHelper';
 import {standardDice} from './dice/DefaultDice'
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 export function SimpleDicePage({displayRoll}) {
     const [width, setWidth] = useState(Dimensions.get("window").width);
@@ -43,9 +43,8 @@ export function SimpleDicePage({displayRoll}) {
     });
 
     return (
-        <View style={styles.AppBackground}>
+        <View style={styles.SimpleDiePageBackground}>
             <FlatList 
-                style={{}}
                 data={standardDice}
                 numColumns={4}
                 renderItem={({ item }) =>  (
@@ -55,10 +54,19 @@ export function SimpleDicePage({displayRoll}) {
                 )}
                 extraData={width}
             />
-            <View style={{flexDirection:'row'}}>
+            <View style={styles.UpDownButtons}>
                 <NumDiceUpDownButtons setExternalCount={setNumDice} />
                 <ModifierUpDownButtons setExternalCount={setModifier} />
             </View>
         </View> 
     );
 }
+
+const styles = EStyleSheet.create({
+    SimpleDiePageBackground:{
+        flex:1,
+    },
+    UpDownButtons:{
+        flexDirection:'row',
+    },
+})

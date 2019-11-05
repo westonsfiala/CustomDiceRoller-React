@@ -12,12 +12,22 @@
 // For description of how to use icons go to https://github.com/oblador/react-native-vector-icons 
 
 import React, { useState, useRef } from 'react'
-import { View } from 'react-native';
+import { View, Dimensions } from 'react-native';
 
 import { AppBar } from "./src/AppBar";
-import { styles } from "./styles/styles";
 import ViewPager from '@react-native-community/viewpager';
 import { MenuProvider } from 'react-native-popup-menu';
+import EStyleSheet from 'react-native-extended-stylesheet'; 
+import Color from 'color';
+
+let {height, width} = Dimensions.get('window');
+EStyleSheet.build({
+    $rem: Math.min(height,width) / 380, // This is an arbitrary value that allows for better scaling.
+    $textColor: Color.rgb(255,255,255).hex(),
+    $primaryColor: Color.rgb(63,63,63).hex(),
+    $primaryColorLightened: Color.rgb(63,63,63).lighten(.5).hex(),
+    $primaryColorDarkened: Color.rgb(63,63,63).darken(.5).hex(),
+});
 
 import { SimpleDicePage } from './src/SimpleDicePage';
 import { RollDisplayHelper } from './src/dice/RollDisplayHelper'
@@ -25,7 +35,7 @@ import { RollResultsDialog } from './src/dialogs/RollResultsDialog';
 import { HistoryPage } from './src/HistoryPage';
 
 const App = () => {
-    const [rollHelper, setRollHelper] = useState(null as RollDisplayHelper)
+    const [rollHelper, setRollHelper] = useState(null as RollDisplayHelper) 
     const [rollHistory, setRollHistory] = useState(Array<RollDisplayHelper>())
     const previousRollHistory = useRef(null as Array<RollDisplayHelper>)
     const viewPager = useRef(null as ViewPager);
@@ -60,7 +70,7 @@ const App = () => {
                 tabIndex={currentPage} 
                 tabPressHandler={tabPressHandler}
                 />
-                <ViewPager style={{flex:1}} ref={viewPager}  initialPage = {currentPage} onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}>
+                <ViewPager style={styles.Pager} ref={viewPager}  initialPage = {currentPage} onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}>
                     <View key="1" >
                         <HistoryPage historyItems={rollHistory}/>
                     </View>
@@ -69,9 +79,19 @@ const App = () => {
                     </View>
                 </ViewPager>
                 <RollResultsDialog rollHelper={rollHelper} setRollHelper={setRollHelper}/>
-            </View> 
+            </View>
         </MenuProvider>
     );
 };
+
+const styles = EStyleSheet.create({
+    AppBackground: {
+        flex:1,
+        backgroundColor:Color.rgb(63,63,63).hex(),
+    },
+    Pager: {
+        flex:1,
+    }
+})
 
 export default App;

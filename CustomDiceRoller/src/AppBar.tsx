@@ -5,35 +5,37 @@ import {
     View,
     Text,
     Image,
-    StyleSheet,
     TouchableOpacity,
-  } from 'react-native';
+} from 'react-native';
 
-  import Menu, {
+import Menu, {
     MenuTrigger,
     MenuOptions,
     MenuOption,
-  } from 'react-native-popup-menu';
+} from 'react-native-popup-menu';
+
+import EStyleSheet from 'react-native-extended-stylesheet';
+import Color from 'color'
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, tabIndex}) {
 
     return (
-        <View>
-            <View style={styles.AppBarBackground}>
-                <View style={{padding:4}}>
-                    <Text style={[styles.TextWhite, styles.LargeText]}>{title}</Text>
-                    <Text style={styles.TextWhite}>{subtitle}</Text>
+        <View style={styles.AppBarBackground}>
+            <View style={styles.ActionBarBackground}>
+                <View>
+                    <Text style={styles.AppTitleText}>{title}</Text>
+                    <Text style={styles.AppSubTitleText}>{subtitle}</Text>
                 </View>
-                <View style={styles.ButtonLayout}>
-                    <Menu name='clearMenu'>
+                <View style={styles.RowLayout}>
+                    <Menu name='clearHistoryMenu'>
                         <MenuTrigger>
-                            <Image source={require('./BurningBook.png')} style={{width:32, height:32}}/>
+                            <Image source={require('./BurningBook.png')} style={styles.ClearHistory}/>
                         </MenuTrigger>
                         <MenuOptions>
-                            <MenuOption onSelect={() => clearHistoryHandler()}>
-                                <Text style={{fontSize:20, padding:4}}>
+                            <MenuOption style={styles.Menu} onSelect={() => clearHistoryHandler()}>
+                                <Text style={styles.MenuText}>
                                     Clear History
                                 </Text>
                             </MenuOption>
@@ -42,22 +44,22 @@ export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, t
                     <TouchableOpacity onPress={() => null} style={{marginStart:10}}>
                         <Icon 
                         name='dots-vertical'
-                        size={32}
+                        size={styles.IconConstants.width}
                         iconStyle={{marginRight:0}}
-                        color='white'
-                        backgroundColor='transparent'
+                        color={styles.IconConstants.color}
+                        backgroundColor={styles.IconConstants.backgroundColor}
                         />
                     </TouchableOpacity>
                 </View>
             </View>
-            <View style={{flexDirection:'row', backgroundColor:'#1f1f1f'}}>
-                <TouchableOpacity style={[styles.TabItem, tabIndex === 0 ? styles.ActiveTabItem : []]} onPress={() => tabPressHandler(0)}>
-                    <Text style={{color:'white', fontSize:18}}>
+            <View style={styles.RowLayout}>
+                <TouchableOpacity style={[styles.TabItem, tabIndex === 0 ? styles.ActiveTabItem : styles.InactiveTabItem]} onPress={() => tabPressHandler(0)}>
+                    <Text style={styles.TabText}>
                         History
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.TabItem, tabIndex === 1 ? styles.ActiveTabItem : []]} onPress={() => tabPressHandler(1)}>
-                    <Text style={{color:'white', fontSize:18}}>
+                <TouchableOpacity style={[styles.TabItem, tabIndex === 1 ? styles.ActiveTabItem : styles.InactiveTabItem]} onPress={() => tabPressHandler(1)}>
+                    <Text style={styles.TabText}>
                         Simple Roll
                     </Text>
                 </TouchableOpacity>
@@ -66,34 +68,60 @@ export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, t
     );
 };
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
     AppBarBackground: {
+        backgroundColor: '$primaryColorDarkened'
+    },
+    ActionBarBackground: {
         flexDirection:'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor:'#1f1f1f', // Black
-        padding:4,
+        padding:'4rem',
     },
-    ButtonLayout: {
-        flexDirection:'row', 
+    AppTitleText:{
+        color:'$textColor',
+        fontSize:'20rem',
+        fontWeight: 'bold',
+    },
+    AppSubTitleText:{
+        color:'$textColor',
+        fontSize:'14rem',
+    },
+    RowLayout: {
+        flexDirection:'row',
         alignItems:'center',
-        justifyContent:'center', 
-        alignContent:'center'
+    },
+    ClearHistory:{
+        width:'32rem',
+        height:'32rem'
+    },
+    IconConstants:{
+        width:'24rem',
+        color:'$textColor',
+        backgroundColor:'transparent'
+    },
+    Menu:{
+        backgroundColor:'$primaryColor',
+    },
+    MenuText:{
+        fontSize:'18rem', 
+        padding:'4rem',
+        color:'$textColor',
     },
     TabItem: {
         flex:1, 
-        padding:8, 
-        alignItems:'center'
+        padding:'8rem', 
+        alignItems:'center',
+        borderBottomWidth:3, 
     },
     ActiveTabItem: {
-        borderBottomWidth:3, 
-        borderBottomColor:'cyan'
+        borderBottomColor:Color.rgb(0,255,255).hex(), // Cyan
     },
-    TextWhite: {
-        color: '#ffffff',
+    InactiveTabItem: {
+        borderBottomColor:'transparent'
     },
-    LargeText: {
-        fontSize:20,
-        fontWeight: 'bold'
-    },
+    TabText: {
+        color:'$textColor', 
+        fontSize:'16rem'
+    }
   });
