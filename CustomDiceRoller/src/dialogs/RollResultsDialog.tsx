@@ -12,6 +12,7 @@ import Modal, {
 import {
     View, 
     Text,
+    TouchableOpacity,
     FlatList,
 } from 'react-native';
 
@@ -81,11 +82,15 @@ export function RollResultsDialog({rollHelper = null as RollDisplayHelper, setRo
                             </View>
                         )}
                     />
+                    <View style={{flexDirection:'row', alignSelf:'flex-end', marginTop:8}}>
+                        <TouchableOpacity style={{flex:1}} onPress={() => setRollHelper(new RollDisplayHelper(rollHelper.storedRoll))}>
+                            <Text style={{fontSize:20, textAlign:'center'}}>Roll Again</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{flex:1}} onPress={() => setRollHelper(null)}>
+                            <Text style={{fontSize:20, textAlign:'center'}}>Exit</Text>
+                        </TouchableOpacity>
+                    </View>
                 </ModalContent>
-                <ModalFooter>
-                    <ModalButton text="Roll Again" onPress={() => setRollHelper(new RollDisplayHelper(rollHelper.storedRoll))} />
-                    <ModalButton text="OK" onPress={() => setRollHelper(null)} />
-                </ModalFooter>
             </Modal>
     );
 }
