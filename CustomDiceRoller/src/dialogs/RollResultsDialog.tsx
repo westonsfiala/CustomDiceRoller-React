@@ -12,16 +12,17 @@ import Modal, {
 import {
     View, 
     Text,
-    TouchableOpacity,
     ScrollView,
     Dimensions,
 } from 'react-native';
 
-import { RollDisplayHelper } from '../dice/RollDisplayHelper';
+import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
+
+import { RollDisplayHelper } from '../dice/RollDisplayHelper';
 import { StruckStringPairView, StruckStringPair } from '../dice/StruckStringPair';
 
-export function RollResultsDialog({rollHelper = null as RollDisplayHelper, setRollHelper}) {
+export function RollResultsDialog({rollHelper = null as RollDisplayHelper, addRoll, dismissRoll}) {
 
     const [modalHeight, setModalHeight] = useState(.5)
 
@@ -67,10 +68,10 @@ export function RollResultsDialog({rollHelper = null as RollDisplayHelper, setRo
 
     return (
         <Modal 
-                onTouchOutside={() => setRollHelper(null)} 
+                onTouchOutside={() => dismissRoll()} 
                 visible={modalShown}
                 modalAnimation={new ScaleAnimation()}
-                onDismiss={() => setRollHelper(null)}
+                onDismiss={() => dismissRoll()}
                 height={modalHeight}
             >
                 <ModalContent style={styles.Container}>
@@ -83,12 +84,18 @@ export function RollResultsDialog({rollHelper = null as RollDisplayHelper, setRo
                             <StruckStringPairView key={index} pair={item} style={styles.DetailText}/>)
                         }
                         <View style={styles.ButtonContainer}>
-                            <TouchableOpacity onPress={() => setRollHelper(new RollDisplayHelper(rollHelper.storedRoll))}>
+                            <Touchable 
+                            onPress={() => addRoll(new RollDisplayHelper(rollHelper.storedRoll))}
+                            hitSlop={{top:20, bottom:20, left:20, right:20}}
+                            >
                                 <Text style={styles.ButtonText}>Roll Again</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setRollHelper(null)}>
+                            </Touchable>
+                            <Touchable 
+                            onPress={() => dismissRoll()}
+                            hitSlop={{top:20, bottom:20, left:20, right:20}}
+                            >
                                 <Text style={styles.ButtonText}>Exit</Text>
-                            </TouchableOpacity>
+                            </Touchable>
                         </View>
                     </ScrollView>
                 </ModalContent>
@@ -119,6 +126,8 @@ const styles = EStyleSheet.create({
     },
     ButtonContainer: {
         flexDirection:'row', 
+        alignItems:'stretch',
+        alignContent:'stretch',
         justifyContent:'space-around',
         marginTop:'8rem'
     },

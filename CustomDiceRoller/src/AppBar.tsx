@@ -5,7 +5,6 @@ import {
     View,
     Text,
     Image,
-    TouchableOpacity,
 } from 'react-native';
 
 import Menu, {
@@ -14,9 +13,9 @@ import Menu, {
     MenuOption,
 } from 'react-native-popup-menu';
 
+import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color'
-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, tabIndex}) {
@@ -41,7 +40,7 @@ export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, t
                             </MenuOption>
                         </MenuOptions>
                     </Menu>
-                    <TouchableOpacity onPress={() => null} style={{marginStart:10}}>
+                    <Touchable onPress={() => null} style={{marginStart:10}}>
                         <Icon 
                         name='dots-vertical'
                         size={styles.IconConstants.width}
@@ -49,20 +48,26 @@ export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, t
                         color={styles.IconConstants.color}
                         backgroundColor={styles.IconConstants.backgroundColor}
                         />
-                    </TouchableOpacity>
+                    </Touchable>
                 </View>
             </View>
             <View style={styles.RowLayout}>
-                <TouchableOpacity style={[styles.TabItem, tabIndex === 0 ? styles.ActiveTabItem : styles.InactiveTabItem]} onPress={() => tabPressHandler(0)}>
+                <Touchable 
+                style={[styles.TabItem, tabIndex === 0 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
+                background={Touchable.Ripple('white')}
+                onPress={() => tabPressHandler(0)}>
                     <Text style={styles.TabText}>
                         History
                     </Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.TabItem, tabIndex === 1 ? styles.ActiveTabItem : styles.InactiveTabItem]} onPress={() => tabPressHandler(1)}>
+                </Touchable>
+                <Touchable 
+                style={[styles.TabItem, tabIndex === 1 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
+                background={Touchable.Ripple('white')}
+                onPress={() => tabPressHandler(1)}>
                     <Text style={styles.TabText}>
                         Simple Roll
                     </Text>
-                </TouchableOpacity>
+                </Touchable>
             </View>
         </View>
     );

@@ -36,28 +36,34 @@ import { HistoryPage } from './src/HistoryPage';
 
 const App = () => {
     const [rollHelper, setRollHelper] = useState(null as RollDisplayHelper) 
-    const [rollHistory, setRollHistory] = useState(Array<RollDisplayHelper>())
-    const previousRollHistory = useRef(null as Array<RollDisplayHelper>)
     const viewPager = useRef(null as ViewPager);
     const [currentPage, setCurrentPage] = useState(1);
+    const [rollHistory, setRollHistory] = useState(Array<RollDisplayHelper>());
+    const previousRollHistory = useRef(null as Array<RollDisplayHelper>);
 
-    function clearHistoryHandler() {
+    function clearRollHistoryHandler() {
         previousRollHistory.current = rollHistory;
-        setRollHistory(Array<RollDisplayHelper>())
+        setRollHistory(Array<RollDisplayHelper>());
     }
 
-    function tabPressHandler(index: number) {
-        viewPager.current.setPage(index);
-    }
-
-    if(rollHelper !== null) {
+    function addRoll(newRoll: RollDisplayHelper) {
         // If we are adding something to the history, do not allow re-setting the old history.
-        if(previousRollHistory !== null) {
+        if(previousRollHistory.current !== null) {
             previousRollHistory.current = null;
         }
 
         // Do not set the rollHelper to null. The rollHelperDialog does this when it closes.
-        rollHistory.unshift(rollHelper);
+        rollHistory.push(newRoll);
+
+        setRollHelper(newRoll);
+    };
+
+    function dismissRoll() {
+        setRollHelper(null);
+    }
+
+    function tabPressHandler(index: number) {
+        viewPager.current.setPage(index);
     }
 
     return (
@@ -66,19 +72,19 @@ const App = () => {
                 <AppBar 
                 title='RPG Dice Roller' 
                 subtitle='Tap die icons to roll!' 
-                clearHistoryHandler={clearHistoryHandler} 
+                clearHistoryHandler={clearRollHistoryHandler} 
                 tabIndex={currentPage} 
                 tabPressHandler={tabPressHandler}
                 />
                 <ViewPager style={styles.Pager} ref={viewPager}  initialPage = {currentPage} onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}>
                     <View key="1" >
-                        <HistoryPage historyItems={rollHistory}/>
+                        <HistoryPage rollHistory={rollHistory}/>
                     </View>
                     <View key="2" >
-                        <SimpleDicePage displayRoll={setRollHelper}/>
+                        <SimpleDicePage displayRoll={addRoll}/>
                     </View>
                 </ViewPager>
-                <RollResultsDialog rollHelper={rollHelper} setRollHelper={setRollHelper}/>
+                <RollResultsDialog rollHelper={rollHelper} addRoll={addRoll} dismissRoll={dismissRoll}/>
             </View>
         </MenuProvider>
     );

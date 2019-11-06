@@ -6,13 +6,12 @@ import React, {
 import {
         View,
         Text,
-        TouchableOpacity,
     } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Touchable from 'react-native-platform-touchable';
 import { getModifierString } from './StringHelper';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import Color from 'color'
 
 export function NumDiceUpDownButtons({setExternalCount}) {
     return UpDownButtons({postFix:'d', forcePlusMinus:false, disallowZero:true, setExternalCount})
@@ -41,19 +40,23 @@ function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = fal
     
     return(
         <View style={styles.container}>
-            <TouchableOpacity 
+            <Touchable 
+                style={styles.buttonRadius}
+                foreground={Touchable.Ripple('white')}
                 onPress={() => {handleChange(-1)}}
                 onLongPress={() => {handleChange(-100)}}
             >
                 <Icon style={styles.buttonBackground} iconStyle={styles.buttonForeground} size={styles.iconConstants.width} name='arrow-down-bold' color={styles.iconConstants.color}/>
-            </TouchableOpacity>
+            </Touchable>
             <Text style={styles.text}>{countText}{postFix}</Text>
-            <TouchableOpacity 
+            <Touchable 
+                style={styles.buttonRadius}
+                foreground={Touchable.Ripple('white')}
                 onPress={() => {handleChange(1)}}
                 onLongPress={() => {handleChange(100)}}
             >
                 <Icon style={styles.buttonBackground} iconStyle={styles.buttonForeground} size={styles.iconConstants.width} name='arrow-up-bold' color={styles.iconConstants.color}/>
-            </TouchableOpacity>
+            </Touchable>
         </View>
     );
 }

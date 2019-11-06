@@ -1,11 +1,12 @@
 
-import React, { } from 'react'
+import React, { Component, useState, useRef } from 'react'
 
 import {
     View, 
     Text,
     FlatList,
 } from 'react-native';
+
 import { RollDisplayHelper } from './dice/RollDisplayHelper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color'
@@ -48,9 +49,11 @@ function HistoryItemView(rollHelper : RollDisplayHelper) {
     );
 }
 
-export function HistoryPage({historyItems = [] as Array<RollDisplayHelper>}) {
+export function HistoryPage({rollHistory = [] as Array<RollDisplayHelper>}) {
 
-    if(historyItems.length === 0)
+    const flatList = useRef(null as FlatList<RollDisplayHelper>);
+
+    if(rollHistory.length === 0)
     {
         return(
             <View style={styles.NoHistoryTextContainer}>
@@ -67,13 +70,17 @@ export function HistoryPage({historyItems = [] as Array<RollDisplayHelper>}) {
     return (
         <View>
             <FlatList
-                data={historyItems}
+                ref={flatList}
+                data={rollHistory}
+                style={{flexDirection:'column'}}
                 contentContainerStyle={styles.ListItem}
                 ItemSeparatorComponent={ () => <View style={styles.ListDivider} />}
-                keyExtractor={(item, index) => item.timeStamp.toDateString() + '_' + index}
+                keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) =>  (
-                     HistoryItemView(item)
+                    HistoryItemView(item)
                 )}
+                onContentSizeChange={() => flatList.current.scrollToEnd()}
+                inverted={true}
             />
         </View>
     );
