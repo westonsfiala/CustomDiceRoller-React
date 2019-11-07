@@ -24,6 +24,7 @@ let {height, width} = Dimensions.get('window');
 EStyleSheet.build({
     $rem: Math.min(height,width) / 380, // This is an arbitrary value that allows for better scaling.
     $textColor: Color.rgb(255,255,255).hex(),
+    $textColorBad: Color.rgb(255,0,0).hex(),
     $primaryColor: Color.rgb(63,63,63).hex(),
     $primaryColorLightened: Color.rgb(63,63,63).lighten(.5).hex(),
     $primaryColorDarkened: Color.rgb(63,63,63).darken(.5).hex(),
@@ -46,7 +47,7 @@ const App = () => {
         setRollHistory(Array<RollDisplayHelper>());
     }
 
-    function addRoll(newRoll: RollDisplayHelper) {
+    function addRollToHistory(newRoll: RollDisplayHelper) {
         // If we are adding something to the history, do not allow re-setting the old history.
         if(previousRollHistory.current !== null) {
             previousRollHistory.current = null;
@@ -58,7 +59,7 @@ const App = () => {
         setRollHelper(newRoll);
     };
 
-    function dismissRoll() {
+    function dismissRollHelperDisplay() {
         setRollHelper(null);
     }
 
@@ -81,10 +82,10 @@ const App = () => {
                         <HistoryPage rollHistory={rollHistory}/>
                     </View>
                     <View key="2" >
-                        <SimpleDicePage displayRoll={addRoll}/>
+                        <SimpleDicePage displayRoll={addRollToHistory}/>
                     </View>
                 </ViewPager>
-                <RollResultsDialog rollHelper={rollHelper} addRoll={addRoll} dismissRoll={dismissRoll}/>
+                <RollResultsDialog rollHelper={rollHelper} addRollToHistory={addRollToHistory} dismissRollHelperDisplay={dismissRollHelperDisplay}/>
             </View>
         </MenuProvider>
     );

@@ -22,7 +22,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { RollDisplayHelper } from '../dice/RollDisplayHelper';
 import { StruckStringPairView, StruckStringPair } from '../dice/StruckStringPair';
 
-export function RollResultsDialog({rollHelper = null as RollDisplayHelper, addRoll, dismissRoll}) {
+export function RollResultsDialog({rollHelper = null as RollDisplayHelper, addRollToHistory, dismissRollHelperDisplay}) {
 
     const [modalHeight, setModalHeight] = useState(.5)
 
@@ -68,10 +68,10 @@ export function RollResultsDialog({rollHelper = null as RollDisplayHelper, addRo
 
     return (
         <Modal 
-            onTouchOutside={() => dismissRoll()} 
+            onTouchOutside={() => dismissRollHelperDisplay()} 
             visible={modalShown}
             modalAnimation={new ScaleAnimation()}
-            onDismiss={() => dismissRoll()}
+            onDismiss={() => dismissRollHelperDisplay()}
             height={modalHeight}
         >
             <ModalContent style={styles.Container}>
@@ -85,13 +85,13 @@ export function RollResultsDialog({rollHelper = null as RollDisplayHelper, addRo
                     }
                     <View style={styles.ButtonContainer}>
                         <Touchable 
-                        onPress={() => addRoll(new RollDisplayHelper(rollHelper.storedRoll))}
+                        onPress={() => addRollToHistory(new RollDisplayHelper(rollHelper.storedRoll))}
                         hitSlop={{top:20, bottom:20, left:20, right:20}}
                         >
                             <Text style={styles.ButtonText}>Roll Again</Text>
                         </Touchable>
                         <Touchable 
-                        onPress={() => dismissRoll()}
+                        onPress={() => dismissRollHelperDisplay()}
                         hitSlop={{top:20, bottom:20, left:20, right:20}}
                         >
                             <Text style={styles.ButtonText}>Exit</Text>

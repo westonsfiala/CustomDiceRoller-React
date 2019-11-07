@@ -1,17 +1,25 @@
 
 import React, {
-        useState
-    } from 'react';
+    useState
+} from 'react';
 
 import {
-        View,
-        Text,
-    } from 'react-native';
+    View,
+    Text,
+    TextInput,
+} from 'react-native';
+    
+import Modal, { 
+    ModalContent, 
+    ScaleAnimation,
+} from 'react-native-modals';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Touchable from 'react-native-platform-touchable';
 import { getModifierString } from './StringHelper';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import Color from 'color'
+import { number } from 'prop-types';
 
 export function NumDiceUpDownButtons({setExternalCount}) {
     return UpDownButtons({postFix:'d', forcePlusMinus:false, disallowZero:true, setExternalCount})
@@ -23,7 +31,9 @@ export function ModifierUpDownButtons({setExternalCount}) {
 
 function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = false, setExternalCount}) {
 
-    const [count, setCount] = useState( enforceGoodValue(0,0, disallowZero) );
+    const [count, setCount] = useState(enforceGoodValue(0,0, disallowZero));
+    const [currentText, setCurrentText] = useState(count.toString());
+    const [modalShown, setModalShown] = useState(false);
 
     let countText = String(count);
     if(forcePlusMinus) {
@@ -37,54 +47,148 @@ function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = fal
         setCount(newCount);
         setExternalCount(newCount);
     }
+
+    function handleTextInputChange(value: string) {
+        setCurrentText(value);
+    }
+
+    function setCountExact() {
+        let possibleNumber = Number.parseInt(currentText)
+        if(Number.isSafeInteger(possibleNumber))
+        {
+            let newCount = enforceGoodValue(possibleNumber, 0, disallowZero)
+
+            setCount(newCount);
+            setExternalCount(newCount);
+        }
+        setModalShown(false);
+    }
     
     return(
-        <View style={styles.container}>
+        <View style={styles.Container}>
             <Touchable 
                 style={styles.buttonRadius}
                 foreground={Touchable.Ripple('white')}
                 onPress={() => {handleChange(-1)}}
                 onLongPress={() => {handleChange(-100)}}
             >
-                <Icon style={styles.buttonBackground} iconStyle={styles.buttonForeground} size={styles.iconConstants.width} name='arrow-down-bold' color={styles.iconConstants.color}/>
+                <Icon style={styles.ButtonBackground} iconStyle={styles.ButtonForeground} size={styles.IconConstants.width} name='arrow-down-bold' color={styles.IconConstants.color}/>
             </Touchable>
-            <Text style={styles.text}>{countText}{postFix}</Text>
+            <Touchable 
+                style={styles.TextTouchable}
+                onPress={() => setModalShown(true)}
+            >
+                <Text style={styles.Text}>{countText}{postFix}</Text>
+            </Touchable>
             <Touchable 
                 style={styles.buttonRadius}
                 foreground={Touchable.Ripple('white')}
                 onPress={() => {handleChange(1)}}
                 onLongPress={() => {handleChange(100)}}
             >
-                <Icon style={styles.buttonBackground} iconStyle={styles.buttonForeground} size={styles.iconConstants.width} name='arrow-up-bold' color={styles.iconConstants.color}/>
+                <Icon style={styles.ButtonBackground} iconStyle={styles.ButtonForeground} size={styles.IconConstants.width} name='arrow-up-bold' color={styles.IconConstants.color}/>
             </Touchable>
+            <Modal 
+                onTouchOutside={() => setModalShown(false)} 
+                visible={modalShown}
+                modalAnimation={new ScaleAnimation()}
+                onDismiss={() => setModalShown(false)}
+                width={.75}
+            >
+                <ModalContent style={styles.ModalContainer}>
+                    <Text style={styles.ModalTitle}>Set Exact Value</Text>
+                    <View style={styles.ModalTextInputLine}>
+                        <Text style={styles.ModalText}>Number</Text>
+                        <TextInput 
+                        style={styles.ModalInputText}
+                        autoFocus={true}
+                        selectTextOnFocus={true}
+                        defaultValue={count.toString()}
+                        keyboardType={'number-pad'}
+                        onChangeText={(text) => handleTextInputChange(text)}
+                        />
+                    </View>
+                    <View style={styles.ModalButtonLine}>
+                        <Touchable 
+                        style={styles.ModalButton}
+                        hitSlop={{top:20, bottom:20, left:20, right:20}}
+                        onPress={() => setModalShown(false)}
+                        >
+                            <Text style={styles.ModalText}>Cancel</Text>
+                        </Touchable>
+                        <Touchable 
+                        style={styles.ModalButton}
+                        hitSlop={{top:20, bottom:20, left:20, right:20}}
+                        onPress={() => setCountExact()}
+                        >
+                            <Text style={styles.ModalText}>OK</Text>
+                        </Touchable>
+                    </View>
+                </ModalContent>
+            </Modal>
         </View>
     );
 }
 
 const styles = EStyleSheet.create({
-    container:{
+    Container:{
         flex: 1, 
         flexDirection: 'row', 
         alignItems: 'center', 
         padding: '5rem',
     },
-    text:{
+    TextTouchable:{
+        flex: 1, 
+    },
+    Text:{
         flex: 1, 
         fontSize: '30rem', 
         textAlign: 'center', 
         color: '$textColor',
     },
-    buttonBackground:{
+    ButtonBackground:{
         backgroundColor: '$primaryColorLightened',
         borderRadius: '10rem',
     },
-    buttonForeground:{
+    ButtonForeground:{
         marginRight: 0,
     },
-    iconConstants:{
+    IconConstants:{
         color: '$textColor',
         width: '45rem',
-    }
+    },
+    ModalContainer:{
+        backgroundColor:'$primaryColor',
+    },
+    ModalTextInputLine:{
+        flexDirection:'row',
+        alignItems:'center'
+    },
+    ModalButtonLine:{
+        flexDirection:'row',
+        justifyContent:'flex-end'
+    },
+    ModalButton:{
+        paddingTop:'8rem',
+        paddingLeft:'8rem',
+        paddingRight:'8rem',
+    },
+    ModalTitle:{
+        fontSize:'20rem',
+        color:'$textColor',
+    },
+    ModalText:{
+        fontSize:'16rem',
+        color:'$textColor',
+    },
+    ModalInputText:{
+        flex:1,
+        color:'$textColor',
+        marginLeft:'8rem',
+        fontSize:'16rem',
+        borderBottomWidth:'1rem',
+        borderColor:Color.rgb(128,128,128).hex()
+    },
 })
 
 // Sometimes we do not want to allow for the value to be 0.
