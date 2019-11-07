@@ -48,7 +48,7 @@ export function SimpleDicePage({displayRoll}) {
                 data={standardDice}
                 numColumns={4}
                 renderItem={({ item }) =>  (
-                    <SimpleDieView imageID={item.die.imageID} name={item.die.displayName} size={width/4} pressCallback={() => {
+                    <SimpleDieView die={item.die} size={width/4} pressCallback={() => {
                         createNewRollHelper(item.die);
                     }} />
                 )}

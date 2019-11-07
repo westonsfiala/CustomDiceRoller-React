@@ -1,7 +1,7 @@
 
 
 import React, {
-    useState, useEffect,
+    useState,
 } from 'react'
 
 import Modal, { 
@@ -68,38 +68,38 @@ export function RollResultsDialog({rollHelper = null as RollDisplayHelper, addRo
 
     return (
         <Modal 
-                onTouchOutside={() => dismissRoll()} 
-                visible={modalShown}
-                modalAnimation={new ScaleAnimation()}
-                onDismiss={() => dismissRoll()}
-                height={modalHeight}
-            >
-                <ModalContent style={styles.Container}>
-                    <ScrollView onContentSizeChange={(width, height) => handleSizeChange(height)}>
-                        <Text style={styles.TitleText}>
-                            {rollHelper && rollHelper.rollNameText || ''}
-                        </Text>
-                        <StruckStringPairView pair={rollHelper && rollHelper.rollSumText || new StruckStringPair("","")} style={styles.SumText}/>
-                        {(rollHelper && rollHelper.rollResultsText || []).map((item, index) => 
-                            <StruckStringPairView key={index} pair={item} style={styles.DetailText}/>)
-                        }
-                        <View style={styles.ButtonContainer}>
-                            <Touchable 
-                            onPress={() => addRoll(new RollDisplayHelper(rollHelper.storedRoll))}
-                            hitSlop={{top:20, bottom:20, left:20, right:20}}
-                            >
-                                <Text style={styles.ButtonText}>Roll Again</Text>
-                            </Touchable>
-                            <Touchable 
-                            onPress={() => dismissRoll()}
-                            hitSlop={{top:20, bottom:20, left:20, right:20}}
-                            >
-                                <Text style={styles.ButtonText}>Exit</Text>
-                            </Touchable>
-                        </View>
-                    </ScrollView>
-                </ModalContent>
-            </Modal>
+            onTouchOutside={() => dismissRoll()} 
+            visible={modalShown}
+            modalAnimation={new ScaleAnimation()}
+            onDismiss={() => dismissRoll()}
+            height={modalHeight}
+        >
+            <ModalContent style={styles.Container}>
+                <ScrollView onContentSizeChange={(width, height) => handleSizeChange(height)}>
+                    <Text style={styles.TitleText}>
+                        {rollHelper && rollHelper.rollNameText || ''}
+                    </Text>
+                    <StruckStringPairView pair={rollHelper && rollHelper.rollSumText || new StruckStringPair("","")} style={styles.SumText}/>
+                    {(rollHelper && rollHelper.rollResultsText || []).map((item, index) => 
+                        <StruckStringPairView key={index} pair={item} style={styles.DetailText}/>)
+                    }
+                    <View style={styles.ButtonContainer}>
+                        <Touchable 
+                        onPress={() => addRoll(new RollDisplayHelper(rollHelper.storedRoll))}
+                        hitSlop={{top:20, bottom:20, left:20, right:20}}
+                        >
+                            <Text style={styles.ButtonText}>Roll Again</Text>
+                        </Touchable>
+                        <Touchable 
+                        onPress={() => dismissRoll()}
+                        hitSlop={{top:20, bottom:20, left:20, right:20}}
+                        >
+                            <Text style={styles.ButtonText}>Exit</Text>
+                        </Touchable>
+                    </View>
+                </ScrollView>
+            </ModalContent>
+        </Modal>
     );
 }
 
