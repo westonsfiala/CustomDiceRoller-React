@@ -53,24 +53,20 @@ export function HistoryPage({rollHistory = [] as Array<RollDisplayHelper>}) {
 
     const flatList = useRef(null as FlatList<RollDisplayHelper>);
 
-    if(rollHistory.length === 0)
-    {
-        return(
-            <View style={styles.NoHistoryTextContainer}>
-                <Text style={styles.NoHistoryText}>
-                    No history yet.
-                </Text>
-                <Text style={styles.NoHistoryText}>
-                    Roll some dice to fill this tab out.
-                </Text>
-            </View>
-        );
-    }
-
     return (
         <View>
             <FlatList
                 ref={flatList}
+                ListEmptyComponent={
+                    <View style={styles.NoHistoryTextContainer}>
+                        <Text style={styles.NoHistoryText}>
+                            No history yet.
+                        </Text>
+                        <Text style={styles.NoHistoryText}>
+                            Roll some dice to fill this tab out.
+                        </Text>
+                    </View>
+                }
                 data={rollHistory}
                 style={{flexDirection:'column'}}
                 contentContainerStyle={styles.ListItem}

@@ -8,26 +8,26 @@ import
     Image,
 } from 'react-native'
 
-import Modal, { 
-    ModalContent, 
-    ScaleAnimation,
-} from 'react-native-modals';
-
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import { getRequiredImage } from './DieImageGetter';
 import { Die } from './Die';
 import { SimpleDie } from './SimpleDie';
+import { DieInfoDialog } from '../dialogs/DieInfoDialog';
 
-export function DieView({die = new SimpleDie("temp", -1) as Die, size, pressCallback}) {
+export function DieView({die = new SimpleDie("temp", -1) as Die, size, pressDieCallback, removeDieCallback, editDieCallback}) {
     const [modalShown, setModalShown] = useState(false);
+
+    function dismissModal() {
+        setModalShown(false);
+    }
 
     return(
         <View style={{width:size}} >
             <Touchable 
             background={Touchable.Ripple('white')} 
-            onPress={() => {pressCallback()}}
+            onPress={() => {pressDieCallback(die)}}
             delayLongPress={300}
             onLongPress={() => setModalShown(true)}
             >
@@ -36,50 +36,7 @@ export function DieView({die = new SimpleDie("temp", -1) as Die, size, pressCall
                     <Text numberOfLines={3} style={[styles.Text, {fontSize:size/4}]}>{die.mDieName}</Text>
                 </View>
             </Touchable>
-            <Modal 
-            visible={modalShown}
-            onTouchOutside={() => setModalShown(false)} 
-            modalAnimation={new ScaleAnimation()}
-            onDismiss={() => setModalShown(false)}
-            >
-                <ModalContent style={styles.ModalContainer}>
-                    <View>
-                        <Text style={styles.ModalName}>
-                            Die info - {die.mDieName}
-                        </Text>
-                        <Text style={styles.ModalDetailText}>
-                            Rolls a number between {die.min} and {die.max}
-                        </Text>
-                        <Text style={styles.ModalDetailText}>
-                            Average of {die.average}
-                        </Text>
-                        <View style={styles.ModalButtonContainer}>
-                            <View>
-                                <Touchable 
-                                onPress={() => setModalShown(false)}
-                                hitSlop={styles.HitSlop}
-                                >
-                                    <Text style={styles.EditButtonText}>Edit</Text>
-                                </Touchable>
-                            </View>
-                            <View style={styles.RemoveOKButtonContainer}>
-                                <Touchable 
-                                onPress={() => setModalShown(false)}
-                                hitSlop={styles.HitSlop}
-                                >
-                                    <Text style={styles.RemoveOKButtonText}>Remove</Text>
-                                </Touchable>
-                                <Touchable 
-                                onPress={() => setModalShown(false)}
-                                hitSlop={styles.HitSlop}
-                                >
-                                    <Text style={styles.RemoveOKButtonText}>OK</Text>
-                                </Touchable>
-                            </View>
-                        </View>
-                    </View>
-                </ModalContent>
-            </Modal>
+            <DieInfoDialog modalShown={modalShown} die={die} dismissModal={dismissModal} removeDie={removeDieCallback} editDie={editDieCallback}/>
         </View>
     );
 };

@@ -36,6 +36,7 @@ export async function getAvailableDice() {
 
     // Parse into an array and start creating the dice from it.
     const diceArray = JSON.parse(diceArrayString) as Array<object>;
+
     let returnDieArray = Array<Die>();
 
     for(let index = 0; index < diceArray.length; ++index) {
