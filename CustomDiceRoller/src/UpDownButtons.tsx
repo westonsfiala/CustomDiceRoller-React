@@ -111,14 +111,14 @@ function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = fal
                     <View style={styles.ModalButtonLine}>
                         <Touchable 
                         style={styles.ModalButton}
-                        hitSlop={{top:20, bottom:20, left:20, right:20}}
+                        hitSlop={styles.HitSlop}
                         onPress={() => setModalShown(false)}
                         >
                             <Text style={styles.ModalText}>Cancel</Text>
                         </Touchable>
                         <Touchable 
                         style={styles.ModalButton}
-                        hitSlop={{top:20, bottom:20, left:20, right:20}}
+                        hitSlop={styles.HitSlop}
                         onPress={() => setCountExact()}
                         >
                             <Text style={styles.ModalText}>OK</Text>
@@ -189,6 +189,12 @@ const styles = EStyleSheet.create({
         borderBottomWidth:'1rem',
         borderColor:Color.rgb(128,128,128).hex()
     },
+    HitSlop: {
+        top:'10rem',
+        bottom:'10rem',
+        right:'10rem',
+        left:'10rem'
+    }
 })
 
 // Sometimes we do not want to allow for the value to be 0.

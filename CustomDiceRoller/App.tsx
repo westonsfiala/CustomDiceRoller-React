@@ -11,7 +11,7 @@
 // For searchable Icons go to https://oblador.github.io/react-native-vector-icons/
 // For description of how to use icons go to https://github.com/oblador/react-native-vector-icons 
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { View, Dimensions } from 'react-native';
 
 import { AppBar } from "./src/AppBar";
@@ -94,7 +94,7 @@ const App = () => {
 const styles = EStyleSheet.create({
     AppBackground: {
         flex:1,
-        backgroundColor:Color.rgb(63,63,63).hex(),
+        backgroundColor:'$primaryColor'
     },
     Pager: {
         flex:1,

@@ -7,19 +7,29 @@ import {
     Dimensions,
 } from 'react-native';
 
-import {SimpleDieView} from "./dice/SimpleDieView";
-import {Die} from "./dice/Die";
+import { DieView } from "./dice/DieView";
+import { Die } from "./dice/Die";
 import { NumDiceUpDownButtons, ModifierUpDownButtons } from './UpDownButtons';
 import { Roll } from './dice/Roll';
 import { RollProperties } from './dice/RollProperties';
 import { RollDisplayHelper } from './dice/RollDisplayHelper';
-import {standardDice} from './dice/DefaultDice'
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { getAvailableDice, standardDice } from './sync/AvailableDice';
 
 export function SimpleDicePage({displayRoll}) {
+    const [currentDice, setCurrentDice] = useState(standardDice as Array<Die>);
     const [width, setWidth] = useState(Dimensions.get("window").width);
     const [numDice, setNumDice] = useState(1);
     const [modifier, setModifier] = useState(0);
+
+    // If the dice are different, rerender.
+    useEffect(() => {
+        getAvailableDice().then((dice) => {
+            if(JSON.stringify(currentDice) !== JSON.stringify(dice)) {
+                setCurrentDice(dice)
+            }
+        });
+    })
 
     function handleScreenChange({window}) {
         setWidth(window.width);
@@ -45,13 +55,14 @@ export function SimpleDicePage({displayRoll}) {
     return (
         <View style={styles.SimpleDiePageBackground}>
             <FlatList 
-                data={standardDice}
+                data={currentDice}
                 numColumns={4}
                 renderItem={({ item }) =>  (
-                    <SimpleDieView die={item.die} size={width/4} pressCallback={() => {
-                        createNewRollHelper(item.die);
+                    <DieView die={item} size={width/4} pressCallback={() => {
+                        createNewRollHelper(item);
                     }} />
                 )}
+                keyExtractor={(item, index) => index.toString()}
                 extraData={width}
             />
             <View style={styles.UpDownButtons}>

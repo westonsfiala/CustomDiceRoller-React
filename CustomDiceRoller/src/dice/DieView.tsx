@@ -17,9 +17,10 @@ import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import { getRequiredImage } from './DieImageGetter';
+import { Die } from './Die';
 import { SimpleDie } from './SimpleDie';
 
-export function SimpleDieView({die = new SimpleDie("temp", -1), size, pressCallback}) {
+export function DieView({die = new SimpleDie("temp", -1) as Die, size, pressCallback}) {
     const [modalShown, setModalShown] = useState(false);
 
     return(
@@ -27,6 +28,7 @@ export function SimpleDieView({die = new SimpleDie("temp", -1), size, pressCallb
             <Touchable 
             background={Touchable.Ripple('white')} 
             onPress={() => {pressCallback()}}
+            delayLongPress={300}
             onLongPress={() => setModalShown(true)}
             >
                 <View style={styles.Touch}>
@@ -53,15 +55,24 @@ export function SimpleDieView({die = new SimpleDie("temp", -1), size, pressCallb
                         </Text>
                         <View style={styles.ModalButtonContainer}>
                             <View>
-                                <Touchable hitSlop={styles.HitSlop}>
+                                <Touchable 
+                                onPress={() => setModalShown(false)}
+                                hitSlop={styles.HitSlop}
+                                >
                                     <Text style={styles.EditButtonText}>Edit</Text>
                                 </Touchable>
                             </View>
                             <View style={styles.RemoveOKButtonContainer}>
-                                <Touchable hitSlop={styles.HitSlop}>
+                                <Touchable 
+                                onPress={() => setModalShown(false)}
+                                hitSlop={styles.HitSlop}
+                                >
                                     <Text style={styles.RemoveOKButtonText}>Remove</Text>
                                 </Touchable>
-                                <Touchable hitSlop={styles.HitSlop}>
+                                <Touchable 
+                                onPress={() => setModalShown(false)}
+                                hitSlop={styles.HitSlop}
+                                >
                                     <Text style={styles.RemoveOKButtonText}>OK</Text>
                                 </Touchable>
                             </View>
@@ -77,7 +88,7 @@ const styles = EStyleSheet.create({
     Touch:{
         flexDirection:'column', 
         alignItems:'center', 
-        padding:2
+        padding:'2rem'
     },
     Text:{
         color:'$textColor'
