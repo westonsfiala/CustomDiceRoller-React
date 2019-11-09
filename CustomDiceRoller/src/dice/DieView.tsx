@@ -15,12 +15,21 @@ import { getRequiredImage } from './DieImageGetter';
 import { Die } from './Die';
 import { SimpleDie } from './SimpleDie';
 import { DieInfoDialog } from '../dialogs/DieInfoDialog';
+import { CreateSimpleDieDialog } from '../dialogs/CreateSimpleDieDialog';
 
 export function DieView({die = new SimpleDie("temp", -1) as Die, size, pressDieCallback, removeDieCallback, editDieCallback}) {
+    
     const [modalShown, setModalShown] = useState(false);
+    const [editModalShown, setEditModalShown] = useState(false);
 
-    function dismissModal() {
+    function handleBeginEdit() {
+        setEditModalShown(true);
         setModalShown(false);
+    }
+
+    function handleEndEdit(editDie : Die) {
+        editDieCallback(die, editDie);
+        setEditModalShown(false);
     }
 
     return(
@@ -36,7 +45,8 @@ export function DieView({die = new SimpleDie("temp", -1) as Die, size, pressDieC
                     <Text numberOfLines={3} style={[styles.Text, {fontSize:size/4}]}>{die.mDieName}</Text>
                 </View>
             </Touchable>
-            <DieInfoDialog modalShown={modalShown} die={die} dismissModal={dismissModal} removeDie={removeDieCallback} editDie={editDieCallback}/>
+            <DieInfoDialog modalShown={modalShown} die={die} dismissModal={() => setModalShown(false)} removeDie={removeDieCallback} editDie={handleBeginEdit}/>
+            <CreateSimpleDieDialog modalShown={editModalShown} die={die} dismissModal={() => setEditModalShown(false)} createDie={handleEndEdit}/>
         </View>
     );
 };

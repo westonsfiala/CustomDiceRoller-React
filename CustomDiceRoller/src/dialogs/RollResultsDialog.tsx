@@ -49,13 +49,15 @@ export function RollResultsDialog({rollHelper = null as RollDisplayHelper, addRo
                 <View style={styles.ButtonContainer}>
                     <Touchable 
                     onPress={() => addRollToHistory(new RollDisplayHelper(rollHelper.storedRoll))}
-                    hitSlop={{top:20, bottom:20, left:20, right:20}}
+                    foreground={Touchable.Ripple('white', true)}
+                    hitSlop={styles.HitSlop}
                     >
                         <Text style={styles.ButtonText}>Roll Again</Text>
                     </Touchable>
                     <Touchable 
                     onPress={() => dismissRollHelperDisplay()}
-                    hitSlop={{top:20, bottom:20, left:20, right:20}}
+                    foreground={Touchable.Ripple('white', true)}
+                    hitSlop={styles.HitSlop}
                     >
                         <Text style={styles.ButtonText}>Exit</Text>
                     </Touchable>
@@ -123,5 +125,11 @@ const styles = EStyleSheet.create({
         fontSize:'20rem',
         color:'$textColor',
         textAlign:'center',
+    },
+    HitSlop: {
+        top:'10rem',
+        bottom:'10rem',
+        right:'10rem',
+        left:'10rem'
     }
 })

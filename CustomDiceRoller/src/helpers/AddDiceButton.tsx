@@ -36,6 +36,7 @@ export function AddDiceButton({addDie, resetDice}) {
                 style={styles.ButtonBackground}
                 foreground={Touchable.Ripple('white')}
                 onPress={() => menuRef.current.open()}
+                delayLongPress={300}
                 onLongPress={() => resetMenuRef.current.open()}
             >
                 <Text style={styles.Text}>Add Die</Text>

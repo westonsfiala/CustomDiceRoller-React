@@ -31,6 +31,7 @@ export function DieInfoDialog({modalShown, die, dismissModal, removeDie, editDie
                             editDie(die);
                             dismissModal();
                         }}
+                        foreground={Touchable.Ripple('white', true)}
                         hitSlop={styles.HitSlop}
                         >
                             <Text style={styles.EditButtonText}>Edit</Text>
@@ -42,12 +43,14 @@ export function DieInfoDialog({modalShown, die, dismissModal, removeDie, editDie
                             removeDie(die);
                             dismissModal();
                         }}
+                        foreground={Touchable.Ripple('white', true)}
                         hitSlop={styles.HitSlop}
                         >
                             <Text style={styles.RemoveOKButtonText}>Remove</Text>
                         </Touchable>
                         <Touchable 
                         onPress={() => dismissModal()}
+                        foreground={Touchable.Ripple('white', true)}
                         hitSlop={styles.HitSlop}
                         >
                             <Text style={styles.RemoveOKButtonText}>OK</Text>

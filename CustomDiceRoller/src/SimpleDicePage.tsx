@@ -38,7 +38,7 @@ export function SimpleDicePage({displayRoll}) {
         displayRoll(new RollDisplayHelper(tempRoll));
     }
 
-    function hasDieByName(possibleDie: Die) {
+    function hasDieByName(possibleDie: Die) : boolean {
         for(let dieIndex = 0; dieIndex < currentDice.length; ++dieIndex) {
             let currentDie = currentDice[dieIndex]
 
@@ -54,34 +54,54 @@ export function SimpleDicePage({displayRoll}) {
         setAvailableDice(standardDice).then(() => setForceReload(!forceReload));
     }
 
-    function addDie(newDie: Die) {
+    function addDie(newDie: Die) : boolean {
+        let added = false;
 
         if(!hasDieByName(newDie))
         {
             currentDice.push(newDie)
-
-            // Once the setting goes through, this will force a rerender to see whats now available.
-            setAvailableDice(currentDice).then(() => setForceReload(!forceReload));
+            added = true;
         }
         else 
         {
             // TODO: tell the user when something goes wrong.
         }
 
+        setAvailableDice(currentDice).then(() => setForceReload(!forceReload));
+
+        return added;
     }
 
-    function removeDie(clickedDie: Die) {
+    function removeDie(clickedDie: Die) : boolean {
+        let removed = false;
+
         for(let dieIndex = 0; dieIndex < currentDice.length; ++dieIndex) {
             let currentDie = currentDice[dieIndex]
 
             if(currentDie.displayName === clickedDie.displayName) {
-                currentDice.splice(dieIndex, 1);
-                break;
+                currentDice.splice(dieIndex, 1)
+                removed = true;
+            }
+        }
+        setAvailableDice(currentDice).then(() => setForceReload(!forceReload));
+
+        return removed;
+    }
+
+    function editDie(originalDie: Die, newDie: Die) : boolean {
+        let edited = false;
+
+        if(removeDie(originalDie)) {
+            if(addDie(newDie)) {
+                edited = true
+            } else {
+                addDie(originalDie);
             }
         }
 
-        // Once the setting goes through, this will force a rerender to see whats now available.
         setAvailableDice(currentDice).then(() => setForceReload(!forceReload));
+
+        return edited;
     }
 
     // If the dice are different, rerender.
@@ -120,7 +140,7 @@ export function SimpleDicePage({displayRoll}) {
                     size={width/4} 
                     pressDieCallback={createNewRollHelper}
                     removeDieCallback={removeDie} 
-                    editDieCallback={() => null} 
+                    editDieCallback={editDie} 
                     />
                 )}
                 keyExtractor={(item, index) => index.toString()}

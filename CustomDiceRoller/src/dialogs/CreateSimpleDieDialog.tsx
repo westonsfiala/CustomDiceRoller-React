@@ -56,6 +56,7 @@ export function CreateSimpleDieDialog({modalShown, die, dismissModal, createDie}
                     <Touchable 
                     style={styles.ModalButton}
                     hitSlop={styles.HitSlop}
+                    foreground={Touchable.Ripple('white', true)}
                     onPress={() => dismissModal()}
                     >
                         <Text style={styles.ModalText}>Cancel</Text>
@@ -63,6 +64,7 @@ export function CreateSimpleDieDialog({modalShown, die, dismissModal, createDie}
                     <Touchable 
                     style={styles.ModalButton}
                     hitSlop={styles.HitSlop}
+                    foreground={Touchable.Ripple('white', true)}
                     onPress={() => acceptHandler()}
                     >
                         <Text style={styles.ModalText}>OK</Text>
