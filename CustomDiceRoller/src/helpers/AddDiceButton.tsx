@@ -18,9 +18,10 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { CreateSimpleDieDialog } from '../dialogs/CreateSimpleDieDialog';
 import { SimpleDie } from '../dice/SimpleDie';
 
-export function AddDiceButton({addDie}) {
+export function AddDiceButton({addDie, resetDice}) {
 
     const menuRef = useRef(null);
+    const resetMenuRef = useRef(null);
     const [simpleModalShown, setSimpleModalShown] = useState(false);
     const [simpleDie, setSimpleDie] = useState(new SimpleDie('temp', 1));
 
@@ -35,6 +36,7 @@ export function AddDiceButton({addDie}) {
                 style={styles.ButtonBackground}
                 foreground={Touchable.Ripple('white')}
                 onPress={() => menuRef.current.open()}
+                onLongPress={() => resetMenuRef.current.open()}
             >
                 <Text style={styles.Text}>Add Die</Text>
             </Touchable>
@@ -44,6 +46,16 @@ export function AddDiceButton({addDie}) {
                     <MenuOption style={styles.Menu} onSelect={() => setSimpleModalShown(true)}>
                         <Text style={styles.MenuText}>
                             Simple Die
+                        </Text>
+                    </MenuOption>
+                </MenuOptions>
+            </Menu>
+            <Menu ref={resetMenuRef}>
+                <MenuTrigger/>
+                <MenuOptions>
+                    <MenuOption style={styles.Menu} onSelect={resetDice}>
+                        <Text style={styles.MenuText}>
+                            Reset Dice
                         </Text>
                     </MenuOption>
                 </MenuOptions>

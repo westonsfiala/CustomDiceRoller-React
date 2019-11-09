@@ -60,10 +60,10 @@ export function HistoryPage({rollHistory = [] as Array<RollDisplayHelper>}) {
                 ListEmptyComponent={
                     <View style={styles.NoHistoryTextContainer}>
                         <Text style={styles.NoHistoryText}>
-                            No history yet.
+                            No history yet
                         </Text>
                         <Text style={styles.NoHistoryText}>
-                            Roll some dice to fill this tab out.
+                            Roll some dice to fill this tab out
                         </Text>
                     </View>
                 }

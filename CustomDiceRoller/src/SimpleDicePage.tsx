@@ -51,6 +51,10 @@ export function SimpleDicePage({displayRoll}) {
         return false;
     }
 
+    function resetDice() {
+        setAvailableDice(standardDice).then(() => setForceReload(!forceReload));
+    }
+
     function addDie(newDie: Die) {
 
         if(!hasDieByName(newDie))
@@ -106,11 +110,9 @@ export function SimpleDicePage({displayRoll}) {
                 ListEmptyComponent={
                     <View style={styles.NoDiceTextContainer}>
                         <Text style={styles.NoDiceText}>
-                            No created dice.
+                            No created dice
                         </Text>
-                        <Text style={styles.NoDiceText}>
-                            Create some dice to roll.
-                        </Text>
+                        <AddDiceButton addDie={addDie} resetDice={resetDice}/>
                     </View>
                 }
                 renderItem={({ item }) =>  (
@@ -130,7 +132,7 @@ export function SimpleDicePage({displayRoll}) {
                 <ModifierUpDownButtons setExternalCount={setModifier} />
             </View>
             <View style={styles.ButtonsRow}>
-                <AddDiceButton addDie={addDie}/>
+                <AddDiceButton addDie={addDie} resetDice={resetDice}/>
             </View>
         </View> 
     );
