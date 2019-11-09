@@ -16,18 +16,23 @@ import { SetValueDialog } from '../dialogs/SetValueDialog';
 
 import { enforceGoodValue, snapToNextIncrement } from './NumberHelper';
 
-export function NumDiceUpDownButtons({setExternalCount}) {
-    return UpDownButtons({postFix:'d', forcePlusMinus:false, disallowZero:true, setExternalCount})
+export function NumDiceUpDownButtons({count, setCount}) {
+    return UpDownButtons({postFix:'d', forcePlusMinus:false, disallowZero:true, count, setCount})
 }
 
-export function ModifierUpDownButtons({setExternalCount}) {
-    return UpDownButtons({postFix:'', forcePlusMinus:true, disallowZero:false, setExternalCount})
+export function ModifierUpDownButtons({count, setCount}) {
+    return UpDownButtons({postFix:'', forcePlusMinus:true, disallowZero:false, count, setCount})
 }
 
-function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = false, setExternalCount}) {
+function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = false, count, setCount}) {
 
-    const [count, setCount] = useState(enforceGoodValue(0,0, disallowZero));
     const [modalShown, setModalShown] = useState(false);
+
+    // Force good values
+    let checkVal = enforceGoodValue(count, 0, disallowZero);
+    if(checkVal !== count) {
+        setCount(checkVal)
+    }
 
     let countText = String(count);
     if(forcePlusMinus) {
@@ -35,7 +40,6 @@ function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = fal
     }
 
     function updateNumber(value: number) {
-        setExternalCount(value);
         setCount(value);
     }
 

@@ -17,7 +17,6 @@ import { RollDisplayHelper } from './dice/RollDisplayHelper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { getAvailableDice, standardDice, setAvailableDice } from './sync/AvailableDice';
 import { AddDiceButton } from './helpers/AddDiceButton';
-import { CreateSimpleDieDialog } from './dialogs/CreateSimpleDieDialog';
 
 export function SimpleDicePage({displayRoll}) {
     const [currentDice, setCurrentDice] = useState(standardDice as Array<Die>);
@@ -128,8 +127,8 @@ export function SimpleDicePage({displayRoll}) {
                 extraData={width}
             />
             <View style={styles.ButtonsRow}>
-                <NumDiceUpDownButtons setExternalCount={setNumDice} />
-                <ModifierUpDownButtons setExternalCount={setModifier} />
+                <NumDiceUpDownButtons count={numDice} setCount={setNumDice} />
+                <ModifierUpDownButtons count={modifier} setCount={setModifier} />
             </View>
             <View style={styles.ButtonsRow}>
                 <AddDiceButton addDie={addDie} resetDice={resetDice}/>

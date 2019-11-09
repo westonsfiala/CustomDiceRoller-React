@@ -50,5 +50,7 @@ export async function getAvailableDice() {
         }
     }
 
+    returnDieArray.sort((dieA, dieB) => dieA.average - dieB.average)
+
     return returnDieArray;
 }
