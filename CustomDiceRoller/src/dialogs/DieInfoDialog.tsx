@@ -85,7 +85,7 @@ const styles = EStyleSheet.create({
     ModalButtonContainer:{
         flexDirection:'row',
         justifyContent:'space-between',
-        paddingTop:'4rem'
+        paddingTop:'16rem'
     },
     RemoveOKButtonContainer:{
         flexDirection:'row',

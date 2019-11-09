@@ -10,12 +10,14 @@ import {
 
 import { DieView } from "./dice/DieView";
 import { Die } from "./dice/Die";
-import { NumDiceUpDownButtons, ModifierUpDownButtons } from './UpDownButtons';
+import { NumDiceUpDownButtons, ModifierUpDownButtons } from './helpers/UpDownButtons';
 import { Roll } from './dice/Roll';
 import { RollProperties } from './dice/RollProperties';
 import { RollDisplayHelper } from './dice/RollDisplayHelper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { getAvailableDice, standardDice, setAvailableDice } from './sync/AvailableDice';
+import { AddDiceButton } from './helpers/AddDiceButton';
+import { CreateSimpleDieDialog } from './dialogs/CreateSimpleDieDialog';
 
 export function SimpleDicePage({displayRoll}) {
     const [currentDice, setCurrentDice] = useState(standardDice as Array<Die>);
@@ -35,6 +37,34 @@ export function SimpleDicePage({displayRoll}) {
         tempRoll.addDieToRoll(clickedDie, rollProps);
 
         displayRoll(new RollDisplayHelper(tempRoll));
+    }
+
+    function hasDieByName(possibleDie: Die) {
+        for(let dieIndex = 0; dieIndex < currentDice.length; ++dieIndex) {
+            let currentDie = currentDice[dieIndex]
+
+            if(currentDie.displayName === possibleDie.displayName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function addDie(newDie: Die) {
+
+        if(!hasDieByName(newDie))
+        {
+            currentDice.push(newDie)
+
+            // Once the setting goes through, this will force a rerender to see whats now available.
+            setAvailableDice(currentDice).then(() => setForceReload(!forceReload));
+        }
+        else 
+        {
+            // TODO: tell the user when something goes wrong.
+        }
+
     }
 
     function removeDie(clickedDie: Die) {
@@ -95,9 +125,12 @@ export function SimpleDicePage({displayRoll}) {
                 keyExtractor={(item, index) => index.toString()}
                 extraData={width}
             />
-            <View style={styles.UpDownButtons}>
+            <View style={styles.ButtonsRow}>
                 <NumDiceUpDownButtons setExternalCount={setNumDice} />
                 <ModifierUpDownButtons setExternalCount={setModifier} />
+            </View>
+            <View style={styles.ButtonsRow}>
+                <AddDiceButton addDie={addDie}/>
             </View>
         </View> 
     );
@@ -107,7 +140,7 @@ const styles = EStyleSheet.create({
     SimpleDiePageBackground:{
         flex:1,
     },
-    UpDownButtons:{
+    ButtonsRow:{
         flexDirection:'row',
     },
     NoDiceTextContainer:{

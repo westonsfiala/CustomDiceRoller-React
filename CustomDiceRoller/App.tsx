@@ -14,7 +14,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { View, Dimensions } from 'react-native';
 
-import { AppBar } from "./src/AppBar";
+import { AppBar } from "./src/appBar/AppBar";
 import ViewPager from '@react-native-community/viewpager';
 import { MenuProvider } from 'react-native-popup-menu';
 import EStyleSheet from 'react-native-extended-stylesheet'; 

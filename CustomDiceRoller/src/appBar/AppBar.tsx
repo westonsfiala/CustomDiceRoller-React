@@ -1,5 +1,5 @@
 
-import React, { } from 'react';
+import React, { useRef } from 'react';
 
 import {
     View,
@@ -7,7 +7,8 @@ import {
     Image,
 } from 'react-native';
 
-import Menu, {
+import {
+    Menu,
     MenuTrigger,
     MenuOptions,
     MenuOption,
@@ -20,6 +21,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, tabIndex}) {
 
+    const menuRef = useRef(null);
+
     return (
         <View style={styles.AppBarBackground}>
             <View style={styles.ActionBarBackground}>
@@ -28,10 +31,15 @@ export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, t
                     <Text style={styles.AppSubTitleText}>{subtitle}</Text>
                 </View>
                 <View style={styles.RowLayout}>
-                    <Menu name='clearHistoryMenu'>
-                        <MenuTrigger>
-                            <Image source={require('./BurningBook.png')} style={styles.ClearHistory}/>
-                        </MenuTrigger>
+                    <Touchable
+                        onPress={() => menuRef.current.open()}
+                        hitSlop={styles.HitSlop}
+                        foreground={Touchable.Ripple('white', true)}
+                    >
+                        <Image source={require('./BurningBook.png')} style={styles.ClearHistory}/>
+                    </Touchable>
+                    <Menu ref={menuRef}>
+                        <MenuTrigger/>
                         <MenuOptions>
                             <MenuOption style={styles.Menu} onSelect={() => clearHistoryHandler()}>
                                 <Text style={styles.MenuText}>
@@ -40,7 +48,11 @@ export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, t
                             </MenuOption>
                         </MenuOptions>
                     </Menu>
-                    <Touchable onPress={() => null} style={{marginStart:10}}>
+                    <Touchable 
+                    onPress={() => null} 
+                    style={{marginStart:20}}
+                    foreground={Touchable.Ripple('white', true)}
+                    >
                         <Icon 
                         name='dots-vertical'
                         size={styles.IconConstants.width}
@@ -128,5 +140,11 @@ const styles = EStyleSheet.create({
     TabText: {
         color:'$textColor', 
         fontSize:'16rem'
+    },
+    HitSlop: {
+        top: '10rem',
+        bottom: '10rem',
+        right: '10rem',
+        left: '10rem',
     }
   });

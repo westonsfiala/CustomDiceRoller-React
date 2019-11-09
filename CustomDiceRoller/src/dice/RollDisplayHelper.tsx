@@ -2,7 +2,7 @@
 
 import {Roll} from "./Roll"
 import {createUnknownDie} from "./DieFactory"
-import {getModifierString} from "../StringHelper"
+import {getModifierString} from "../helpers/StringHelper"
 import {StruckStringPair} from "./StruckStringPair"
 
 export class RollDisplayHelper {

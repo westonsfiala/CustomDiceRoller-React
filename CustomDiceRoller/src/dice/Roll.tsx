@@ -13,7 +13,7 @@ import {
     getKeepLowString,
     getMinimumDieValueString,
     getReRollString
- } from '../StringHelper'
+ } from '../helpers/StringHelper'
 
 export class Roll {
     public static readonly aggregateRollStringStart = "Aggregate"

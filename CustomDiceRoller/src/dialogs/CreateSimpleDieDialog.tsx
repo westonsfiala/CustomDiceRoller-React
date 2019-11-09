@@ -11,20 +11,18 @@ import {
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
+import { SimpleDie } from "../dice/SimpleDie";
 
-import { enforceGoodValue } from '../helpers/NumberHelper';
+export function CreateSimpleDieDialog({modalShown, die, dismissModal, createDie}) {
 
-export function SetValueDialog({modalShown, disallowZero, defaultValue, dismissModal, acceptValue}) {
+    const [dieName, setDieName] = useState('')
+    const [dieNumberString, setDieNumberString] = useState(die.mDie.toString() as string)
 
-    const [currentText, setCurrentText] = useState(defaultValue.toString())
-
-    function handleAccept() {
-        let possibleNumber = Number.parseInt(currentText)
-        if(Number.isSafeInteger(possibleNumber))
+    function acceptHandler() {
+        let possibleNumber = Number.parseInt(dieNumberString)
+        if(Number.isSafeInteger(possibleNumber) && possibleNumber >= 0)
         {
-            let newCount = enforceGoodValue(possibleNumber, 0, disallowZero)
-
-            acceptValue(newCount)
+            createDie(new SimpleDie(dieName, possibleNumber))
         }
 
         dismissModal();
@@ -33,16 +31,25 @@ export function SetValueDialog({modalShown, disallowZero, defaultValue, dismissM
     function modalContent() {
         return(
             <View>
-                <Text style={styles.ModalTitle}>Set Exact Value</Text>
+                <Text style={styles.ModalTitle}>Create Simple Die</Text>
                 <View style={styles.ModalTextInputLine}>
-                    <Text style={styles.ModalText}>Number</Text>
+                    <Text style={styles.ModalText}>Name</Text>
+                    <TextInput 
+                    style={styles.ModalInputText}
+                    placeholder={'d' + dieNumberString}
+                    placeholderTextColor={styles.PlaceholderText.color}
+                    onChangeText={(text) => setDieName(text)}
+                    />
+                </View>
+                <View style={styles.ModalTextInputLine}>
+                    <Text style={styles.ModalText}>Die</Text>
                     <TextInput 
                     style={styles.ModalInputText}
                     autoFocus={true}
                     selectTextOnFocus={true}
-                    defaultValue={defaultValue.toString()}
+                    defaultValue={die.mDie.toString()}
                     keyboardType={'number-pad'}
-                    onChangeText={(text) => setCurrentText(text)}
+                    onChangeText={(text) => setDieNumberString(text)}
                     />
                 </View>
                 <View style={styles.ModalButtonLine}>
@@ -56,7 +63,7 @@ export function SetValueDialog({modalShown, disallowZero, defaultValue, dismissM
                     <Touchable 
                     style={styles.ModalButton}
                     hitSlop={styles.HitSlop}
-                    onPress={handleAccept}
+                    onPress={() => acceptHandler()}
                     >
                         <Text style={styles.ModalText}>OK</Text>
                     </Touchable>
@@ -80,7 +87,7 @@ const styles = EStyleSheet.create({
         justifyContent:'flex-end'
     },
     ModalButton:{
-        paddingTop:'8rem',
+        paddingTop:'16rem',
         paddingLeft:'8rem',
         paddingRight:'8rem',
     },
@@ -99,6 +106,9 @@ const styles = EStyleSheet.create({
         fontSize:'16rem',
         borderBottomWidth:'1rem',
         borderColor:Color.rgb(128,128,128).hex()
+    },
+    PlaceholderText:{
+        color:Color.rgb(128,128,128).hex()
     },
     HitSlop: {
         top:'10rem',
