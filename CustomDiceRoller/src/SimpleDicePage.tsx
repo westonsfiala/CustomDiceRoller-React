@@ -22,8 +22,7 @@ export function SimpleDicePage({displayRoll}) {
     const [currentDice, setCurrentDice] = useState(standardDice as Array<Die>);
     const [forceReload, setForceReload] = useState(false);
     const [width, setWidth] = useState(Dimensions.get("window").width);
-    const [numDice, setNumDice] = useState(1);
-    const [modifier, setModifier] = useState(0);
+    const [rollProperties, setRollProperties] = useState(new RollProperties({}))
 
     function handleScreenChange({window}) {
         setWidth(window.width);
@@ -31,9 +30,8 @@ export function SimpleDicePage({displayRoll}) {
 
     function createNewRollHelper(clickedDie: Die) {
         let tempRoll = new Roll("Unsaved Roll","");
-        let rollProps = new RollProperties({dieCount:numDice, modifier:modifier});
 
-        tempRoll.addDieToRoll(clickedDie, rollProps);
+        tempRoll.addDieToRoll(clickedDie, rollProperties);
 
         displayRoll(new RollDisplayHelper(tempRoll));
     }
@@ -147,8 +145,23 @@ export function SimpleDicePage({displayRoll}) {
                 extraData={width}
             />
             <View style={styles.ButtonsRow}>
-                <NumDiceUpDownButtons count={numDice} setCount={setNumDice} />
-                <ModifierUpDownButtons count={modifier} setCount={setModifier} />
+                <NumDiceUpDownButtons 
+                count={rollProperties.mNumDice} 
+                setCount={(numDice: number) => 
+                    {
+                        let newProps = rollProperties.clone()
+                        newProps.mNumDice = numDice;
+                        setRollProperties(newProps);
+                    }} 
+                />
+                <ModifierUpDownButtons 
+                count={rollProperties.mModifier} 
+                setCount={(modifier: number) => {
+                    let newProps = rollProperties.clone()
+                    newProps.mModifier = modifier;
+                    setRollProperties(newProps);
+                }}
+                />
             </View>
             <View style={styles.ButtonsRow}>
                 <AddDiceButton addDie={addDie} resetDice={resetDice}/>

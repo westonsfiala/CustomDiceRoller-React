@@ -62,7 +62,7 @@ export class Roll {
 
         for(let dieProps of this.mDieMap.values())
         {
-            numDice += Math.abs(dieProps.mDieCount);
+            numDice += Math.abs(dieProps.mNumDice);
         }
 
         return numDice;
@@ -266,14 +266,14 @@ export class Roll {
         let rerollList = new Array<number>();
 
         // No dice to roll, return empty lists.
-        if(properties.mDieCount == 0)
+        if(properties.mNumDice == 0)
         {
             return {keep:keepList, drop:dropList, reroll:rerollList};
         }
 
         // Roll all of the dice and add them to the return list.
         let rollNum = 0;
-        while (rollNum < Math.abs(properties.mDieCount)) {
+        while (rollNum < Math.abs(properties.mNumDice)) {
 
             let dieType = typeof die;
 
@@ -298,7 +298,7 @@ export class Roll {
                 dieRoll = die.roll();
             }
 
-            if(properties.mDieCount > 0) {
+            if(properties.mNumDice > 0) {
                 keepList.push(dieRoll);
             } else {
                 keepList.push(-dieRoll);
@@ -356,7 +356,7 @@ export class Roll {
         let dieAverage = 0
         for(let [dieJson, prop] of this.mDieMap)
         {
-            dieAverage += createUnknownDie(dieJson).average * prop.mDieCount + prop.mModifier
+            dieAverage += createUnknownDie(dieJson).average * prop.mNumDice + prop.mModifier
         }
         return dieAverage
     }
@@ -396,18 +396,18 @@ export class Roll {
             // Don't add the "+" to the first item. Only add "+" to positive count items.
             if(firstDie) {
                 firstDie = false
-            } else if(props.mDieCount > 0) {
+            } else if(props.mNumDice > 0) {
                 returnString += "+"
             }
 
             let die = createUnknownDie(dieJson);
             if(die.displayName.startsWith("d"))
             {
-                returnString += props.mDieCount + die.displayName
+                returnString += props.mNumDice + die.displayName
             }
             else
             {
-                returnString += props.mDieCount + 'x' + die.displayName
+                returnString += props.mNumDice + 'x' + die.displayName
             }
 
             switch(props.mAdvantageDisadvantage) {

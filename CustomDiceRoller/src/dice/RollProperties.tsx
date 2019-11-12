@@ -16,7 +16,7 @@ export class RollProperties {
     public static readonly rollAdvantageValue = 1
     public static readonly rollDisadvantageValue = -1
 
-    mDieCount: number;
+    mNumDice: number;
     mModifier: number;
     mAdvantageDisadvantage: number;
     mDropHigh: number;
@@ -30,9 +30,8 @@ export class RollProperties {
     mExplode: boolean;
 
 
-    constructor (
-        {
-        dieCount = 1,
+    constructor ({
+        numDice = 1,
         modifier = 0,
         advantageDisadvantage = RollProperties.rollNaturalValue,
         dropHigh = 0,
@@ -44,9 +43,9 @@ export class RollProperties {
         useMinimumRoll = false,
         minimumRoll = 0,
         explode = false
-        }
-    ) {
-        this.mDieCount = dieCount;
+        }) 
+        {
+        this.mNumDice = numDice;
         this.mModifier = modifier;
         this.mAdvantageDisadvantage = advantageDisadvantage;
         this.mDropHigh = dropHigh;
@@ -59,4 +58,22 @@ export class RollProperties {
         this.mMinimumRoll = minimumRoll;
         this.mExplode = explode;
     };
+
+    clone() : RollProperties
+    {
+        return new RollProperties({
+            numDice : this.mNumDice,
+            modifier : this.mModifier,
+            advantageDisadvantage : this.mAdvantageDisadvantage,
+            dropHigh : this.mDropHigh,
+            dropLow : this.mDropLow,
+            keepHigh : this.mKeepHigh,
+            keepLow : this.mKeepLow,
+            useReRoll : this.mUseReRoll,
+            reRoll : this.mReRoll,
+            useMinimumRoll : this.mUseMinimumRoll,
+            minimumRoll : this.mMinimumRoll,
+            explode : this.mExplode
+        });
+    }
 }
