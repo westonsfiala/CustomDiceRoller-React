@@ -93,8 +93,8 @@ export class RollProperties {
     numNonDefaultProperties() : number {
         let numNonDefault = 0;
 
-        if(this.mNumDice !== 1) {numNonDefault++}
-        if(this.mModifier !== 0) {numNonDefault++}
+        //if(this.mNumDice !== 1) {numNonDefault++}
+        //if(this.mModifier !== 0) {numNonDefault++}
         if(this.mAdvantageDisadvantage !== RollProperties.rollNaturalValue) {numNonDefault++}
         if(this.mDropHigh !== 0) {numNonDefault++}
         if(this.mDropLow !== 0) {numNonDefault++}
