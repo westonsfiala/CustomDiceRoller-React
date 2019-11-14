@@ -15,52 +15,86 @@ import {
 
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { CreateSimpleDieDialog } from '../dialogs/CreateSimpleDieDialog';
-import { SimpleDie } from '../dice/SimpleDie';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export function PropertiesButton({properties, resetDice}) {
+import { RollProperties } from '../dice/RollProperties';
+
+export function PropertiesButton({properties = new RollProperties({}), updateProperties}) {
 
     const menuRef = useRef(null);
-    const resetMenuRef = useRef(null);
-    const [simpleModalShown, setSimpleModalShown] = useState(false);
-    const [simpleDie, setSimpleDie] = useState(new SimpleDie('temp', 1));
 
-    function handleCreateSimpleDie(die: SimpleDie) {
-        setSimpleDie(die);
-        addDie(die);
+    let propertyText = "";
+
+    let numNonDefault = properties.numNonDefaultProperties();
+
+    if(numNonDefault === 1) {
+        propertyText = numNonDefault + " Prop"
+    }
+    else
+    {
+        propertyText = numNonDefault + " Props"
+    }
+
+    let advantageIcon = "checkbox-blank-outline";
+    let naturalIcon = "checkbox-blank-outline";
+    let disadvantageIcon = "checkbox-blank-outline";
+
+    if(properties.mAdvantageDisadvantage === RollProperties.rollAdvantageValue) {
+        advantageIcon = "checkbox-marked-outline";
+    }
+
+    if(properties.mAdvantageDisadvantage === RollProperties.rollNaturalValue) {
+        naturalIcon = "checkbox-marked-outline";
+    }
+
+    if(properties.mAdvantageDisadvantage === RollProperties.rollDisadvantageValue) {
+        disadvantageIcon = "checkbox-marked-outline";
     }
 
     return(
         <View style={styles.Container}>
+            <Menu ref={menuRef}>
+                <MenuTrigger/>
+                <MenuOptions>
+                    <MenuOption style={styles.Menu} onSelect={() => {
+                        let newProps = properties.clone({advantageDisadvantage: RollProperties.rollAdvantageValue});
+                        updateProperties(newProps);
+                        }}
+                    >
+                        <View style={styles.MenuLineContainer}>
+                            <Icon name={advantageIcon} size={styles.Icons.fontSize} color={styles.Icons.color}></Icon>
+                            <Text style={styles.MenuText}>Advantage</Text>
+                        </View>
+                    </MenuOption>
+                    <MenuOption style={styles.Menu} onSelect={() => {
+                        let newProps = properties.clone({advantageDisadvantage: RollProperties.rollNaturalValue});
+                        updateProperties(newProps);
+                        }}
+                    >
+                        <View style={styles.MenuLineContainer}>
+                            <Icon name={naturalIcon} size={styles.Icons.fontSize} color={styles.Icons.color}></Icon>
+                            <Text style={styles.MenuText}>Natural</Text>
+                        </View>
+                    </MenuOption>
+                    <MenuOption style={styles.Menu} onSelect={() => {
+                        let newProps = properties.clone({advantageDisadvantage: RollProperties.rollDisadvantageValue});
+                        updateProperties(newProps);
+                        }}
+                    >
+                        <View style={styles.MenuLineContainer}>
+                            <Icon name={disadvantageIcon} size={styles.Icons.fontSize} color={styles.Icons.color}></Icon>
+                            <Text style={styles.MenuText}>Disadvantage</Text>
+                        </View>
+                    </MenuOption>
+                </MenuOptions>
+            </Menu>
             <Touchable 
                 style={styles.ButtonBackground}
                 foreground={Touchable.Ripple('white')}
                 onPress={() => menuRef.current.open()}
-                onLongPress={() => resetMenuRef.current.open()}
             >
-                <Text style={styles.Text}>Add Die</Text>
+                <Text style={styles.Text}>{propertyText}</Text>
             </Touchable>
-            <Menu ref={menuRef}>
-                <MenuTrigger/>
-                <MenuOptions>
-                    <MenuOption style={styles.Menu} onSelect={() => setSimpleModalShown(true)}>
-                        <Text style={styles.MenuText}>
-                            Simple Die
-                        </Text>
-                    </MenuOption>
-                </MenuOptions>
-            </Menu>
-            <Menu ref={resetMenuRef}>
-                <MenuTrigger/>
-                <MenuOptions>
-                    <MenuOption style={styles.Menu} onSelect={resetDice}>
-                        <Text style={styles.MenuText}>
-                            Reset Dice
-                        </Text>
-                    </MenuOption>
-                </MenuOptions>
-            </Menu>
-            <CreateSimpleDieDialog modalShown={simpleModalShown} die={simpleDie} dismissModal={() => setSimpleModalShown(false)} createDie={handleCreateSimpleDie} />
         </View>
     )
 }
@@ -77,6 +111,10 @@ const styles = EStyleSheet.create({
         textAlign: 'center', 
         color: '$textColor',
     },
+    Icons:{
+        fontSize: '18rem', 
+        color: '$textColor'
+    },
     ButtonBackground:{
         flex:1,
         backgroundColor: '$primaryColorLightened',
@@ -85,6 +123,11 @@ const styles = EStyleSheet.create({
     },
     Menu:{
         backgroundColor:'$primaryColor',
+    },
+    MenuLineContainer:{
+        flex: 1, 
+        flexDirection: 'row', 
+        alignItems: 'center', 
     },
     MenuText:{
         fontSize:'18rem', 

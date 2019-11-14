@@ -17,6 +17,7 @@ import { RollDisplayHelper } from './dice/RollDisplayHelper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { getAvailableDice, standardDice, setAvailableDice } from './sync/AvailableDice';
 import { AddDiceButton } from './helpers/AddDiceButton';
+import { PropertiesButton } from './helpers/PropertiesButton';
 
 export function SimpleDicePage({displayRoll}) {
     const [currentDice, setCurrentDice] = useState(standardDice as Array<Die>);
@@ -147,23 +148,22 @@ export function SimpleDicePage({displayRoll}) {
             <View style={styles.ButtonsRow}>
                 <NumDiceUpDownButtons 
                 count={rollProperties.mNumDice} 
-                setCount={(numDice: number) => 
+                setCount={(newNumDice: number) => 
                     {
-                        let newProps = rollProperties.clone()
-                        newProps.mNumDice = numDice;
+                        let newProps = rollProperties.clone({numDice: newNumDice})
                         setRollProperties(newProps);
                     }} 
                 />
                 <ModifierUpDownButtons 
                 count={rollProperties.mModifier} 
-                setCount={(modifier: number) => {
-                    let newProps = rollProperties.clone()
-                    newProps.mModifier = modifier;
+                setCount={(newModifier: number) => {
+                    let newProps = rollProperties.clone({modifier: newModifier})
                     setRollProperties(newProps);
                 }}
                 />
             </View>
             <View style={styles.ButtonsRow}>
+                <PropertiesButton properties={rollProperties} updateProperties={setRollProperties} />
                 <AddDiceButton addDie={addDie} resetDice={resetDice}/>
             </View>
         </View> 

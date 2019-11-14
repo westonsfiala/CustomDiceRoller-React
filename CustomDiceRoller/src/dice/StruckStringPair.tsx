@@ -21,10 +21,16 @@ export class StruckStringPair {
 }
 
 export function StruckStringPairView ({pair, style}) {
+
+    let extraSpace = "";
+    if(pair.struckText.length !== 0) {
+        extraSpace = " "
+    }
+
     return(
     <View>
         <Text style={style}>
-            {pair.regularText}
+            {pair.regularText + extraSpace}
             <Text style={[style, {textDecorationLine: 'line-through'}]}>
                 {pair.struckText}
             </Text>

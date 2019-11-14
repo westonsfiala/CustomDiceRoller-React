@@ -59,21 +59,51 @@ export class RollProperties {
         this.mExplode = explode;
     };
 
-    clone() : RollProperties
+    clone({
+        numDice = null,
+        modifier = null,
+        advantageDisadvantage = null,
+        dropHigh = null,
+        dropLow = null,
+        keepHigh = null,
+        keepLow = null,
+        useReRoll = null,
+        reRoll = null,
+        useMinimumRoll = null,
+        minimumRoll = null,
+        explode = null
+        }) : RollProperties
     {
         return new RollProperties({
-            numDice : this.mNumDice,
-            modifier : this.mModifier,
-            advantageDisadvantage : this.mAdvantageDisadvantage,
-            dropHigh : this.mDropHigh,
-            dropLow : this.mDropLow,
-            keepHigh : this.mKeepHigh,
-            keepLow : this.mKeepLow,
-            useReRoll : this.mUseReRoll,
-            reRoll : this.mReRoll,
-            useMinimumRoll : this.mUseMinimumRoll,
-            minimumRoll : this.mMinimumRoll,
-            explode : this.mExplode
+            numDice : numDice === null ? this.mNumDice : numDice,
+            modifier : modifier === null ? this.mModifier : modifier,
+            advantageDisadvantage : advantageDisadvantage === null ? this.mAdvantageDisadvantage : advantageDisadvantage,
+            dropHigh : dropHigh === null ? this.mDropHigh : dropHigh,
+            dropLow : dropLow === null ? this.mDropLow : dropLow,
+            keepHigh : keepHigh === null ? this.mKeepHigh : keepHigh,
+            keepLow : keepLow === null ? this.mKeepLow : keepLow,
+            useReRoll : useReRoll === null ? this.mUseReRoll : useReRoll,
+            reRoll : reRoll === null ? this.mReRoll : reRoll,
+            useMinimumRoll : useMinimumRoll === null ? this.mUseMinimumRoll : useMinimumRoll,
+            minimumRoll : minimumRoll === null ? this.mMinimumRoll : minimumRoll,
+            explode : explode === null ? this.mExplode : explode
         });
+    }
+
+    numNonDefaultProperties() : number {
+        let numNonDefault = 0;
+
+        if(this.mNumDice !== 1) {numNonDefault++}
+        if(this.mModifier !== 0) {numNonDefault++}
+        if(this.mAdvantageDisadvantage !== RollProperties.rollNaturalValue) {numNonDefault++}
+        if(this.mDropHigh !== 0) {numNonDefault++}
+        if(this.mDropLow !== 0) {numNonDefault++}
+        if(this.mKeepHigh !== 0) {numNonDefault++}
+        if(this.mKeepLow !== 0) {numNonDefault++}
+        if(this.mUseReRoll !== false) {numNonDefault++}
+        if(this.mUseMinimumRoll !== false) {numNonDefault++}
+        if(this.mExplode !== false) {numNonDefault++}
+
+        return numNonDefault;
     }
 }

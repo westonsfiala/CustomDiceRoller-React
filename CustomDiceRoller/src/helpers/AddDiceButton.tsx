@@ -32,15 +32,6 @@ export function AddDiceButton({addDie, resetDice}) {
 
     return(
         <View style={styles.Container}>
-            <Touchable 
-                style={styles.ButtonBackground}
-                foreground={Touchable.Ripple('white')}
-                onPress={() => menuRef.current.open()}
-                delayLongPress={300}
-                onLongPress={() => resetMenuRef.current.open()}
-            >
-                <Text style={styles.Text}>Add Die</Text>
-            </Touchable>
             <Menu ref={menuRef}>
                 <MenuTrigger/>
                 <MenuOptions>
@@ -61,6 +52,16 @@ export function AddDiceButton({addDie, resetDice}) {
                     </MenuOption>
                 </MenuOptions>
             </Menu>
+            <Touchable 
+                style={styles.ButtonBackground}
+                foreground={Touchable.Ripple('white')}
+                onPress={() => menuRef.current.open()}
+                delayLongPress={300}
+                onLongPress={() => resetMenuRef.current.open()}
+            >
+                <Text style={styles.Text}>Add Die</Text>
+            </Touchable>
+            
             <CreateSimpleDieDialog modalShown={simpleModalShown} die={simpleDie} dismissModal={() => setSimpleModalShown(false)} createDie={handleCreateSimpleDie} />
         </View>
     )
