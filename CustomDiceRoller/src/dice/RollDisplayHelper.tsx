@@ -108,7 +108,7 @@ export class RollDisplayHelper {
 
         for(let dieRolls of rollValues.mRollResults.values())
         {
-            sumResult += dieRolls.reduce(summer);
+            sumResult += dieRolls.reduce(summer, 0);
         }
 
         for(let dieMod of rollValues.mRollModifiers.values()) {
@@ -120,7 +120,7 @@ export class RollDisplayHelper {
         if(rollValues.mStruckRollResults.size !== 0) {
             for (let struckValues of rollValues.mStruckRollResults.values()) {
                 if(struckValues.length !== 0) {
-                    sumStruck += struckValues.reduce(summer);
+                    sumStruck += struckValues.reduce(summer, 0);
                     displayStruck = true;
                 }
             }
@@ -130,7 +130,7 @@ export class RollDisplayHelper {
         if(rollValues.mDroppedRolls.size !== 0) {
             for (let droppedValues of rollValues.mDroppedRolls.values()) {
                 if(droppedValues.length !== 0) {
-                    sumDropped += droppedValues.reduce(summer);
+                    sumDropped += droppedValues.reduce(summer, 0);
                     displayDropped = true;
                 }
             }

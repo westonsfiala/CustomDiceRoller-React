@@ -78,7 +78,8 @@ function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = fal
             </Touchable>
             <SetValueDialog 
                 modalShown={modalShown} 
-                disallowZero={disallowZero} 
+                valueEnforcer={(num : number) => {return enforceGoodValue(num, 0, disallowZero)}}
+                titleText={"Set Value Exact"}
                 defaultValue={count} 
                 dismissModal={() => setModalShown(false)} 
                 acceptValue={updateNumber}

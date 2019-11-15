@@ -12,9 +12,7 @@ import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
 
-import { enforceGoodValue } from '../helpers/NumberHelper';
-
-export function SetValueDialog({modalShown, disallowZero, defaultValue, dismissModal, acceptValue}) {
+export function SetValueDialog({modalShown, valueEnforcer, titleText, defaultValue, dismissModal, acceptValue}) {
 
     const [currentText, setCurrentText] = useState(defaultValue.toString())
 
@@ -22,7 +20,7 @@ export function SetValueDialog({modalShown, disallowZero, defaultValue, dismissM
         let possibleNumber = Number.parseInt(currentText)
         if(Number.isSafeInteger(possibleNumber))
         {
-            let newCount = enforceGoodValue(possibleNumber, 0, disallowZero)
+            let newCount = valueEnforcer(possibleNumber)
 
             acceptValue(newCount)
         }
@@ -33,7 +31,7 @@ export function SetValueDialog({modalShown, disallowZero, defaultValue, dismissM
     function modalContent() {
         return(
             <View>
-                <Text style={styles.ModalTitle}>Set Exact Value</Text>
+                <Text style={styles.ModalTitle}>{titleText}</Text>
                 <View style={styles.ModalTextInputLine}>
                     <Text style={styles.ModalText}>Number</Text>
                     <TextInput 
