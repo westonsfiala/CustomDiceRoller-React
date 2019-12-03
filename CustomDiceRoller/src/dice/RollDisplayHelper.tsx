@@ -4,7 +4,9 @@ import {Roll} from "./Roll"
 import {createUnknownDie} from "./DieFactory"
 import {getModifierString} from "../helpers/StringHelper"
 import {StruckStringPair} from "./StruckStringPair"
+import { RollProperties, isDouble, isHalve } from "./RollProperties";
 
+// Class that performs a roll when constructed and turns that roll into displayable chunks of information.
 export class RollDisplayHelper {
 
     public readonly timeStamp : Date;
@@ -21,7 +23,10 @@ export class RollDisplayHelper {
         this.rollSumText = new StruckStringPair('','');
         this.rollResultsText = Array<StruckStringPair>();
 
+        // Lambda method for use in the reduce method to sum all the values.
         const summer = (accumulator: number, current: number) => accumulator + current;
+
+        // Lambda method for use in the reduce method to output a nicely comma separated list.
         const concatter = (accumulator: string, current: number, index: number) : string => {
             if(index === 0) 
             {
@@ -36,8 +41,11 @@ export class RollDisplayHelper {
         let rollValues = roll.roll();
 
         this.rollNameText = roll.getDetailedRollName();
+        
+        let sumResult = 0;
 
-        for(let dieJson of rollValues.mRollResults.keys()) {
+        // Go through all of the dice in the roll and start making the roll detail lines
+        for(let dieJson of rollValues.getKeys()) {
 
             let die = createUnknownDie(dieJson);
 
@@ -47,25 +55,45 @@ export class RollDisplayHelper {
             let rollResultsStruck = rollValues.mStruckRollResults.get(dieJson);
             let rollResultsStruckDropped = rollValues.mStruckDroppedRolls.get(dieJson);
             let rollResultsStruckReRolled = rollValues.mStruckReRolledRolls.get(dieJson);
-            let rollModifier = rollValues.mRollModifiers.get(dieJson);
+            let rollProperties = rollValues.mRollProperties.get(dieJson);
 
-            const processRollPair = (dieName: string, mainList: Array<number>, strikeList: Array<number>, modifier?: number | 0) : StruckStringPair =>
+            // Lambda method for turning the roll numbers into a displayable string.
+            const processRollPair = (dieName: string, mainList: Array<number>, strikeList: Array<number>, properties : RollProperties, showPropInfo : boolean) : StruckStringPair =>
             {
-                if(mainList && mainList.length !== 0 || strikeList && strikeList.length !== 0) {
-                    let subTotal = mainList.reduce(summer,0) + modifier;
+                if(mainList && mainList.length !== 0 || strikeList && strikeList.length !== 0 || (showPropInfo && properties.mModifier !== 0)) {
+                    let subTotal = mainList.reduce(summer,0) + (showPropInfo ? properties.mModifier : 0);
+
+                    if(showPropInfo)
+                    {
+                        if(isDouble(properties)) {subTotal *= 2;}
+                        if(isHalve(properties)) {subTotal /= 2;}
+                        sumResult += Math.floor(subTotal);
+                    }
+
                     let mainListString = mainList.reduce(concatter, '');
                     let strikeListString = strikeList.reduce(concatter, '');
+
                     let detailString = '';
                     detailString += dieName + ' [' + subTotal + ']: '; 
                     detailString += mainListString;
-                    if(rollModifier !== 0)
-                    {
-                        if(mainListString.length !== 0)
+
+                    if(showPropInfo) {
+                        if(properties.mModifier !== 0)
                         {
-                            detailString += ',';
+                            detailString += ' (' + getModifierString(properties.mModifier,true) + ')';
                         }
-                        detailString += '(' + getModifierString(rollModifier,true) + ')';
-                    }
+
+                        if(isDouble(properties))
+                        {
+                            detailString += ' (x2)';
+                        }
+
+                        if(isHalve(properties))
+                        {
+                            detailString += ' (/2)';
+                        }
+                    } 
+
                     if(strikeListString.length !== 0) {
                         detailString += ' ';
                     }
@@ -75,19 +103,19 @@ export class RollDisplayHelper {
                 return null
             }
 
-            let mainResults = processRollPair(die.displayName, rollResults, rollResultsStruck, rollModifier);
+            let mainResults = processRollPair(die.displayName, rollResults, rollResultsStruck, rollProperties, true);
             if(mainResults !== null)
             {
                 this.rollResultsText.push(mainResults)
             }
 
-            let droppedResults = processRollPair(die.displayName, rollResultsDropped, rollResultsStruckDropped, 0);
+            let droppedResults = processRollPair(die.displayName + ' dropped', rollResultsDropped, rollResultsStruckDropped, rollProperties, false);
             if(droppedResults !== null)
             {
                 this.rollResultsText.push(droppedResults)
             }
 
-            let rerolledResults = processRollPair(die.displayName, rollResultsReRolled, rollResultsStruckReRolled, 0);
+            let rerolledResults = processRollPair(die.displayName + ' re-rolled', rollResultsReRolled, rollResultsStruckReRolled, rollProperties, false);
             if(rerolledResults !== null)
             {
                 this.rollResultsText.push(rerolledResults)
@@ -101,57 +129,8 @@ export class RollDisplayHelper {
             this.rollResultsText.push(new StruckStringPair(averageText,'', 'expected'));
         }
 
-        let sumResult = 0;
-        let sumStruck = 0;
-        let displayStruck = false;
-        let displayDropped = false;
-
-        for(let dieRolls of rollValues.mRollResults.values())
-        {
-            sumResult += dieRolls.reduce(summer, 0);
-        }
-
-        for(let dieMod of rollValues.mRollModifiers.values()) {
-            sumResult += dieMod;
-            sumStruck += dieMod;
-        }
-
-        // Only show the struck through text
-        if(rollValues.mStruckRollResults.size !== 0) {
-            for (let struckValues of rollValues.mStruckRollResults.values()) {
-                if(struckValues.length !== 0) {
-                    sumStruck += struckValues.reduce(summer, 0);
-                    displayStruck = true;
-                }
-            }
-        }
-
-        let sumDropped = sumResult
-        if(rollValues.mDroppedRolls.size !== 0) {
-            for (let droppedValues of rollValues.mDroppedRolls.values()) {
-                if(droppedValues.length !== 0) {
-                    sumDropped += droppedValues.reduce(summer, 0);
-                    displayDropped = true;
-                }
-            }
-        }
-
-        let highText = sumResult.toString();
-        let lowText = sumStruck.toString();
-        let droppedText = sumDropped.toString();
-        let struckText = '';
-
-        if(displayStruck) 
-        {
-            struckText = lowText;
-        }
-        else if(displayDropped)
-        {
-            struckText = droppedText;
-        }
-
-        this.rollSumText.regularText = highText;
-        this.rollSumText.struckText = struckText;
+        this.rollSumText.regularText = sumResult.toString();
+        this.rollSumText.struckText = '';
     }
 
 }

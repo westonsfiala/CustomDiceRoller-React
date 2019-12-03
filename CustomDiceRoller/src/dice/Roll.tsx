@@ -11,7 +11,7 @@ import {
     getDropLowString,
     getKeepHighString,
     getKeepLowString,
-    getMinimumDieValueString,
+    getMinimumString,
     getReRollString
  } from '../helpers/StringHelper'
 
@@ -190,7 +190,7 @@ export class Roll {
 
             const summer = (accumulator: number, current: number) => accumulator + current;
 
-            returnResults.mRollModifiers.set(dieJson, properties.mModifier);
+            returnResults.mRollProperties.set(dieJson, properties);
 
             switch(properties.mAdvantageDisadvantage)
             {
@@ -258,7 +258,7 @@ export class Roll {
         return returnResults
     }
 
-    // Produces an array of 3 lists, a list of taken letues, and a list of dropped letues, and a list of rerolled letues
+    // Produces an array of 3 lists, a list of taken values, and a list of dropped values, and a list of rerolled values
     private produceRollLists(die: Die, properties: RollProperties) : {keep: number[], drop: number[], reroll: number[]} 
     {
         let keepList = new Array<number>();
@@ -275,24 +275,22 @@ export class Roll {
         let rollNum = 0;
         while (rollNum < Math.abs(properties.mNumDice)) {
 
-            let dieType = typeof die;
-
             let dieRoll = die.roll();
 
-            // If we are set to explode, have the maximum letue, and actually have a range, roll an extra die
+            // If we are set to explode, have the maximum value, and actually have a range, roll an extra die
             if(properties.mExplode && dieRoll == die.max && die.max != die.min) {
                 rollNum -= 1;
             }
 
-            // If we have a minimum letue, drop anything less.
-            if(properties.mUseMinimumRoll && dieRoll < properties.mMinimumRoll)
+            // If we have a minimum value, drop anything less.
+            if(properties.mMinimumRoll !== 0 && Math.abs(dieRoll) < properties.mMinimumRoll)
             {
                 rerollList.push(dieRoll);
                 dieRoll = properties.mMinimumRoll;
             }
 
             // If we use reRolls, reRoll under the threshold.
-            if(properties.mUseReRoll && dieRoll <= properties.mReRoll)
+            if(properties.mReRoll !== 0 && Math.abs(dieRoll) <= properties.mReRoll)
             {
                 rerollList.push(dieRoll)
                 dieRoll = die.roll();
@@ -306,9 +304,9 @@ export class Roll {
             rollNum += 1;
         }
 
-        // Drop high letues
+        // Drop high values
         if(keepList.length <= properties.mDropHigh) {
-            dropList.concat(keepList);
+            dropList = dropList.concat(keepList);
             keepList = new Array<number>();
         } else {
             for(let dropIndex = 0; dropIndex < properties.mDropHigh; dropIndex++) {
@@ -319,9 +317,9 @@ export class Roll {
             }
         }
 
-        // Drop low letues
+        // Drop low values
         if(keepList.length <= properties.mDropLow) {
-            dropList.concat(keepList)
+            dropList = dropList.concat(keepList)
             keepList = new Array<number>()
         } else {
             for(let dropIndex = 0; dropIndex < properties.mDropLow; dropIndex++) {
@@ -412,44 +410,42 @@ export class Roll {
 
             switch(props.mAdvantageDisadvantage) {
                 case RollProperties.rollAdvantageValue : 
-                    returnString += "(Advantage)"
+                    returnString += "(Advantage)";
                     break;
                 case RollProperties.rollDisadvantageValue : 
-                    returnString += "(Disadvantage)"
+                    returnString += "(Disadvantage)";
                     break;
             }
 
-            if(props.mDropHigh != 0) {
+            if(props.mDropHigh !== 0) {
                 let dropString = getDropHighString(props.mDropHigh)
                 returnString += '(' + dropString + ')';
             } 
 
-            if(props.mDropLow != 0) {
+            if(props.mDropLow !== 0) {
                 let dropString = getDropLowString(props.mDropLow)
                 returnString += '(' + dropString + ')';
             }
 
-            if(props.mKeepHigh != 0) {
+            if(props.mKeepHigh !== 0) {
                 let keepString = getKeepHighString(props.mKeepHigh)
                 returnString += '(' + keepString + ')';
             }
 
-            if(props.mKeepLow != 0) {
+            if(props.mKeepLow !== 0) {
                 let keepString = getKeepLowString(props.mKeepLow)
                 returnString += '(' + keepString + ')';
             }
 
-            if(props.mUseReRoll != defaultProps.mUseReRoll
-                && props.mReRoll != defaultProps.mReRoll)
+            if(props.mReRoll != defaultProps.mReRoll)
             {
                 let reRollString = getReRollString(props.mReRoll)
                 returnString += '(' + reRollString + ')';
             }
 
-            if(props.mUseMinimumRoll != defaultProps.mUseMinimumRoll
-                && props.mMinimumRoll != defaultProps.mMinimumRoll)
+            if(props.mMinimumRoll != defaultProps.mMinimumRoll)
             {
-                let minString = getMinimumDieValueString(props.mMinimumRoll)
+                let minString = getMinimumString(props.mMinimumRoll)
                 returnString += '(' + minString + ')';
             }
 
@@ -459,6 +455,15 @@ export class Roll {
 
             if(props.mModifier != 0) {
                 returnString += getModifierString(props.mModifier, true)
+            }
+            
+            switch(props.mDoubleHalve) {
+                case RollProperties.rollDoubleValue :
+                    returnString += '(Double)';
+                    break;
+                case RollProperties.rollHalveValue :
+                    returnString += '(Halve)';
+                    break;
             }
         }
 

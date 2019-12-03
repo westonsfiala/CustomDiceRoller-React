@@ -68,18 +68,6 @@ export function RollResultsDialog({rollHelper = null as RollDisplayHelper, addRo
     
     let modalShown = rollHelper !== null;
 
-    // TODO: Add history fuction with date
-    //val time = Calendar.getInstance().time
-    //val formatter = SimpleDateFormat("yyyy/MM/dd\nHH:mm:ss", Locale.getDefault())
-    //val formattedDate = formatter.format(time)
-
-    //listener.onRollResult(HistoryStamp(
-    //    rollTotal.text,
-    //    rollName.text,
-    //    rollDetails.text,
-    //    formattedDate
-    //))
-
     // TODO: lock screen rotation
     //dialog.setOnDismissListener {
     //    unlockRotation()
@@ -97,15 +85,14 @@ export function RollResultsDialog({rollHelper = null as RollDisplayHelper, addRo
     );
 }
 
-
 const styles = EStyleSheet.create({
     TitleText: {
-        fontSize:'30rem',
+        fontSize:'20rem',
         color:'$textColor',
         textAlign:'center',
     },
     SumText: {
-        fontSize:'50rem',
+        fontSize:'60rem',
         color:'$textColor',
         textAlign:'center',
     },

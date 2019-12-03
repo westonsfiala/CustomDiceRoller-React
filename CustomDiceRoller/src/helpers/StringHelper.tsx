@@ -41,10 +41,40 @@ export function getKeepLowString(keep : number) : string
 
 export function getReRollString(reroll : number) : string
 {
-    return 'Re-Roll Die <= ' + reroll
+    return 'Re-Roll Die <= |' + reroll + '|'
 }
 
-export function getMinimumDieValueString(minimum : number) : string
+export function getMinimumString(minimum : number) : string
 {
-    return 'Minimum Die Value = ' + minimum
+    return 'Minimum Value = |' + minimum + '|'
+}
+
+export function getDropHighTitle() : string
+{
+    return 'Drop X Highest';
+}
+
+export function getDropLowTitle() : string
+{
+    return 'Drop X Lowest';
+}
+
+export function getKeepHighTitle() : string
+{
+    return 'Keep X Highest';
+}
+
+export function getKeepLowTitle() : string
+{
+    return 'Keep X Lowest';
+}
+
+export function getReRollTitle() : string
+{
+    return 'Re-Roll Die <= |X|'
+}
+
+export function getMinimumTitle() : string
+{
+    return 'Minimum Value = |X|'
 }

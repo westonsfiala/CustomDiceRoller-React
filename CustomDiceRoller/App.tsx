@@ -35,6 +35,7 @@ import { RollDisplayHelper } from './src/dice/RollDisplayHelper'
 import { RollResultsDialog } from './src/dialogs/RollResultsDialog';
 import { HistoryPage } from './src/HistoryPage';
 
+// Main entry point for the app, controls the highest level of what is shown on the screen.
 const App = () => {
     const [rollHelper, setRollHelper] = useState(null as RollDisplayHelper) 
     const viewPager = useRef(null as ViewPager);
