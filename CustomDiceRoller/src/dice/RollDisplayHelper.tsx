@@ -16,7 +16,7 @@ export class RollDisplayHelper {
     public readonly rollResultsText : Array<StruckStringPair>;
 
     constructor(roll: Roll) {
-
+        
         this.timeStamp = new Date();
         this.storedRoll = roll;
         this.rollNameText = '';

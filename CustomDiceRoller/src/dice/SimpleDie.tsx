@@ -33,10 +33,6 @@ export class SimpleDie extends Die
         this.mDie = die;
     }
 
-    clone(newName: string) : Die {
-        return new SimpleDie(newName, this.mDie);
-    }
-
     roll() :  number
     {
         if(this.mDie == 0) {

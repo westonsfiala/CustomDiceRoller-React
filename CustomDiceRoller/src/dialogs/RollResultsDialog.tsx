@@ -18,9 +18,9 @@ import { RollDisplayHelper } from '../dice/RollDisplayHelper';
 import { StruckStringPairView, StruckStringPair } from '../dice/StruckStringPair';
 import { ModalDialogBase } from './ModalDialogBase'
 
-export function RollResultsDialog({rollHelper = null as RollDisplayHelper, addRollToHistory, dismissRollHelperDisplay}) {
+export function RollResultsDialog({rollHelper = null as RollDisplayHelper, rollAgainHandler, dismissDialog}) {
 
-    const [modalHeight, setModalHeight] = useState(.5)
+    const [modalHeight, setModalHeight] = useState(.5);
     
     console.log('refresh roll results');
 
@@ -50,14 +50,14 @@ export function RollResultsDialog({rollHelper = null as RollDisplayHelper, addRo
                 }
                 <View style={styles.ButtonContainer}>
                     <Touchable 
-                    onPress={() => addRollToHistory(new RollDisplayHelper(rollHelper.storedRoll))}
+                    onPress={() => rollAgainHandler()}
                     foreground={Touchable.Ripple('white', true)}
                     hitSlop={styles.HitSlop}
                     >
                         <Text style={styles.ButtonText}>Roll Again</Text>
                     </Touchable>
                     <Touchable 
-                    onPress={() => dismissRollHelperDisplay()}
+                    onPress={() => dismissDialog()}
                     foreground={Touchable.Ripple('white', true)}
                     hitSlop={styles.HitSlop}
                     >
@@ -83,7 +83,7 @@ export function RollResultsDialog({rollHelper = null as RollDisplayHelper, addRo
     //}
 
     return (
-        <ModalDialogBase modalShown={modalShown} dismissModal={dismissRollHelperDisplay} height={modalHeight} content={modalContent()} extraStyle={{flex:1}}/>
+        <ModalDialogBase modalShown={modalShown} dismissModal={dismissDialog} height={modalHeight} content={modalContent()} extraStyle={{flex:1}}/>
     );
 }
 

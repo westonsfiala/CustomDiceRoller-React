@@ -9,15 +9,13 @@ export abstract class Die {
 
     public static readonly dieDisplayInHexID = '0x';
 
-    public readonly mDieName: string;
+    public mDieName: string;
     public readonly mDieType: string;
 
     constructor(dieName: string, dieType: string) {
         this.mDieName = dieName;
         this.mDieType = dieType;
     }
-
-    abstract clone(newName : string) : Die;
 
     abstract roll() : number;
 

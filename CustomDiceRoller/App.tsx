@@ -34,35 +34,50 @@ import { SimpleDicePage } from './src/SimpleDicePage';
 import { RollDisplayHelper } from './src/dice/RollDisplayHelper'
 import { RollResultsDialog } from './src/dialogs/RollResultsDialog';
 import { HistoryPage } from './src/HistoryPage';
+import { Roll } from './src/dice/Roll';
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 const App = () => {
     const [rollHelper, setRollHelper] = useState(null as RollDisplayHelper) 
     const viewPager = useRef(null as ViewPager);
     const [currentPage, setCurrentPage] = useState(1);
-    const [rollHistory, setRollHistory] = useState(Array<RollDisplayHelper>());
+    const rollHistory = useRef(Array<RollDisplayHelper>());
     const previousRollHistory = useRef(null as Array<RollDisplayHelper>);
 
     console.log('refresh app');
 
     function clearRollHistoryHandler() {
-        previousRollHistory.current = rollHistory;
-        setRollHistory(Array<RollDisplayHelper>());
+        previousRollHistory.current = rollHistory.current;
+        rollHistory.current = Array<RollDisplayHelper>();
     }
 
-    function addRollToHistory(newRoll: RollDisplayHelper) {
+    function addRoll(newRoll: Roll) {
+        if(newRoll !== null)
+        {
+            let newResult = new RollDisplayHelper(newRoll);
+            addRollResultToHistory(newResult);
+            setRollHelper(newResult);
+        }
+    };
+
+    function reRoll() {
+        if(rollHelper !== null)
+        {
+            addRoll(rollHelper.storedRoll);
+        }
+    }
+
+    function addRollResultToHistory(rollResult : RollDisplayHelper) {
         // If we are adding something to the history, do not allow re-setting the old history.
         if(previousRollHistory.current !== null) {
             previousRollHistory.current = null;
         }
 
         // Do not set the rollHelper to null. The rollHelperDialog does this when it closes.
-        rollHistory.push(newRoll);
+        rollHistory.current.push(rollResult);
+    }
 
-        setRollHelper(newRoll);
-    };
-
-    function dismissRollHelperDisplay() {
+    function dismissRollResultsDialog() {
         setRollHelper(null);
     }
 
@@ -82,13 +97,13 @@ const App = () => {
                 />
                 <ViewPager style={styles.Pager} ref={viewPager}  initialPage = {currentPage} onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}>
                     <View key="1" >
-                        <HistoryPage rollHistory={rollHistory}/>
+                        <HistoryPage rollHistory={rollHistory.current}/>
                     </View>
                     <View key="2" >
-                        <SimpleDicePage displayRoll={addRollToHistory}/>
+                        <SimpleDicePage displayRoll={addRoll}/>
                     </View>
                 </ViewPager>
-                <RollResultsDialog rollHelper={rollHelper} addRollToHistory={addRollToHistory} dismissRollHelperDisplay={dismissRollHelperDisplay}/>
+                <RollResultsDialog rollHelper={rollHelper} rollAgainHandler={reRoll} dismissDialog={dismissRollResultsDialog}/>
             </View>
         </MenuProvider>
     );

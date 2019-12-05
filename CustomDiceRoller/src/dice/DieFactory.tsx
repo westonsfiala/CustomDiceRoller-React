@@ -14,6 +14,12 @@ export function createUnknownDie(dieString: string) : Die {
     throw new DieLoadError();
 }
 
+export function cloneDie(die: Die, newName : string) : Die {
+    let newDie = createUnknownDie(JSON.stringify(die))
+    newDie.mDieName = newName;
+    return newDie;
+}
+
 function createSimpleDie(dieJson: SimpleDie) : SimpleDie 
 {
     let dieName = dieJson.mDieName;

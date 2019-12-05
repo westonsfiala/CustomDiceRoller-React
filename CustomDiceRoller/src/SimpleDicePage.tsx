@@ -13,7 +13,6 @@ import { Die } from "./dice/Die";
 import { NumDiceUpDownButtons, ModifierUpDownButtons } from './helpers/UpDownButtons';
 import { Roll } from './dice/Roll';
 import { RollProperties } from './dice/RollProperties';
-import { RollDisplayHelper } from './dice/RollDisplayHelper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { getAvailableDice, standardDice, setAvailableDice } from './sync/AvailableDice';
 import { AddDiceButton } from './helpers/AddDiceButton';
@@ -35,7 +34,7 @@ export function SimpleDicePage({displayRoll}) {
 
         tempRoll.addDieToRoll(clickedDie, rollProperties);
 
-        displayRoll(new RollDisplayHelper(tempRoll));
+        displayRoll(tempRoll);
     }
 
     function hasDieByName(possibleDie: Die, dieList : Array<Die>) : boolean {
@@ -114,7 +113,7 @@ export function SimpleDicePage({displayRoll}) {
                 setCurrentDice(dice)
             }
         });
-    })
+    }, [currentDice])
 
     useEffect(() => {
         Dimensions.addEventListener("change", handleScreenChange);

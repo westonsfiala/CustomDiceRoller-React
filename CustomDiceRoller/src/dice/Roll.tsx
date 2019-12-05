@@ -29,16 +29,6 @@ export class Roll {
         this.mDieMap = new Map<string, RollProperties>();
     }
 
-    clone(newRollName: string, newRollCategory: string) : Roll
-    {
-        let retRoll = JSON.parse(JSON.stringify(this)) as Roll;
-
-        retRoll.mRollName = newRollName;
-        retRoll.mRollCategory = newRollCategory;
-
-        return retRoll;
-    }
-
     addDieToRoll(die: Die, properties: RollProperties)
     {
         let newDieProperties = JSON.parse(JSON.stringify(properties)) as RollProperties;
