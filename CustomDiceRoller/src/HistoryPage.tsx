@@ -52,6 +52,8 @@ function HistoryItemView(rollHelper : RollDisplayHelper) {
 export function HistoryPage({rollHistory = [] as Array<RollDisplayHelper>}) {
 
     const flatList = useRef(null as FlatList<RollDisplayHelper>);
+    
+    console.log('refresh history page');
 
     return (
         <View>

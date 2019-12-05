@@ -2,7 +2,7 @@
 import {Die, DieLoadError} from '../dice/Die'
 import {SimpleDie} from '../dice/SimpleDie'
 
-import { useAsyncStorage } from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 import { createUnknownDie } from '../dice/DieFactory';
 
 export const standardDice = [
@@ -16,16 +16,15 @@ export const standardDice = [
     new SimpleDie('d100', 100)
 ];
 
-export async function setAvailableDice(dice: Array<Die>) {
-    const { setItem } = useAsyncStorage('DicePoolKey');
+const DiceKey = 'DicePoolKey';
 
-    await setItem(JSON.stringify(dice));
+export async function setAvailableDice(dice: Array<Die>) : Promise<Array<Die>> {
+    await AsyncStorage.setItem(DiceKey, JSON.stringify(dice));
+    return dice;
 }
 
-export async function getAvailableDice() {
-    const { getItem } = useAsyncStorage('DicePoolKey');
-
-    const diceArrayString = await getItem();
+export async function getAvailableDice() : Promise<Array<Die>> {
+    const diceArrayString = await AsyncStorage.getItem(DiceKey);
 
     // If we don't have the value, or its empty, set the standard and return it.
     if(diceArrayString === null || diceArrayString.length === 0)

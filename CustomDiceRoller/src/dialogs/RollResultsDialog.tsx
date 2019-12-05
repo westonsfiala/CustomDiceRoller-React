@@ -21,6 +21,8 @@ import { ModalDialogBase } from './ModalDialogBase'
 export function RollResultsDialog({rollHelper = null as RollDisplayHelper, addRollToHistory, dismissRollHelperDisplay}) {
 
     const [modalHeight, setModalHeight] = useState(.5)
+    
+    console.log('refresh roll results');
 
     // This is the only way that I can tell of so far to get the size of the 
     function handleSizeChange(possibleHeight: number) {

@@ -21,9 +21,10 @@ import { PropertiesButton } from './helpers/PropertiesButton';
 
 export function SimpleDicePage({displayRoll}) {
     const [currentDice, setCurrentDice] = useState(standardDice as Array<Die>);
-    const [forceReload, setForceReload] = useState(false);
     const [width, setWidth] = useState(Dimensions.get("window").width);
     const [rollProperties, setRollProperties] = useState(new RollProperties({}))
+    
+    console.log('refresh simple page');
 
     function handleScreenChange({window}) {
         setWidth(window.width);
@@ -37,7 +38,7 @@ export function SimpleDicePage({displayRoll}) {
         displayRoll(new RollDisplayHelper(tempRoll));
     }
 
-    function hasDieByName(possibleDie: Die) : boolean {
+    function hasDieByName(possibleDie: Die, dieList : Array<Die>) : boolean {
         for(let dieIndex = 0; dieIndex < currentDice.length; ++dieIndex) {
             let currentDie = currentDice[dieIndex]
 
@@ -50,15 +51,15 @@ export function SimpleDicePage({displayRoll}) {
     }
 
     function resetDice() {
-        setAvailableDice(standardDice).then(() => setForceReload(!forceReload));
+        setAvailableDice(standardDice).then((dice) => setCurrentDice(dice));
     }
 
-    function addDie(newDie: Die) : boolean {
+    function addDie(newDie: Die, dieList : Array<Die> = currentDice.concat()) : boolean {
         let added = false;
 
-        if(!hasDieByName(newDie))
+        if(!hasDieByName(newDie, dieList))
         {
-            currentDice.push(newDie)
+            dieList.push(newDie)
             added = true;
         }
         else 
@@ -66,23 +67,24 @@ export function SimpleDicePage({displayRoll}) {
             // TODO: tell the user when something goes wrong.
         }
 
-        setAvailableDice(currentDice).then(() => setForceReload(!forceReload));
+        if(dieList !== currentDice) setAvailableDice(dieList).then((dice) => setCurrentDice(dice));
 
         return added;
     }
 
-    function removeDie(clickedDie: Die) : boolean {
+    function removeDie(clickedDie: Die, dieList : Array<Die> = currentDice.concat()) : boolean {
         let removed = false;
 
-        for(let dieIndex = 0; dieIndex < currentDice.length; ++dieIndex) {
-            let currentDie = currentDice[dieIndex]
+        for(let dieIndex = 0; dieIndex < dieList.length; ++dieIndex) {
+            let currentDie = dieList[dieIndex]
 
             if(currentDie.displayName === clickedDie.displayName) {
-                currentDice.splice(dieIndex, 1)
+                dieList.splice(dieIndex, 1)
                 removed = true;
             }
         }
-        setAvailableDice(currentDice).then(() => setForceReload(!forceReload));
+
+        if(dieList !== currentDice) setAvailableDice(dieList).then((dice) => setCurrentDice(dice));
 
         return removed;
     }
@@ -90,15 +92,17 @@ export function SimpleDicePage({displayRoll}) {
     function editDie(originalDie: Die, newDie: Die) : boolean {
         let edited = false;
 
-        if(removeDie(originalDie)) {
-            if(addDie(newDie)) {
+        let dieList = currentDice.concat();
+
+        if(removeDie(originalDie, dieList)) {
+            if(addDie(newDie, dieList)) {
                 edited = true
             } else {
-                addDie(originalDie);
+                addDie(originalDie, dieList);
             }
         }
 
-        setAvailableDice(currentDice).then(() => setForceReload(!forceReload));
+        setAvailableDice(dieList).then((dice) => setCurrentDice(dice));
 
         return edited;
     }

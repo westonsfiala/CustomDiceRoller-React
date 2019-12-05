@@ -43,6 +43,8 @@ const App = () => {
     const [rollHistory, setRollHistory] = useState(Array<RollDisplayHelper>());
     const previousRollHistory = useRef(null as Array<RollDisplayHelper>);
 
+    console.log('refresh app');
+
     function clearRollHistoryHandler() {
         previousRollHistory.current = rollHistory;
         setRollHistory(Array<RollDisplayHelper>());
