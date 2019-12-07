@@ -12,7 +12,7 @@
 // For description of how to use icons go to https://github.com/oblador/react-native-vector-icons 
 
 import React, { useState, useRef, useEffect } from 'react'
-import { View, Dimensions } from 'react-native';
+import { View, Text, Dimensions } from 'react-native';
 
 import { AppBar } from "./src/appBar/AppBar";
 import ViewPager from '@react-native-community/viewpager';
@@ -32,14 +32,15 @@ EStyleSheet.build({
 
 import { SimpleDicePage } from './src/SimpleDicePage';
 import { RollDisplayHelper } from './src/dice/RollDisplayHelper'
-import { RollResultsDialog } from './src/dialogs/RollResultsDialog';
 import { HistoryPage } from './src/HistoryPage';
 import { Roll } from './src/dice/Roll';
+import { RollResultsPage } from './src/RollResultsPage';
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 const App = () => {
     const [rollHelper, setRollHelper] = useState(null as RollDisplayHelper) 
     const viewPager = useRef(null as ViewPager);
+    const dialogPager = useRef(null as ViewPager);
     const [currentPage, setCurrentPage] = useState(1);
     const rollHistory = useRef(Array<RollDisplayHelper>());
     const previousRollHistory = useRef(null as Array<RollDisplayHelper>);
@@ -56,6 +57,7 @@ const App = () => {
         {
             let newResult = new RollDisplayHelper(newRoll);
             addRollResultToHistory(newResult);
+            dialogPager.current.setPage(0);
             setRollHelper(newResult);
         }
     };
@@ -78,6 +80,7 @@ const App = () => {
     }
 
     function dismissRollResultsDialog() {
+        dialogPager.current.setPage(1);
         setRollHelper(null);
     }
 
@@ -88,26 +91,33 @@ const App = () => {
     return (
         <MenuProvider>
             <View style={styles.AppBackground}>
-                <AppBar 
-                title='RPG Dice Roller' 
-                subtitle='Tap die icons to roll!' 
-                clearHistoryHandler={clearRollHistoryHandler} 
-                tabIndex={currentPage} 
-                tabPressHandler={tabPressHandler}
-                />
-                <ViewPager style={styles.Pager} ref={viewPager}  initialPage = {currentPage} onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}>
-                    <View key="1" >
-                        <HistoryPage rollHistory={rollHistory.current}/>
+                <ViewPager style={styles.Pager} ref={dialogPager} initialPage={1} orientation="vertical" scrollEnabled={false}>
+                    <View>
+                        <RollResultsPage rollHelper={rollHelper} rollAgainHandler={reRoll} dismissDialog={dismissRollResultsDialog}/>
                     </View>
-                    <View key="2" >
-                        <SimpleDicePage displayRoll={addRoll}/>
+                    <View>
+                        <AppBar 
+                        title='RPG Dice Roller' 
+                        subtitle='Tap die icons to roll!' 
+                        clearHistoryHandler={clearRollHistoryHandler} 
+                        tabIndex={currentPage} 
+                        tabPressHandler={tabPressHandler}
+                        />
+                        <ViewPager style={styles.Pager} ref={viewPager} initialPage={currentPage} onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}>
+                            <View key="1" >
+                                <HistoryPage rollHistory={rollHistory.current}/>
+                            </View>
+                            <View key="2" >
+                                <SimpleDicePage displayRoll={addRoll}/>
+                            </View>
+                        </ViewPager>
                     </View>
                 </ViewPager>
-                <RollResultsDialog rollHelper={rollHelper} rollAgainHandler={reRoll} dismissDialog={dismissRollResultsDialog}/>
             </View>
         </MenuProvider>
     );
 };
+//<RollResultsDialog rollHelper={rollHelper} rollAgainHandler={reRoll} dismissDialog={dismissRollResultsDialog}/>
 
 const styles = EStyleSheet.create({
     AppBackground: {
