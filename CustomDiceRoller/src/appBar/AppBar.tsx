@@ -80,6 +80,14 @@ export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, t
                         Simple Roll
                     </Text>
                 </Touchable>
+                <Touchable 
+                style={[styles.TabItem, tabIndex === 2 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
+                background={Touchable.Ripple('white')}
+                onPress={() => tabPressHandler(2)}>
+                    <Text style={styles.TabText}>
+                        Custom Roll
+                    </Text>
+                </Touchable>
             </View>
         </View>
     );

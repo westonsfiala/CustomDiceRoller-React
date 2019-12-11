@@ -35,6 +35,7 @@ import { RollDisplayHelper } from './src/dice/RollDisplayHelper'
 import { HistoryPage } from './src/HistoryPage';
 import { Roll } from './src/dice/Roll';
 import { RollResultsPage } from './src/RollResultsPage';
+import { CustomDicePage } from './src/CustomDicePage';
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 const App = () => {
@@ -42,14 +43,14 @@ const App = () => {
     const viewPager = useRef(null as ViewPager);
     const dialogPager = useRef(null as ViewPager);
     const [currentPage, setCurrentPage] = useState(1);
-    const rollHistory = useRef(Array<RollDisplayHelper>());
+    const [rollHistory, setRollHistory] = useState(Array<RollDisplayHelper>());
     const previousRollHistory = useRef(null as Array<RollDisplayHelper>);
 
     console.log('refresh app');
 
     function clearRollHistoryHandler() {
-        previousRollHistory.current = rollHistory.current;
-        rollHistory.current = Array<RollDisplayHelper>();
+        previousRollHistory.current = rollHistory;
+        setRollHistory(Array<RollDisplayHelper>());
     }
 
     function addRoll(newRoll: Roll) {
@@ -76,7 +77,7 @@ const App = () => {
         }
 
         // Do not set the rollHelper to null. The rollHelperDialog does this when it closes.
-        rollHistory.current.push(rollResult);
+        rollHistory.push(rollResult);
     }
 
     function dismissRollResultsDialog() {
@@ -92,7 +93,7 @@ const App = () => {
         <MenuProvider>
             <View style={styles.AppBackground}>
                 <ViewPager style={styles.Pager} ref={dialogPager} initialPage={1} orientation="vertical" scrollEnabled={false}>
-                    <View>
+                    <View key="1">
                         <RollResultsPage rollHelper={rollHelper} rollAgainHandler={reRoll} dismissDialog={dismissRollResultsDialog}/>
                     </View>
                     <View>
@@ -105,10 +106,13 @@ const App = () => {
                         />
                         <ViewPager style={styles.Pager} ref={viewPager} initialPage={currentPage} onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}>
                             <View key="1" >
-                                <HistoryPage rollHistory={rollHistory.current}/>
+                                <HistoryPage rollHistory={rollHistory}/>
                             </View>
                             <View key="2" >
                                 <SimpleDicePage displayRoll={addRoll}/>
+                            </View>
+                            <View key="3" >
+                                <CustomDicePage displayRoll={addRoll}/>
                             </View>
                         </ViewPager>
                     </View>

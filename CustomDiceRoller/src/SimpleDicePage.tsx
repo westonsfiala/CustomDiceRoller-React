@@ -8,7 +8,7 @@ import {
     Dimensions,
 } from 'react-native';
 
-import { DieView } from "./dice/DieView";
+import { SimplePageDieView } from "./dice/SimplePageDieView";
 import { Die } from "./dice/Die";
 import { NumDiceUpDownButtons, ModifierUpDownButtons } from './helpers/UpDownButtons';
 import { Roll } from './dice/Roll';
@@ -137,7 +137,7 @@ export function SimpleDicePage({displayRoll}) {
                     </View>
                 }
                 renderItem={({ item }) =>  (
-                    <DieView 
+                    <SimplePageDieView 
                     die={item} 
                     size={width/4} 
                     pressDieCallback={createNewRollHelper}
