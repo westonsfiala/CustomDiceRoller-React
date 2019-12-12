@@ -15,10 +15,10 @@ import { PropertiesButton } from '../helpers/PropertiesButton';
 
 export function CustomPageDieView({die}) {
     
-    const [width, setWidth] = useState(Dimensions.get("window").width);
+    const [minWidthHeight, setMinWidthHeight] = useState(Math.min(Dimensions.get("window").width, Dimensions.get("window").height));
 
     function handleScreenChange({window}) {
-        setWidth(window.width);
+        setMinWidthHeight(Math.min(window.width, window.height));
     }
 
     useEffect(() => {
@@ -32,7 +32,7 @@ export function CustomPageDieView({die}) {
     return (
         <View style={styles.background}>
             <UpDownDeleteButtonColumn upPressHandler={() => null} deletePressHandler={() => null} downPressHandler={() => null}/>
-            <DieView die={die} size={width*2/7} />
+            <DieView die={die} size={minWidthHeight*2/7} />
             <View style={styles.diceColumn}>
                 <NumDiceUpDownButtons 
                     count={1} 
@@ -50,7 +50,7 @@ export function CustomPageDieView({die}) {
 const styles = EStyleSheet.create({
     background:{
         flexDirection:'row',
-        alignItems:'center'
+        alignItems:'center',
     },
     diceColumn:{
         flex:1,

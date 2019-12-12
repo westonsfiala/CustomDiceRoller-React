@@ -24,21 +24,7 @@ import { CustomPageDieView } from './dice/CustomPageDieView';
 
 export function CustomDicePage({displayRoll}) {
     
-    const [width, setWidth] = useState(Dimensions.get("window").width);
-
-    function handleScreenChange({window}) {
-        setWidth(window.width);
-    }
-    
     console.log('refresh custom page');
-
-    useEffect(() => {
-        Dimensions.addEventListener("change", handleScreenChange);
-        
-        return () => {
-            Dimensions.removeEventListener("change", handleScreenChange);
-        }
-    });
 
     return (
         <View style={styles.background}>

@@ -99,7 +99,6 @@ const styles = EStyleSheet.create({
         flex: 1, 
     },
     Text:{
-        flex: 1, 
         fontSize: '30rem', 
         textAlign: 'center', 
         color: '$textColor',
