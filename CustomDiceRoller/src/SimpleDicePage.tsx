@@ -14,7 +14,7 @@ import { NumDiceUpDownButtons, ModifierUpDownButtons } from './helpers/UpDownBut
 import { Roll } from './dice/Roll';
 import { RollProperties } from './dice/RollProperties';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import DiceManager from './sync/DiceManager';
+import SimpleDiceManager from './sync/SimpleDiceManager';
 import { AddDiceButton } from './helpers/AddDiceButton';
 import { PropertiesButton } from './helpers/PropertiesButton';
 
@@ -23,7 +23,7 @@ export function SimpleDicePage({displayRoll}) {
     const [rollProperties, setRollProperties] = useState(new RollProperties({}))
     const [reload, setReload] = useState(false);
     
-    DiceManager.getInstance().setUpdater(() => setReload(!reload));
+    SimpleDiceManager.getInstance().setUpdater(() => setReload(!reload));
 
     console.log('refresh simple page');
 
@@ -50,14 +50,14 @@ export function SimpleDicePage({displayRoll}) {
     return (
         <View style={styles.SimpleDiePageBackground}>
             <FlatList 
-                data={DiceManager.getInstance().getDice()}
+                data={SimpleDiceManager.getInstance().getDice()}
                 numColumns={4}
                 ListEmptyComponent={
                     <View style={styles.NoDiceTextContainer}>
                         <Text style={styles.NoDiceText}>
                             No created dice
                         </Text>
-                        <AddDiceButton addDie={(die: Die) => DiceManager.getInstance().addDie(die)} resetDice={() => DiceManager.getInstance().resetDice()}/>
+                        <AddDiceButton addDie={(die: Die) => SimpleDiceManager.getInstance().addDie(die)} resetDice={() => SimpleDiceManager.getInstance().resetDice()}/>
                     </View>
                 }
                 renderItem={({ item }) =>  (
@@ -65,8 +65,8 @@ export function SimpleDicePage({displayRoll}) {
                     die={item} 
                     size={width/4} 
                     pressDieCallback={createNewRollHelper}
-                    removeDieCallback={(die: Die) => DiceManager.getInstance().removeDie(die)} 
-                    editDieCallback={(oldDie: Die, newDie: Die) => DiceManager.getInstance().editDie(oldDie, newDie)} 
+                    removeDieCallback={(die: Die) => SimpleDiceManager.getInstance().removeDie(die)} 
+                    editDieCallback={(oldDie: Die, newDie: Die) => SimpleDiceManager.getInstance().editDie(oldDie, newDie)} 
                     />
                 )}
                 keyExtractor={(item, index) => index.toString()}
@@ -91,7 +91,7 @@ export function SimpleDicePage({displayRoll}) {
             </View>
             <View style={styles.ButtonsRow}>
                 <PropertiesButton properties={rollProperties} updateProperties={setRollProperties} />
-                <AddDiceButton addDie={(die: Die) => DiceManager.getInstance().addDie(die)} resetDice={() => DiceManager.getInstance().resetDice()}/>
+                <AddDiceButton addDie={(die: Die) => SimpleDiceManager.getInstance().addDie(die)} resetDice={() => SimpleDiceManager.getInstance().resetDice()}/>
             </View>
         </View> 
     );

@@ -7,7 +7,7 @@ import { createUnknownDie } from '../dice/DieFactory';
 
 const DiceKey = 'DicePoolKey';
 
-export default class DiceManager {
+export default class SimpleDiceManager {
 
     private readonly standardDice = [
         new SimpleDie('d2', 2),
@@ -20,14 +20,14 @@ export default class DiceManager {
         new SimpleDie('d100', 100)
     ];
 
-    static mInstance = null as DiceManager;
+    static mInstance = null as SimpleDiceManager;
 
     mDice = this.standardDice as Array<Die>;
     mUpdater = null
 
-    static getInstance() : DiceManager {
-        if(DiceManager.mInstance === null) {
-            DiceManager.mInstance = new DiceManager();
+    static getInstance() : SimpleDiceManager {
+        if(SimpleDiceManager.mInstance === null) {
+            SimpleDiceManager.mInstance = new SimpleDiceManager();
         }
 
         return this.mInstance;

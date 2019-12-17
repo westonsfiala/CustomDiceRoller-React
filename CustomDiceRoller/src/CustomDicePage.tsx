@@ -27,35 +27,71 @@ export function CustomDicePage({displayRoll}) {
     console.log('refresh custom page');
 
     return (
-        <View style={styles.background}>
-            <CustomPageDieView die={new SimpleDie("temp", 2)}/>
+        <View style={styles.Background}>
+            <FlatList 
+                data={[new SimpleDie("temp", 2), new SimpleDie("temp2", 4), new SimpleDie("temp3", 6)]}
+                ListEmptyComponent={
+                    <View style={styles.NoDiceTextContainer}>
+                        <Text style={styles.NoDiceText}>
+                            No added dice
+                        </Text>
+                    </View>
+                }
+                renderItem={({ item }) =>  (
+                    <CustomPageDieView die={item}/>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+            />
+            <View style={styles.BottomButtonsRow}>
+                <View style={styles.ButtonContainer}>
+                    <Touchable
+                        style={styles.ButtonBackground}
+                        foreground={Touchable.Ripple('white')}
+                        onPress={() => null}
+                    >
+                        <Text style={styles.Text}>
+                            Add Die
+                        </Text>
+                    </Touchable>
+                </View>
+                <View style={styles.ButtonContainer}>
+                    <Touchable
+                        style={styles.ButtonBackground}
+                        foreground={Touchable.Ripple('white')}
+                        onPress={() => null}
+                    >
+                        <Text style={styles.Text}>
+                            Roll
+                        </Text>
+                    </Touchable>
+                </View>
+            </View>
         </View> 
     );
 }
 
 const styles = EStyleSheet.create({
-    background:{
+    Background:{
+        flex:1
+    },
+    BottomButtonsRow:{
         flexDirection:'row',
-        alignItems:'center'
     },
-    diceColumn:{
-        flex:1,
-        flexDirection:'column'
+    ButtonContainer:{
+        flex: 1, 
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        padding: '5rem',
     },
-    ButtonRadius:{
-        borderRadius: '10rem',
-        margin: '3rem',
-        overflow: 'hidden',
+    Text:{
+        fontSize: '30rem', 
+        textAlign: 'center', 
+        color: '$textColor',
     },
     ButtonBackground:{
+        flex:1,
         backgroundColor: '$primaryColorLightened',
         borderRadius: '10rem',
-    },
-    ButtonForeground:{
-        marginRight: 0,
-    },
-    IconConstants:{
-        color: '$textColor',
-        width: '45rem',
+        overflow:'hidden',
     },
 })
