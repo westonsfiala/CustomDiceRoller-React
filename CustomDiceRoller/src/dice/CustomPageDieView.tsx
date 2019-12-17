@@ -12,8 +12,14 @@ import { NumDiceUpDownButtons, ModifierUpDownButtons } from '../helpers/UpDownBu
 import { RollProperties } from './RollProperties';
 import { UpDownDeleteButtonColumn } from '../helpers/UpDownDeleteButtonColumn';
 import { PropertiesButton } from '../helpers/PropertiesButton';
+import { DiePropertyPair } from './DiePropertyPair';
 
-export function CustomPageDieView({die}) {
+interface CustomDieViewProps {
+    diePropPair: DiePropertyPair;
+    updateProperties: (props : RollProperties) => void;
+}
+
+export function CustomPageDieView(props : CustomDieViewProps) {
     
     const [minWidthHeight, setMinWidthHeight] = useState(Math.min(Dimensions.get("window").width, Dimensions.get("window").height));
 
@@ -32,14 +38,15 @@ export function CustomPageDieView({die}) {
     return (
         <View style={styles.background}>
             <UpDownDeleteButtonColumn upPressHandler={() => null} deletePressHandler={() => null} downPressHandler={() => null}/>
-            <DieView die={die} size={minWidthHeight*2/7} />
+            <DieView die={props.diePropPair.mDie} size={minWidthHeight*2/7} />
             <View style={styles.diceColumn}>
                 <NumDiceUpDownButtons 
-                    count={1} 
-                    setCount={(newNumDice: number) => null} />
+                    count={props.diePropPair.mProperties.mNumDice} 
+                    setCount={(newNumDice: number) => props.updateProperties(props.diePropPair.mProperties.clone({numDice: newNumDice}))} 
+                />
                 <ModifierUpDownButtons 
-                    count={0} 
-                    setCount={(newModifier: number) => null}
+                    count={props.diePropPair.mProperties.mNumDice} 
+                    setCount={(newModifier: number) => props.updateProperties(props.diePropPair.mProperties.clone({modifier: newModifier}))} 
                 />
                 <PropertiesButton properties={new RollProperties({})} updateProperties={() => null} />
             </View>

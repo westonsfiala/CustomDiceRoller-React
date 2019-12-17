@@ -14,6 +14,7 @@ import {
     getMinimumString,
     getReRollString
  } from '../helpers/StringHelper'
+import { DiePropertyPair } from './DiePropertyPair';
 
 export class Roll {
     public static readonly aggregateRollStringStart = "Aggregate"
@@ -31,9 +32,7 @@ export class Roll {
 
     addDieToRoll(die: Die, properties: RollProperties)
     {
-        let newDieProperties = JSON.parse(JSON.stringify(properties)) as RollProperties;
-
-        this.mDieMap.set(JSON.stringify(die), newDieProperties);
+        this.mDieMap.set(JSON.stringify(die), properties.clone({}));
     }
 
     removeDieFromRoll(die: Die) : boolean
@@ -68,6 +67,18 @@ export class Roll {
         }
 
         return outputMap;
+    }
+
+    getDiePropArray() : Array<DiePropertyPair>
+    {
+        let outputArray = new Array<DiePropertyPair>();
+
+        for(let [dieJson, properties] of this.mDieMap.entries())
+        {
+            outputArray.push(new DiePropertyPair(createUnknownDie(dieJson), properties));
+        }
+
+        return outputArray;
     }
 
     overrideDieAt(die: Die, position: number) : boolean 

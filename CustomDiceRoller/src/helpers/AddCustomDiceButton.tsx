@@ -3,7 +3,9 @@ import React, { useRef, useState } from 'react'
 
 import {
     View,
-    Text
+    Text,
+    FlatList,
+    Image,
 } from 'react-native'
 
 import {
@@ -15,43 +17,50 @@ import {
 
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { CreateSimpleDieDialog } from '../dialogs/CreateSimpleDieDialog';
-import { SimpleDie } from '../dice/SimpleDie';
 import { Die } from '../dice/Die';
+import DiceManager from '../sync/DiceManager';
+import { getRequiredImage } from '../dice/DieImageGetter';
 
-interface AddDiceInterface {
+interface AddCustomDiceInterface {
     addDie: (die: Die) => void;
     resetDice: () => void;
 }
 
-export function AddDiceButton(props: AddDiceInterface) {
+export function AddCustomDiceButton(props : AddCustomDiceInterface) {
 
     const menuRef = useRef(null);
     const resetMenuRef = useRef(null);
-    const [simpleModalShown, setSimpleModalShown] = useState(false);
-    const [simpleDie, setSimpleDie] = useState(new SimpleDie('temp', 1));
 
-    function handleCreateSimpleDie(die: SimpleDie) {
-        setSimpleDie(die);
-        props.addDie(die);
-    }
+    let dice = DiceManager.getInstance().getDice();
+    // If you don't give a height to the menu, the scroll feature doesn't work. 
+    // There is a small gap between each item, so the 1.2 is for making it fit a bit better
+    let displayItems = Math.min(10, dice.length)
+    let menuHeight = displayItems * styles.MenuImage.height * 1.2;
 
     return(
         <View style={styles.Container}>
             <Menu ref={menuRef}>
                 <MenuTrigger/>
                 <MenuOptions>
-                    <MenuOption style={styles.Menu} onSelect={() => setSimpleModalShown(true)}>
-                        <Text style={styles.MenuText}>
-                            Simple Die
-                        </Text>
-                    </MenuOption>
+                <FlatList
+                    data={dice}
+                    renderItem={({ item }) => (
+                        <MenuOption style={styles.Menu} onSelect={() => props.addDie(item)}>
+                            <Image source={getRequiredImage(item.imageID)} style={styles.MenuImage}/>
+                            <Text style={styles.MenuText}>
+                                {item.mDieName}
+                            </Text>
+                        </MenuOption>
+                    )}
+                    style={{height:menuHeight}}
+                    keyExtractor={(item, index) => index.toString()}
+                />
                 </MenuOptions>
             </Menu>
             <Menu ref={resetMenuRef}>
                 <MenuTrigger/>
                 <MenuOptions>
-                    <MenuOption style={styles.Menu} onSelect={() => props.resetDice()}>
+                    <MenuOption style={styles.Menu} onSelect={props.resetDice}>
                         <Text style={styles.MenuText}>
                             Reset Dice
                         </Text>
@@ -67,8 +76,6 @@ export function AddDiceButton(props: AddDiceInterface) {
             >
                 <Text style={styles.Text}>Add Die</Text>
             </Touchable>
-            
-            <CreateSimpleDieDialog modalShown={simpleModalShown} die={simpleDie} dismissModal={() => setSimpleModalShown(false)} createDie={handleCreateSimpleDie} />
         </View>
     )
 }
@@ -92,11 +99,17 @@ const styles = EStyleSheet.create({
         overflow:'hidden'
     },
     Menu:{
+        flexDirection:'row',
+        alignItems:'center',
         backgroundColor:'$primaryColor',
     },
     MenuText:{
-        fontSize:'18rem', 
+        fontSize:'22rem', 
         padding:'4rem',
         color:'$textColor',
     },
+    MenuImage:{
+        width:'40rem',
+        height:'40rem'
+    }
 })

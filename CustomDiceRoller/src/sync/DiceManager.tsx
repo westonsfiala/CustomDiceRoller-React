@@ -7,27 +7,27 @@ import { createUnknownDie } from '../dice/DieFactory';
 
 const DiceKey = 'DicePoolKey';
 
-export default class SimpleDiceManager {
+const standardDice = [
+    new SimpleDie('d2', 2),
+    new SimpleDie('d4', 4),
+    new SimpleDie('d6', 6),
+    new SimpleDie('d8', 8),
+    new SimpleDie('d10', 10),
+    new SimpleDie('d12', 12),
+    new SimpleDie('d20', 20),
+    new SimpleDie('d100', 100)
+];
 
-    private readonly standardDice = [
-        new SimpleDie('d2', 2),
-        new SimpleDie('d4', 4),
-        new SimpleDie('d6', 6),
-        new SimpleDie('d8', 8),
-        new SimpleDie('d10', 10),
-        new SimpleDie('d12', 12),
-        new SimpleDie('d20', 20),
-        new SimpleDie('d100', 100)
-    ];
+export default class DiceManager {
 
-    static mInstance = null as SimpleDiceManager;
+    static mInstance = null as DiceManager;
 
-    mDice = this.standardDice as Array<Die>;
+    mDice = [] as Array<Die>;
     mUpdater = null
 
-    static getInstance() : SimpleDiceManager {
-        if(SimpleDiceManager.mInstance === null) {
-            SimpleDiceManager.mInstance = new SimpleDiceManager();
+    static getInstance() : DiceManager {
+        if(DiceManager.mInstance === null) {
+            DiceManager.mInstance = new DiceManager();
         }
 
         return this.mInstance;
@@ -66,7 +66,7 @@ export default class SimpleDiceManager {
     }
 
     resetDice() {
-        this.setDice(this.standardDice);
+        this.setDice(standardDice.concat());
     }
 
     addDie(newDie: Die, supressUpdate : boolean = false) : boolean {
@@ -131,8 +131,8 @@ export default class SimpleDiceManager {
         // If we don't have the value, or its empty, set the standard and return it.
         if(diceArrayString === null || diceArrayString.length === 0)
         {
-            await this.setDiceStorage(this.standardDice);
-            return this.standardDice;
+            await this.setDiceStorage(standardDice.concat());
+            return standardDice.concat();
         }
     
         // Parse into an array and start creating the dice from it.

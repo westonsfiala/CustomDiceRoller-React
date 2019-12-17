@@ -8,52 +8,39 @@ import {
     Dimensions,
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-import { DieView } from "./dice/DieView";
-import { Die } from "./dice/Die";
-import { NumDiceUpDownButtons, ModifierUpDownButtons } from './helpers/UpDownButtons';
 import { Roll } from './dice/Roll';
 import { RollProperties } from './dice/RollProperties';
-import { UpDownDeleteButtonColumn } from './helpers/UpDownDeleteButtonColumn';
-import { SimpleDie } from './dice/SimpleDie';
-import { PropertiesButton } from './helpers/PropertiesButton';
 import { CustomPageDieView } from './dice/CustomPageDieView';
+import { AddCustomDiceButton } from './helpers/AddCustomDiceButton';
 
 export function CustomDicePage({displayRoll}) {
+
+    const [roll, setRoll] = useState(new Roll("Custom Roll", "Undefined"))
     
     console.log('refresh custom page');
 
     return (
         <View style={styles.Background}>
             <FlatList 
-                data={[new SimpleDie("temp", 2), new SimpleDie("temp2", 4), new SimpleDie("temp3", 6)]}
+                data={roll.getDiePropArray()}
                 ListEmptyComponent={
                     <View style={styles.NoDiceTextContainer}>
                         <Text style={styles.NoDiceText}>
                             No added dice
                         </Text>
+                        <AddCustomDiceButton addDie={() => null} resetDice={() => null}/>
                     </View>
                 }
                 renderItem={({ item }) =>  (
-                    <CustomPageDieView die={item}/>
+                    <CustomPageDieView diePropPair={item} updateProperties={(newProperties : RollProperties) => roll.addDieToRoll(item.mDie, newProperties)}/>
                 )}
                 keyExtractor={(item, index) => index.toString()}
             />
             <View style={styles.BottomButtonsRow}>
-                <View style={styles.ButtonContainer}>
-                    <Touchable
-                        style={styles.ButtonBackground}
-                        foreground={Touchable.Ripple('white')}
-                        onPress={() => null}
-                    >
-                        <Text style={styles.Text}>
-                            Add Die
-                        </Text>
-                    </Touchable>
-                </View>
+                <AddCustomDiceButton addDie={() => null} resetDice={() => null}/>
                 <View style={styles.ButtonContainer}>
                     <Touchable
                         style={styles.ButtonBackground}
@@ -93,5 +80,14 @@ const styles = EStyleSheet.create({
         backgroundColor: '$primaryColorLightened',
         borderRadius: '10rem',
         overflow:'hidden',
+    },
+    NoDiceTextContainer:{
+        flex:1, 
+        alignItems:'center', 
+        justifyContent:'center',
+    },
+    NoDiceText:{
+        color:'$textColor', 
+        fontSize:'22rem'
     },
 })
