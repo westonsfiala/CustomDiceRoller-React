@@ -10,17 +10,34 @@ import {
 
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import Color from 'color'
 
 import { Roll } from './dice/Roll';
 import { RollProperties } from './dice/RollProperties';
 import { CustomPageDieView } from './dice/CustomPageDieView';
 import { AddCustomDiceButton } from './helpers/AddCustomDiceButton';
+import { Die } from './dice/Die';
+import { cloneDie } from './dice/DieFactory';
 
 export function CustomDicePage({displayRoll}) {
 
-    const [roll, setRoll] = useState(new Roll("Custom Roll", "Undefined"))
+    const [roll, setRoll] = useState(new Roll("Custom Roll", ""))
     
     console.log('refresh custom page');
+
+    function addDieToRoll(die: Die) {
+        let index = 1;
+        let originalName = die.displayName;
+
+        while(roll.containsDie(die))
+        {
+            die = cloneDie(die, originalName + "(" + index + ")");
+            index += 1;
+        }
+
+        let newRoll = roll.addDieToRoll(die, new RollProperties({}))
+        setRoll(newRoll);
+    }
 
     return (
         <View style={styles.Background}>
@@ -28,28 +45,37 @@ export function CustomDicePage({displayRoll}) {
                 data={roll.getDiePropArray()}
                 ListEmptyComponent={
                     <View style={styles.NoDiceTextContainer}>
-                        <Text style={styles.NoDiceText}>
-                            No added dice
-                        </Text>
-                        <AddCustomDiceButton addDie={() => null} resetDice={() => null}/>
+                        <Text style={styles.NoDiceText}>No added dice</Text>
+                        <AddCustomDiceButton 
+                            addDie={(die: Die) => addDieToRoll(die)} 
+                            resetDice={() => setRoll(new Roll(roll.displayName, roll.categoryName))}
+                        />
                     </View>
                 }
-                renderItem={({ item }) =>  (
-                    <CustomPageDieView diePropPair={item} updateProperties={(newProperties : RollProperties) => roll.addDieToRoll(item.mDie, newProperties)}/>
+                renderItem={({ item, index }) =>  (
+                    <CustomPageDieView 
+                        diePropPair={item} 
+                        updateProperties={(newProperties : RollProperties) => setRoll(roll.addDieToRoll(item.mDie, newProperties))}
+                        moveUpHandler={() => setRoll(roll.moveDieUp(index))}
+                        deleteHandler={() => setRoll(roll.removeDieFromRoll(item.mDie))}
+                        moveDownHandler={() => setRoll(roll.moveDieDown(index))}
+                    />
                 )}
+                ItemSeparatorComponent={() => <View style={styles.ListDivider}/>}
                 keyExtractor={(item, index) => index.toString()}
             />
             <View style={styles.BottomButtonsRow}>
-                <AddCustomDiceButton addDie={() => null} resetDice={() => null}/>
+                <AddCustomDiceButton 
+                    addDie={(die: Die) => addDieToRoll(die)} 
+                    resetDice={() => setRoll(new Roll(roll.displayName, roll.categoryName))}
+                />
                 <View style={styles.ButtonContainer}>
                     <Touchable
                         style={styles.ButtonBackground}
                         foreground={Touchable.Ripple('white')}
-                        onPress={() => null}
+                        onPress={() => displayRoll(roll)}
                     >
-                        <Text style={styles.Text}>
-                            Roll
-                        </Text>
+                        <Text style={styles.Text}>Roll</Text>
                     </Touchable>
                 </View>
             </View>
@@ -69,6 +95,12 @@ const styles = EStyleSheet.create({
         flexDirection: 'row', 
         alignItems: 'center', 
         padding: '5rem',
+    },
+    ListDivider:{
+        marginStart:'4rem', 
+        marginEnd:'4rem', 
+        borderBottomColor: Color.rgb(128,128,128).hex(), 
+        borderBottomWidth: 1,
     },
     Text:{
         fontSize: '30rem', 

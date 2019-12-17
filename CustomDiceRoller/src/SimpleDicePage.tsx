@@ -32,9 +32,9 @@ export function SimpleDicePage({displayRoll}) {
     }
 
     function createNewRollHelper(clickedDie: Die) {
-        let tempRoll = new Roll("Unsaved Roll","");
+        let tempRoll = new Roll("Simple Roll","");
 
-        tempRoll.addDieToRoll(clickedDie, rollProperties);
+        tempRoll = tempRoll.addDieToRoll(clickedDie, rollProperties);
 
         displayRoll(tempRoll);
     }

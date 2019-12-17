@@ -19,9 +19,9 @@ import { DiePropertyPair } from './DiePropertyPair';
 export class Roll {
     public static readonly aggregateRollStringStart = "Aggregate"
 
-    mDieMap : Map<string, RollProperties>;
-    mRollName: string;
-    mRollCategory: string;
+    private mDieMap : Map<string, RollProperties>;
+    private mRollName: string;
+    private mRollCategory: string;
 
     constructor(rollName: string, rollCategory: string) {
         this.mRollName = rollName;
@@ -30,14 +30,28 @@ export class Roll {
         this.mDieMap = new Map<string, RollProperties>();
     }
 
-    addDieToRoll(die: Die, properties: RollProperties)
-    {
-        this.mDieMap.set(JSON.stringify(die), properties.clone({}));
+    private clone() : Roll {
+        let newRoll = new Roll(this.mRollName, this.mRollCategory);
+
+        for(let [dieJson, props] of this.mDieMap) {
+            newRoll.mDieMap.set(dieJson, props.clone({}))
+        }
+
+        return newRoll;
     }
 
-    removeDieFromRoll(die: Die) : boolean
+    addDieToRoll(die: Die, properties: RollProperties) : Roll
     {
-        return this.mDieMap.delete(JSON.stringify(die)) != null;
+        let newRoll = this.clone();
+        newRoll.mDieMap.set(JSON.stringify(die), properties.clone({}));
+        return newRoll;
+    }
+
+    removeDieFromRoll(die: Die) : Roll
+    {
+        let newRoll = this.clone();
+        newRoll.mDieMap.delete(JSON.stringify(die));
+        return newRoll;
     }
 
     containsDie(die: Die) : boolean
@@ -57,13 +71,13 @@ export class Roll {
         return numDice;
     }
 
-    getDice() : Map<Die, RollProperties>
+    getDiePropMap() : Map<Die, RollProperties>
     {
         let outputMap = new Map<Die, RollProperties>();
 
         for(let [dieJson, properties] of this.mDieMap.entries())
         {
-            outputMap.set(createUnknownDie(dieJson), properties);
+            outputMap.set(createUnknownDie(dieJson), properties.clone({}));
         }
 
         return outputMap;
@@ -75,28 +89,10 @@ export class Roll {
 
         for(let [dieJson, properties] of this.mDieMap.entries())
         {
-            outputArray.push(new DiePropertyPair(createUnknownDie(dieJson), properties));
+            outputArray.push(new DiePropertyPair(createUnknownDie(dieJson), properties.clone({})));
         }
 
         return outputArray;
-    }
-
-    overrideDieAt(die: Die, position: number) : boolean 
-    {
-        let curPos = 0;
-        for(let dieJson of this.mDieMap.keys())
-        {
-            if(curPos === position) {
-                let newDieJson = JSON.stringify(die);
-                let props = this.mDieMap.get(dieJson);
-                this.mDieMap.delete(dieJson);
-                this.mDieMap.set(newDieJson, props);
-                return true;
-            }
-            curPos++
-        }
-
-        return false;
     }
 
     getDieAt(position: number) : Die
@@ -113,69 +109,72 @@ export class Roll {
         return new SimpleDie('Invlaid', 1);
     }
 
-    moveDieUp(position: number) : boolean
-    {
-        // Can't move something up when its already at the top
-        // Or if there is nothing
-        // Or if there is only one thing
-        // Or if its past where we can access
-        if(position <= 0 || this.mDieMap.size == 0 || this.mDieMap.size == 1 || position >= this.mDieMap.size)
-        {
-            return false;
-        }
-
-        let iterableEnteries = [...this.mDieMap.entries()];
-
-        let movedEntry = iterableEnteries.splice(position, 1);
-
-        let newMapStart = iterableEnteries.slice(0, position-1);
-        let newMapEnd = iterableEnteries.slice(position, iterableEnteries.length);
-
-        iterableEnteries = newMapStart.concat(movedEntry).concat(newMapEnd);
-
-        this.mDieMap = new Map(iterableEnteries);
-
-        return true;
-    }
-
-    moveDieDown(position: number) : boolean
-    {
-        // Can't move something down when its already at the top
-        // Or if there is nothing
-        // Or if there is only one thing
-        // Or if its past where we can access
-        if(position < 0 || this.mDieMap.size == 0 || this.mDieMap.size == 1 || position >= this.mDieMap.size - 1)
-        {
-            return false;
-        }
-
-        let iterableEnteries = [...this.mDieMap.entries()];
-
-        let movedEntry = iterableEnteries.splice(position, 1);
-
-        let newMapStart = iterableEnteries.slice(0, position);
-        let newMapEnd = iterableEnteries.slice(position+1, iterableEnteries.length);
-
-        iterableEnteries = newMapStart.concat(movedEntry).concat(newMapEnd);
-
-        this.mDieMap = new Map(iterableEnteries);
-
-        return true;
-    }
-
-
     getRollPropertiesAt(position: number) : RollProperties
     {
         let curPos = 0;
         for(let prop of this.mDieMap.values())
         {
             if(curPos === position) {
-                return prop;
+                return prop.clone({});
             }
             curPos++;
         }
 
         return new RollProperties({});
+    }
+
+    moveDieUp(position: number) : Roll
+    {
+        let newRoll = this.clone();
+
+        // Can't move something up when its already at the top
+        // Or if there is nothing
+        // Or if there is only one thing
+        // Or if its past where we can access
+        if(position <= 0 || newRoll.mDieMap.size == 0 || newRoll.mDieMap.size == 1 || position >= newRoll.mDieMap.size)
+        {
+            return newRoll;
+        }
+
+        let iterableEnteries = [...newRoll.mDieMap.entries()];
+
+        let newMapStart = iterableEnteries.slice(0, position-1);
+        let swappedElement = iterableEnteries.slice(position-1, position);
+        let movedEntry = iterableEnteries.slice(position, position+1);
+        let newMapEnd = iterableEnteries.slice(position+1, iterableEnteries.length);
+
+        iterableEnteries = newMapStart.concat(movedEntry).concat(swappedElement).concat(newMapEnd);
+
+        newRoll.mDieMap = new Map(iterableEnteries);
+
+        return newRoll;
+    }
+
+    moveDieDown(position: number) : Roll
+    {
+        let newRoll = this.clone();
+
+        // Can't move something down when its already at the top
+        // Or if there is nothing
+        // Or if there is only one thing
+        // Or if its past where we can access
+        if(position < 0 || newRoll.mDieMap.size == 0 || newRoll.mDieMap.size == 1 || position >= newRoll.mDieMap.size - 1)
+        {
+            return newRoll;
+        }
+
+        let iterableEnteries = [...newRoll.mDieMap.entries()];
+
+        let newMapStart = iterableEnteries.slice(0, position);
+        let movedEntry = iterableEnteries.slice(position, position+1);
+        let swappedElement = iterableEnteries.slice(position+1, position+2);
+        let newMapEnd = iterableEnteries.slice(position+2, iterableEnteries.length);
+
+        iterableEnteries = newMapStart.concat(swappedElement).concat(movedEntry).concat(newMapEnd);
+
+        newRoll.mDieMap = new Map(iterableEnteries);
+
+        return newRoll;
     }
 
     roll() : RollResults

@@ -62,7 +62,7 @@ export function AddCustomDiceButton(props : AddCustomDiceInterface) {
                 <MenuOptions>
                     <MenuOption style={styles.Menu} onSelect={props.resetDice}>
                         <Text style={styles.MenuText}>
-                            Reset Dice
+                            Reset Roll
                         </Text>
                     </MenuOption>
                 </MenuOptions>
@@ -74,7 +74,7 @@ export function AddCustomDiceButton(props : AddCustomDiceInterface) {
                 delayLongPress={300}
                 onLongPress={() => resetMenuRef.current.open()}
             >
-                <Text style={styles.Text}>Add Die</Text>
+                <Text style={styles.Text}>Add</Text>
             </Touchable>
         </View>
     )
