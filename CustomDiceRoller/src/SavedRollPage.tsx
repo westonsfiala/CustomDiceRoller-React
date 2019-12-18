@@ -11,6 +11,7 @@ import {
 import EStyleSheet from 'react-native-extended-stylesheet';
 import RollManager from './sync/RollManager';
 import Touchable from 'react-native-platform-touchable';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export function SavedRollPage({displayRoll}) {
     const [width, setWidth] = useState(Dimensions.get("window").width);
@@ -50,8 +51,28 @@ export function SavedRollPage({displayRoll}) {
                             delayLongPress={300}
                             onLongPress={() => RollManager.getInstance().removeRoll(item)}
                         >
-                            <View>
-                                <Text style={styles.Text}>{item.mRollName}:{item.getDetailedRollName()}</Text>
+                            <View style={{flexDirection:'row'}}>
+                                <View style={styles.TextBackground}>
+                                    <Text style={styles.RollName}>{item.mRollName}</Text>
+                                    <Text style={styles.RollDetails}>{item.getDetailedRollName()}</Text>
+                                </View>
+                                <View>
+                                    <Touchable 
+                                        style={styles.ButtonBackground}
+                                        foreground={Touchable.Ripple('white')}
+                                        onPress={() => null}
+                                        delayLongPress={300}
+                                        onLongPress={() => null}
+                                    >
+                                        <Icon 
+                                            name='information-outline'
+                                            size={styles.IconConstants.width}
+                                            iconStyle={{marginRight:0}}
+                                            color={styles.IconConstants.color}
+                                            backgroundColor={styles.IconConstants.backgroundColor}
+                                        />
+                                    </Touchable>
+                                </View>
                             </View>
                         </Touchable>
                     </View>
@@ -67,6 +88,11 @@ const styles = EStyleSheet.create({
     PageBackground:{
         flex:1,
     },
+    TextBackground:{
+        flex:1,
+        marginLeft:10,
+        marginBottom:5
+    },
     NoRollsTextContainer:{
         flex:1, 
         alignItems:'center', 
@@ -76,8 +102,14 @@ const styles = EStyleSheet.create({
         color:'$textColor', 
         fontSize:'22rem'
     },
+    IconConstants:{
+        width:'48rem',
+        color:'$textColor',
+        backgroundColor:'transparent'
+    },
     ButtonBackground:{
         flex:1,
+        justifyContent:'center',
         backgroundColor: '$primaryColorLightened',
         borderRadius: '10rem',
         overflow:'hidden'
@@ -88,9 +120,12 @@ const styles = EStyleSheet.create({
         alignItems: 'center', 
         padding: '5rem',
     },
-    Text:{
-        fontSize: '30rem', 
-        textAlign: 'center', 
+    RollName:{
+        fontSize: '20rem', 
         color: '$textColor',
+    },
+    RollDetails:{
+        fontSize: '15rem', 
+        color: '$textColorDarkened',
     },
 })
