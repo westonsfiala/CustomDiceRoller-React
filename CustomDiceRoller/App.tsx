@@ -36,6 +36,7 @@ import { HistoryPage } from './src/HistoryPage';
 import { Roll } from './src/dice/Roll';
 import { RollResultsPage } from './src/RollResultsPage';
 import { CustomDicePage } from './src/CustomDicePage';
+import { SavedRollPage } from './src/SavedRollPage';
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 const App = () => {
@@ -114,6 +115,9 @@ const App = () => {
                             <View key="3" >
                                 <CustomDicePage displayRoll={addRoll}/>
                             </View>
+                            <View key="4" >
+                                <SavedRollPage displayRoll={addRoll}/>
+                            </View>
                         </ViewPager>
                     </View>
                 </ViewPager>
@@ -121,7 +125,6 @@ const App = () => {
         </MenuProvider>
     );
 };
-//<RollResultsDialog rollHelper={rollHelper} rollAgainHandler={reRoll} dismissDialog={dismissRollResultsDialog}/>
 
 const styles = EStyleSheet.create({
     AppBackground: {

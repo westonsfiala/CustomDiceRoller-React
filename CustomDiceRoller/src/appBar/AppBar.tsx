@@ -5,6 +5,7 @@ import {
     View,
     Text,
     Image,
+    ScrollView,
 } from 'react-native';
 
 import {
@@ -63,7 +64,7 @@ export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, t
                     </Touchable>
                 </View>
             </View>
-            <View style={styles.RowLayout}>
+            <ScrollView contentContainerStyle={styles.ScrollContainer}>
                 <Touchable 
                 style={[styles.TabItem, tabIndex === 0 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
                 background={Touchable.Ripple('white')}
@@ -88,7 +89,15 @@ export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, t
                         Custom Roll
                     </Text>
                 </Touchable>
-            </View>
+                <Touchable 
+                style={[styles.TabItem, tabIndex === 3 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
+                background={Touchable.Ripple('white')}
+                onPress={() => tabPressHandler(3)}>
+                    <Text style={styles.TabText}>
+                        Saved Rolls
+                    </Text>
+                </Touchable>
+            </ScrollView>
         </View>
     );
 };
@@ -112,9 +121,14 @@ const styles = EStyleSheet.create({
         color:'$textColor',
         fontSize:'14rem',
     },
-    RowLayout: {
+    ScrollContainer: {
         flexDirection:'row',
         alignItems:'center',
+        justifyContent:'center'
+    },
+    RowLayout: {
+        flexDirection:'row',
+        alignItems:'center'
     },
     ClearHistory:{
         width:'32rem',
@@ -134,7 +148,6 @@ const styles = EStyleSheet.create({
         color:'$textColor',
     },
     TabItem: {
-        flex:1, 
         padding:'8rem', 
         alignItems:'center',
         borderBottomWidth:3, 

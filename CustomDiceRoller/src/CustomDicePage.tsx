@@ -18,10 +18,18 @@ import { CustomPageDieView } from './dice/CustomPageDieView';
 import { AddCustomDiceButton } from './helpers/AddCustomDiceButton';
 import { Die } from './dice/Die';
 import { cloneDie } from './dice/DieFactory';
+import { CreateRollDialog } from './dialogs/CreateRollDialog';
+import RollManager from './sync/RollManager';
+import DiceManager from './sync/DiceManager';
 
-export function CustomDicePage({displayRoll}) {
+interface CustomRollPageInterface {
+    displayRoll: (roll: Roll) => void;
+}
 
-    const [roll, setRoll] = useState(new Roll("Custom Roll", ""))
+export function CustomDicePage(props: CustomRollPageInterface) {
+
+    const [roll, setRoll] = useState(new Roll("Custom Roll", "temp"))
+    const [createRollModalShown, setCreateRollModalShown] = useState(false);
     
     console.log('refresh custom page');
 
@@ -39,17 +47,18 @@ export function CustomDicePage({displayRoll}) {
         setRoll(newRoll);
     }
 
+    function handleCreateRoll(newRoll: Roll) {
+        setRoll(newRoll);
+        RollManager.getInstance().addRoll(newRoll);
+    }
+
     return (
         <View style={styles.Background}>
             <FlatList 
                 data={roll.getDiePropArray()}
                 ListEmptyComponent={
                     <View style={styles.NoDiceTextContainer}>
-                        <Text style={styles.NoDiceText}>No added dice</Text>
-                        <AddCustomDiceButton 
-                            addDie={(die: Die) => addDieToRoll(die)} 
-                            resetDice={() => setRoll(new Roll(roll.displayName, roll.categoryName))}
-                        />
+                        <Text style={styles.NoDiceText}>No dice</Text>
                     </View>
                 }
                 renderItem={({ item, index }) =>  (
@@ -73,12 +82,22 @@ export function CustomDicePage({displayRoll}) {
                     <Touchable
                         style={styles.ButtonBackground}
                         foreground={Touchable.Ripple('white')}
-                        onPress={() => displayRoll(roll)}
+                        onPress={() => setCreateRollModalShown(true)}
+                    >
+                        <Text style={styles.Text}>Save</Text>
+                    </Touchable>
+                </View>
+                <View style={styles.ButtonContainer}>
+                    <Touchable
+                        style={styles.ButtonBackground}
+                        foreground={Touchable.Ripple('white')}
+                        onPress={() => props.displayRoll(roll)}
                     >
                         <Text style={styles.Text}>Roll</Text>
                     </Touchable>
                 </View>
             </View>
+            <CreateRollDialog modalShown={createRollModalShown} roll={roll} dismissModal={() => setCreateRollModalShown(false)} createRoll={handleCreateRoll} />
         </View> 
     );
 }

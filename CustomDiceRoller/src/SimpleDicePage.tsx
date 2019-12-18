@@ -57,7 +57,6 @@ export function SimpleDicePage({displayRoll}) {
                         <Text style={styles.NoDiceText}>
                             No created dice
                         </Text>
-                        <AddDiceButton addDie={(die: Die) => DiceManager.getInstance().addDie(die)} resetDice={() => DiceManager.getInstance().resetDice()}/>
                     </View>
                 }
                 renderItem={({ item }) =>  (

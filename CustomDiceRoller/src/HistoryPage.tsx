@@ -61,12 +61,7 @@ export function HistoryPage({rollHistory = [] as Array<RollDisplayHelper>}) {
                 ref={flatList}
                 ListEmptyComponent={
                     <View style={styles.NoHistoryTextContainer}>
-                        <Text style={styles.NoHistoryText}>
-                            No history yet
-                        </Text>
-                        <Text style={styles.NoHistoryText}>
-                            Roll some dice to fill this tab out
-                        </Text>
+                        <Text style={styles.NoHistoryText}>No history</Text>
                     </View>
                 }
                 data={rollHistory}

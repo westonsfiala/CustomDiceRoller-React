@@ -19,9 +19,9 @@ import { DiePropertyPair } from './DiePropertyPair';
 export class Roll {
     public static readonly aggregateRollStringStart = "Aggregate"
 
-    private mDieMap : Map<string, RollProperties>;
-    private mRollName: string;
-    private mRollCategory: string;
+    mDieMap : Map<string, RollProperties>;
+    mRollName: string;
+    mRollCategory: string;
 
     constructor(rollName: string, rollCategory: string) {
         this.mRollName = rollName;
@@ -36,6 +36,15 @@ export class Roll {
         for(let [dieJson, props] of this.mDieMap) {
             newRoll.mDieMap.set(dieJson, props.clone({}))
         }
+
+        return newRoll;
+    }
+
+    setNameCategory(rollName: string, rollCategory: string) : Roll {
+        let newRoll = this.clone();
+
+        newRoll.mRollName = rollName;
+        newRoll.mRollCategory = rollCategory;
 
         return newRoll;
     }
