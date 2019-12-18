@@ -34,7 +34,7 @@ export default class RollManager {
     setRolls(rolls : Array<Roll>) {
         rolls.sort((rollA, rollB) => {return ('' + rollA.mRollName).localeCompare(rollB.mRollName);})
         this.setRollStorage(rolls).then((rolls) => {
-            this.mRolls = rolls
+            this.mRolls = rolls;
             if(this.mUpdater !== null) this.mUpdater();
         });
     }
@@ -107,7 +107,10 @@ export default class RollManager {
     }
 
     private async setRollStorage(rolls: Array<Roll>) : Promise<Array<Roll>> {
-        await AsyncStorage.setItem(RollKey, JSON.stringify(rolls));
+
+        let rollsString = JSON.stringify(rolls);
+
+        await AsyncStorage.setItem(RollKey, rollsString);
         return rolls;
     }
     
@@ -127,13 +130,15 @@ export default class RollManager {
         let returnRollArray = Array<Roll>();
     
         for(let index = 0; index < rollArray.length; ++index) {
-            let rollString = rollArray[index];
+            let rollObject = rollArray[index];
+            let rollString = JSON.stringify(rollObject);
             try{
                 // You have to re-stringify since it treats all of the parsed items as objects.
-                let createdRoll = createRoll(JSON.stringify(rollString))
+                let createdRoll = createRoll(rollString)
                 returnRollArray.push(createdRoll);
             } catch (error) {
                 // TODO: What to do when it goes wrong?
+                console.log("error recreating roll");
             }
         }
     

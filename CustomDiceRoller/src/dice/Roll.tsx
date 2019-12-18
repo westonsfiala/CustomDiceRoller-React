@@ -1,7 +1,7 @@
 
 import { Die } from './Die'
 import { SimpleDie } from './SimpleDie';
-import { createUnknownDie } from './DieFactory'
+import { createUnknownDie, cloneDie } from './DieFactory'
 import { RollProperties } from './RollProperties'
 import { RollResults } from './RollResults'
 
@@ -19,7 +19,7 @@ import { DiePropertyPair } from './DiePropertyPair';
 export class Roll {
     public static readonly aggregateRollStringStart = "Aggregate"
 
-    mDieMap : Map<string, RollProperties>;
+    mDiePropArray : Array<DiePropertyPair>;
     mRollName: string;
     mRollCategory: string;
 
@@ -27,14 +27,14 @@ export class Roll {
         this.mRollName = rollName;
         this.mRollCategory = rollCategory;
 
-        this.mDieMap = new Map<string, RollProperties>();
+        this.mDiePropArray = new Array<DiePropertyPair>();
     }
 
     private clone() : Roll {
         let newRoll = new Roll(this.mRollName, this.mRollCategory);
 
-        for(let [dieJson, props] of this.mDieMap) {
-            newRoll.mDieMap.set(dieJson, props.clone({}))
+        for(let diePropPair of this.mDiePropArray) {
+            newRoll.mDiePropArray.push(new DiePropertyPair(cloneDie(diePropPair.mDie, diePropPair.mDie.displayName), diePropPair.mProperties.clone({})))
         }
 
         return newRoll;
@@ -52,84 +52,60 @@ export class Roll {
     addDieToRoll(die: Die, properties: RollProperties) : Roll
     {
         let newRoll = this.clone();
-        newRoll.mDieMap.set(JSON.stringify(die), properties.clone({}));
+
+        let foundPropPair = newRoll.mDiePropArray.find((value) => value.mDie.displayName === die.displayName)
+
+        if(foundPropPair === undefined) {
+            newRoll.mDiePropArray.push(new DiePropertyPair(cloneDie(die, die.displayName), properties.clone({})));
+        } else {
+            foundPropPair.mDie = die;
+            foundPropPair.mProperties = properties;
+        }
+
+
         return newRoll;
     }
 
     removeDieFromRoll(die: Die) : Roll
     {
         let newRoll = this.clone();
-        newRoll.mDieMap.delete(JSON.stringify(die));
+
+        let propIndex = newRoll.mDiePropArray.findIndex((value) => value.mDie.displayName === die.displayName)
+
+        if(propIndex !== -1) {
+            newRoll.mDiePropArray.splice(propIndex, 1);
+        } 
+        
         return newRoll;
     }
 
     containsDie(die: Die) : boolean
     {
-        return this.mDieMap.has(JSON.stringify(die));
+        return this.mDiePropArray.findIndex((value) => value.mDie.displayName === die.displayName) !== -1;
     }
 
     getTotalDiceInRoll() : number
     {
         let numDice = 0;
 
-        for(let dieProps of this.mDieMap.values())
+        for(let dieProps of this.mDiePropArray)
         {
-            numDice += Math.abs(dieProps.mNumDice);
+            numDice += Math.abs(dieProps.mProperties.mNumDice);
         }
 
         return numDice;
-    }
-
-    getDiePropMap() : Map<Die, RollProperties>
-    {
-        let outputMap = new Map<Die, RollProperties>();
-
-        for(let [dieJson, properties] of this.mDieMap.entries())
-        {
-            outputMap.set(createUnknownDie(dieJson), properties.clone({}));
-        }
-
-        return outputMap;
     }
 
     getDiePropArray() : Array<DiePropertyPair>
     {
         let outputArray = new Array<DiePropertyPair>();
 
-        for(let [dieJson, properties] of this.mDieMap.entries())
+        for(let prop of this.mDiePropArray)
         {
-            outputArray.push(new DiePropertyPair(createUnknownDie(dieJson), properties.clone({})));
+            outputArray.push(new DiePropertyPair(cloneDie(prop.mDie, prop.mDie.displayName), prop.mProperties.clone({})));
         }
 
         return outputArray;
-    }
-
-    getDieAt(position: number) : Die
-    {
-        let curPos = 0;
-        for(let dieJson of this.mDieMap.keys())
-        {
-            if(curPos === position) {
-                return createUnknownDie(dieJson);
-            }
-            curPos++;
-        }
-
-        return new SimpleDie('Invlaid', 1);
-    }
-
-    getRollPropertiesAt(position: number) : RollProperties
-    {
-        let curPos = 0;
-        for(let prop of this.mDieMap.values())
-        {
-            if(curPos === position) {
-                return prop.clone({});
-            }
-            curPos++;
-        }
-
-        return new RollProperties({});
     }
 
     moveDieUp(position: number) : Roll
@@ -140,21 +116,17 @@ export class Roll {
         // Or if there is nothing
         // Or if there is only one thing
         // Or if its past where we can access
-        if(position <= 0 || newRoll.mDieMap.size == 0 || newRoll.mDieMap.size == 1 || position >= newRoll.mDieMap.size)
+        if(position <= 0 || newRoll.mDiePropArray.length == 0 || newRoll.mDiePropArray.length == 1 || position >= newRoll.mDiePropArray.length)
         {
             return newRoll;
         }
 
-        let iterableEnteries = [...newRoll.mDieMap.entries()];
+        let newMapStart = newRoll.mDiePropArray.slice(0, position-1);
+        let swappedElement = newRoll.mDiePropArray.slice(position-1, position);
+        let movedEntry = newRoll.mDiePropArray.slice(position, position+1);
+        let newMapEnd = newRoll.mDiePropArray.slice(position+1, newRoll.mDiePropArray.length);
 
-        let newMapStart = iterableEnteries.slice(0, position-1);
-        let swappedElement = iterableEnteries.slice(position-1, position);
-        let movedEntry = iterableEnteries.slice(position, position+1);
-        let newMapEnd = iterableEnteries.slice(position+1, iterableEnteries.length);
-
-        iterableEnteries = newMapStart.concat(movedEntry).concat(swappedElement).concat(newMapEnd);
-
-        newRoll.mDieMap = new Map(iterableEnteries);
+        newRoll.mDiePropArray = newMapStart.concat(movedEntry).concat(swappedElement).concat(newMapEnd);
 
         return newRoll;
     }
@@ -167,21 +139,17 @@ export class Roll {
         // Or if there is nothing
         // Or if there is only one thing
         // Or if its past where we can access
-        if(position < 0 || newRoll.mDieMap.size == 0 || newRoll.mDieMap.size == 1 || position >= newRoll.mDieMap.size - 1)
+        if(position < 0 || newRoll.mDiePropArray.length == 0 || newRoll.mDiePropArray.length == 1 || position >= newRoll.mDiePropArray.length - 1)
         {
             return newRoll;
         }
 
-        let iterableEnteries = [...newRoll.mDieMap.entries()];
+        let newMapStart = newRoll.mDiePropArray.slice(0, position);
+        let movedEntry = newRoll.mDiePropArray.slice(position, position+1);
+        let swappedElement = newRoll.mDiePropArray.slice(position+1, position+2);
+        let newMapEnd = newRoll.mDiePropArray.slice(position+2, newRoll.mDiePropArray.length);
 
-        let newMapStart = iterableEnteries.slice(0, position);
-        let movedEntry = iterableEnteries.slice(position, position+1);
-        let swappedElement = iterableEnteries.slice(position+1, position+2);
-        let newMapEnd = iterableEnteries.slice(position+2, iterableEnteries.length);
-
-        iterableEnteries = newMapStart.concat(swappedElement).concat(movedEntry).concat(newMapEnd);
-
-        newRoll.mDieMap = new Map(iterableEnteries);
+        newRoll.mDiePropArray = newMapStart.concat(swappedElement).concat(movedEntry).concat(newMapEnd);
 
         return newRoll;
     }
@@ -190,9 +158,11 @@ export class Roll {
     {
         let returnResults = new RollResults();
 
-        for(let [dieJson, properties] of this.mDieMap) {
+        for(let props of this.mDiePropArray) {
 
-            let die = createUnknownDie(dieJson);
+            let die = props.mDie;
+            let dieJson = JSON.stringify(die);
+            let properties = props.mProperties;
 
             let rollPair = this.produceRollLists(die, properties);
             let secondRollPair = this.produceRollLists(die, properties);
@@ -361,9 +331,9 @@ export class Roll {
     average() : number
     {
         let dieAverage = 0
-        for(let [dieJson, prop] of this.mDieMap)
+        for(let props of this.mDiePropArray)
         {
-            dieAverage += createUnknownDie(dieJson).average * prop.mNumDice + prop.mModifier
+            dieAverage += props.mDie.average * props.mProperties.mNumDice + props.mProperties.mModifier
         }
         return dieAverage
     }
@@ -389,7 +359,7 @@ export class Roll {
     {
         let returnString = ""
 
-        if(this.mDieMap.size === 0)
+        if(this.mDiePropArray.length === 0)
         {
             return returnString
         }
@@ -398,8 +368,11 @@ export class Roll {
 
         let firstDie = true
 
-        for(let [dieJson, props] of this.mDieMap.entries())
+        for(let pair of this.mDiePropArray)
         {
+            let die = pair.mDie;
+            let props = pair.mProperties;
+            
             // Don't add the "+" to the first item. Only add "+" to positive count items.
             if(firstDie) {
                 firstDie = false
@@ -407,7 +380,6 @@ export class Roll {
                 returnString += "+"
             }
 
-            let die = createUnknownDie(dieJson);
             if(die.displayName.startsWith("d"))
             {
                 returnString += props.mNumDice + die.displayName

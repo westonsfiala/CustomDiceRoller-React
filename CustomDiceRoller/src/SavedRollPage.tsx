@@ -8,14 +8,8 @@ import {
     Dimensions,
 } from 'react-native';
 
-import { SimplePageDieView } from "./dice/SimplePageDieView";
-import { Die } from "./dice/Die";
-import { NumDiceUpDownButtons, ModifierUpDownButtons } from './helpers/UpDownButtons';
-import { Roll } from './dice/Roll';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import RollManager from './sync/RollManager';
-import { AddDiceButton } from './helpers/AddDiceButton';
-import { PropertiesButton } from './helpers/PropertiesButton';
 import Touchable from 'react-native-platform-touchable';
 
 export function SavedRollPage({displayRoll}) {

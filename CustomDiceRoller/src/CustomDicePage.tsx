@@ -20,7 +20,6 @@ import { Die } from './dice/Die';
 import { cloneDie } from './dice/DieFactory';
 import { CreateRollDialog } from './dialogs/CreateRollDialog';
 import RollManager from './sync/RollManager';
-import DiceManager from './sync/DiceManager';
 
 interface CustomRollPageInterface {
     displayRoll: (roll: Roll) => void;

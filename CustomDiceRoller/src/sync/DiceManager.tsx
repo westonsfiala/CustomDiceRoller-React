@@ -148,6 +148,7 @@ export default class DiceManager {
                 returnDieArray.push(createdDie);
             } catch (error) {
                 // TODO: What to do when it goes wrong?
+                console.log("error recreating die");
             }
         }
     
