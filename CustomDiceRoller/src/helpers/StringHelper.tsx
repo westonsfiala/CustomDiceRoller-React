@@ -78,3 +78,27 @@ export function getMinimumTitle() : string
 {
     return 'Minimum Value = |X|'
 }
+
+export function concatter(accumulator: string, current: number, index: number) : string
+{
+    if(index === 0) 
+    {
+        return current.toString();
+    } 
+    else 
+    {
+        return accumulator + ', ' + current;
+    }
+}
+
+export function concatterNoSpace(accumulator: string, current: number, index: number) : string
+{
+    if(index === 0) 
+    {
+        return current.toString();
+    } 
+    else 
+    {
+        return accumulator + ',' + current;
+    }
+}

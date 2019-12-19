@@ -1,5 +1,5 @@
 
-import React, { Component, useState, useRef } from 'react'
+import React, { useRef } from 'react'
 
 import {
     View, 
@@ -19,7 +19,7 @@ function HistoryItemView(rollHelper : RollDisplayHelper) {
                 <StruckStringPairView pair={rollHelper.rollSumText} style={styles.SumText}/>
                 <View style={styles.NameTimeContainterOuter}>
                     <View style={styles.NameTimeContainterInner}>
-                        <View>
+                        <View style={styles.NameContainter}>
                             <Text style={styles.RollNameText}>
                                 {rollHelper.storedRoll.displayName}
                             </Text>
@@ -125,6 +125,9 @@ const styles = EStyleSheet.create({
         flex:1, 
         flexDirection:'row', 
         justifyContent:'space-between'
+    },
+    NameContainter:{
+        flex:1, 
     },
     RollNameText:{
         color:'$textColor', 

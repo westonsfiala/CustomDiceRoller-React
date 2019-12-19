@@ -1,14 +1,17 @@
 
-import {Die, DieLoadError} from '../dice/Die'
-import {SimpleDie} from '../dice/SimpleDie'
+import { Die } from '../dice/Die'
+import { SimpleDie } from '../dice/SimpleDie'
 
 import AsyncStorage from '@react-native-community/async-storage';
 import { createUnknownDie } from '../dice/DieFactory';
+import { MinMaxDie } from '../dice/MinMaxDie';
 
 const DiceKey = 'DicePoolKey';
 
 const standardDice = [
+    new MinMaxDie('Fate', -1, 1),
     new SimpleDie('d2', 2),
+    new SimpleDie('d3', 3),
     new SimpleDie('d4', 4),
     new SimpleDie('d6', 6),
     new SimpleDie('d8', 8),

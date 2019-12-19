@@ -12,7 +12,6 @@ import {
     DIE_12,
     DIE_20,
     DIE_100
-
 } from "./DieImageGetter"
 
 export class SimpleDie extends Die
@@ -25,12 +24,17 @@ export class SimpleDie extends Die
     {
         if(dieName.length === 0)
         {
-            dieName = 'd' + die;
+            dieName = SimpleDie.tempName(die.toString());
         }
 
         super(dieName, SimpleDie.simpleDieIdentifier);
 
         this.mDie = die;
+    }
+
+    static tempName(dieString : string)
+    {
+        return 'd' + dieString;
     }
 
     roll() :  number

@@ -1,6 +1,6 @@
 import { ModalDialogBase } from "./ModalDialogBase";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 
 import {
     View,
@@ -11,26 +11,28 @@ import {
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
-import { SimpleDie } from "../dice/SimpleDie";
-import { Die } from "../dice/Die";
+import { MinMaxDie } from "../dice/MinMaxDie";
 
-interface CreateSimpleDieInterface {
-    modalShown : boolean;
-    die : SimpleDie;
-    dismissModal : () => void;
-    createDie : (die : Die) => void;
+interface MinMaxInterface {
+    modalShown : boolean
+    die : MinMaxDie
+    dismissModal : () => void
+    createDie : (die: MinMaxDie) => void
 }
 
-export function CreateSimpleDieDialog(props : CreateSimpleDieInterface) {
+export function CreateMinMaxDieDialog(props : MinMaxInterface) {
 
-    const [dieName, setDieName] = useState('')
-    const [dieNumberString, setDieNumberString] = useState(props.die.mDie.toString() as string)
+    const [dieName, setDieName] = useState('');
+    const [minString, setMinString] = useState(props.die.mMinimum.toString() as string);
+    const [maxString, setMaxString] = useState(props.die.mMaximum.toString() as string);
 
     function acceptHandler() {
-        let possibleNumber = Number.parseInt(dieNumberString)
-        if(Number.isSafeInteger(possibleNumber) && possibleNumber >= 0)
+        let possibleMin = Number.parseInt(minString);
+        let possibleMax = Number.parseInt(maxString);
+
+        if(Number.isSafeInteger(possibleMin) && Number.isSafeInteger(possibleMax))
         {
-            props.createDie(new SimpleDie(dieName, possibleNumber))
+            props.createDie(new MinMaxDie(dieName, possibleMin, possibleMax))
         }
 
         props.dismissModal();
@@ -39,26 +41,36 @@ export function CreateSimpleDieDialog(props : CreateSimpleDieInterface) {
     function modalContent() {
         return(
             <View>
-                <Text style={styles.ModalTitle}>Create Simple Die</Text>
+                <Text style={styles.ModalTitle}>Create Min Max Die</Text>
                 <View style={styles.ModalTextInputLine}>
                     <Text style={styles.ModalText}>Name</Text>
                     <TextInput 
                     style={styles.ModalInputText}
                     defaultValue={dieName}
-                    placeholder={SimpleDie.tempName(dieNumberString)}
+                    placeholder={MinMaxDie.tempName(minString, maxString)}
                     placeholderTextColor={styles.PlaceholderText.color}
                     onChangeText={(text) => setDieName(text)}
                     />
                 </View>
                 <View style={styles.ModalTextInputLine}>
-                    <Text style={styles.ModalText}>Die</Text>
+                    <Text style={styles.ModalText}>Min</Text>
                     <TextInput 
                     style={styles.ModalInputText}
                     autoFocus={true}
                     selectTextOnFocus={true}
-                    defaultValue={dieNumberString}
+                    defaultValue={minString}
                     keyboardType={'number-pad'}
-                    onChangeText={(text) => setDieNumberString(text)}
+                    onChangeText={(text) => setMinString(text)}
+                    />
+                </View>
+                <View style={styles.ModalTextInputLine}>
+                    <Text style={styles.ModalText}>Max</Text>
+                    <TextInput 
+                    style={styles.ModalInputText}
+                    selectTextOnFocus={true}
+                    defaultValue={maxString}
+                    keyboardType={'number-pad'}
+                    onChangeText={(text) => setMaxString(text)}
                     />
                 </View>
                 <View style={styles.ModalButtonLine}>

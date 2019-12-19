@@ -33,11 +33,13 @@ export function RollResultsPage({rollHelper = null as RollDisplayHelper, rollAga
     return (
         <View style={styles.Container}>
             <View style={styles.Container}>
-                <Text style={styles.TitleText}>
-                    {rollHelper && rollHelper.rollNameText || ''}
-                </Text>
-                <StruckStringPairView pair={rollHelper && rollHelper.rollSumText || new StruckStringPair("","")} style={styles.SumText}/>
+                <ScrollView contentContainerStyle={{justifyContent:'center'}} style={{}}>
+                    <Text style={styles.TitleText}>
+                        {rollHelper && rollHelper.rollNameText || ''}
+                    </Text>
+                </ScrollView>
             </View>
+            <StruckStringPairView pair={rollHelper && rollHelper.rollSumText || new StruckStringPair("","")} style={styles.SumText}/>
             <View style={styles.ScrollContainer}>
                 <ScrollView>
                     {(rollHelper && rollHelper.rollResultsText || []).map((item, index) => 

@@ -4,21 +4,24 @@ import React, { useState } from 'react';
 import 
 {
     View,
-    Text,
-    Image,
 } from 'react-native'
 
 import Touchable from 'react-native-platform-touchable';
-import EStyleSheet from 'react-native-extended-stylesheet';
 
-import { getRequiredImage } from './DieImageGetter';
 import { Die } from './Die';
-import { SimpleDie } from './SimpleDie';
 import { DieInfoDialog } from '../dialogs/DieInfoDialog';
-import { CreateSimpleDieDialog } from '../dialogs/CreateSimpleDieDialog';
 import { DieView } from './DieView';
+import { CreateDieDialog } from '../dialogs/CreateDieDialog';
 
-export function SimplePageDieView({die = new SimpleDie("temp", -1) as Die, size, pressDieCallback, removeDieCallback, editDieCallback}) {
+interface SimpleDieViewInterface {
+    die : Die;
+    size : number;
+    pressDieCallback : (die: Die) => void;
+    removeDieCallback : (die : Die) => void;
+    editDieCallback : (die: Die, editDie: Die) => void;
+}
+
+export function SimplePageDieView(props : SimpleDieViewInterface) {
     
     const [modalShown, setModalShown] = useState(false);
     const [editModalShown, setEditModalShown] = useState(false);
@@ -29,68 +32,22 @@ export function SimplePageDieView({die = new SimpleDie("temp", -1) as Die, size,
     }
 
     function handleEndEdit(editDie : Die) {
-        editDieCallback(die, editDie);
+        props.editDieCallback(props.die, editDie);
         setEditModalShown(false);
     }
 
     return(
-        <View style={{width:size}} >
+        <View style={{width:props.size}} >
             <Touchable 
             background={Touchable.Ripple('white')} 
-            onPress={() => {pressDieCallback(die)}}
+            onPress={() => {props.pressDieCallback(props.die)}}
             delayLongPress={300}
             onLongPress={() => setModalShown(true)}
             >
-                <DieView die={die} size={size}/>
+                <DieView die={props.die} size={props.size}/>
             </Touchable>
-            <DieInfoDialog modalShown={modalShown} die={die} dismissModal={() => setModalShown(false)} removeDie={removeDieCallback} editDie={handleBeginEdit}/>
-            <CreateSimpleDieDialog modalShown={editModalShown} die={die} dismissModal={() => setEditModalShown(false)} createDie={handleEndEdit}/>
+            <DieInfoDialog modalShown={modalShown} die={props.die} dismissModal={() => setModalShown(false)} removeDie={props.removeDieCallback} editDie={handleBeginEdit}/>
+            <CreateDieDialog modalShown={editModalShown} die={props.die} dismissModal={() => setEditModalShown(false)} createDie={handleEndEdit}/>
         </View>
     );
 };
-
-const styles = EStyleSheet.create({
-    Touch:{
-        flexDirection:'column', 
-        alignItems:'center', 
-        padding:'2rem'
-    },
-    Text:{
-        color:'$textColor'
-    },
-    ModalContainer:{
-        backgroundColor:'$primaryColor',
-    },
-    ModalName:{
-        fontSize:'24rem',
-        color:'$textColor',
-    },
-    ModalDetailText: {
-        fontSize:'16rem',
-        color:'$textColor',
-    },
-    EditButtonText: {
-        fontSize:'16rem',
-        color:'$textColor',
-    },
-    RemoveOKButtonText: {
-        fontSize:'16rem',
-        paddingLeft:'4rem',
-        paddingRight:'4rem',
-        color:'$textColor',
-    },
-    ModalButtonContainer:{
-        flexDirection:'row',
-        justifyContent:'space-between',
-        paddingTop:'4rem'
-    },
-    RemoveOKButtonContainer:{
-        flexDirection:'row',
-    },
-    HitSlop: {
-        top:'10rem',
-        bottom:'10rem',
-        right:'10rem',
-        left:'10rem'
-    }
-})

@@ -1,7 +1,7 @@
 
 import { Die } from './Die'
 import { SimpleDie } from './SimpleDie';
-import { createUnknownDie, cloneDie } from './DieFactory'
+import { cloneDie } from './DieFactory'
 import { RollProperties } from './RollProperties'
 import { RollResults } from './RollResults'
 
@@ -174,7 +174,7 @@ export class Roll {
             switch(properties.mAdvantageDisadvantage)
             {
                 case RollProperties.rollDisadvantageValue :
-                    if(rollPair.keep.reduce(summer) < secondRollPair.keep.reduce(summer)) {
+                    if(rollPair.keep.reduce(summer, 0) < secondRollPair.keep.reduce(summer, 0)) {
                         returnResults.mRollResults.set(dieJson, rollPair.keep);
                         returnResults.mDroppedRolls.set(dieJson, rollPair.drop);
                         returnResults.mReRolledRolls.set(dieJson, rollPair.reroll);

@@ -1,6 +1,6 @@
 import { ModalDialogBase } from "./ModalDialogBase";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 
 import {
     View,
@@ -11,54 +11,64 @@ import {
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
-import { SimpleDie } from "../dice/SimpleDie";
-import { Die } from "../dice/Die";
+import { ImbalancedDie } from "../dice/ImbalancedDie";
+import { concatterNoSpace } from "../helpers/StringHelper";
 
-interface CreateSimpleDieInterface {
-    modalShown : boolean;
-    die : SimpleDie;
-    dismissModal : () => void;
-    createDie : (die : Die) => void;
+interface ImbalancedInterface {
+    modalShown : boolean
+    die : ImbalancedDie
+    dismissModal : () => void
+    createDie : (die: ImbalancedDie) => void
 }
 
-export function CreateSimpleDieDialog(props : CreateSimpleDieInterface) {
+export function CreateImbalancedDieDialog(props : ImbalancedInterface) {
 
-    const [dieName, setDieName] = useState('')
-    const [dieNumberString, setDieNumberString] = useState(props.die.mDie.toString() as string)
+    const [dieName, setDieName] = useState('');
+    const [facesString, setFacesString] = useState(props.die.mFaces.reduce(concatterNoSpace, ''));
 
     function acceptHandler() {
-        let possibleNumber = Number.parseInt(dieNumberString)
-        if(Number.isSafeInteger(possibleNumber) && possibleNumber >= 0)
-        {
-            props.createDie(new SimpleDie(dieName, possibleNumber))
+        let numberStrings = facesString.split(',');
+        let newFaces = new Array<number>();
+
+        for(let numString of numberStrings) {
+            let possibleNumber = Number.parseInt(numString);
+
+            if(Number.isSafeInteger(possibleNumber)) {
+                newFaces.push(possibleNumber);
+            } else {
+                props.dismissModal();
+                return;
+            }
         }
 
+        props.createDie(new ImbalancedDie(dieName, newFaces));
         props.dismissModal();
     }
 
     function modalContent() {
         return(
             <View>
-                <Text style={styles.ModalTitle}>Create Simple Die</Text>
+                <Text style={styles.ModalTitle}>Create Min Max Die</Text>
+                <Text style={styles.ModalSubTitle}>Use a comma separated list</Text>
                 <View style={styles.ModalTextInputLine}>
                     <Text style={styles.ModalText}>Name</Text>
                     <TextInput 
                     style={styles.ModalInputText}
                     defaultValue={dieName}
-                    placeholder={SimpleDie.tempName(dieNumberString)}
+                    placeholder={ImbalancedDie.tempName(facesString)}
                     placeholderTextColor={styles.PlaceholderText.color}
                     onChangeText={(text) => setDieName(text)}
                     />
                 </View>
                 <View style={styles.ModalTextInputLine}>
-                    <Text style={styles.ModalText}>Die</Text>
+                    <Text style={styles.ModalText}>Faces</Text>
                     <TextInput 
                     style={styles.ModalInputText}
                     autoFocus={true}
                     selectTextOnFocus={true}
-                    defaultValue={dieNumberString}
+                    defaultValue={facesString}
                     keyboardType={'number-pad'}
-                    onChangeText={(text) => setDieNumberString(text)}
+                    onChangeText={(text) => setFacesString(text)}
                     />
                 </View>
                 <View style={styles.ModalButtonLine}>
@@ -104,6 +114,10 @@ const styles = EStyleSheet.create({
     },
     ModalTitle:{
         fontSize:'20rem',
+        color:'$textColor',
+    },
+    ModalSubTitle:{
+        fontSize:'16rem',
         color:'$textColor',
     },
     ModalText:{

@@ -16,8 +16,12 @@ import {
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { CreateSimpleDieDialog } from '../dialogs/CreateSimpleDieDialog';
+import { CreateMinMaxDieDialog } from '../dialogs/CreateMinMaxDieDialog';
 import { SimpleDie } from '../dice/SimpleDie';
 import { Die } from '../dice/Die';
+import { MinMaxDie } from '../dice/MinMaxDie';
+import { ImbalancedDie } from '../dice/ImbalancedDie';
+import { CreateImbalancedDieDialog } from '../dialogs/CreateImbalancedDieDialog';
 
 interface AddDiceInterface {
     addDie: (die: Die) => void;
@@ -29,10 +33,24 @@ export function AddDiceButton(props: AddDiceInterface) {
     const menuRef = useRef(null);
     const resetMenuRef = useRef(null);
     const [simpleModalShown, setSimpleModalShown] = useState(false);
+    const [minMaxModalShown, setMinMaxModalShown] = useState(false);
+    const [imbalancedModalShown, setImbalancedModalShown] = useState(false);
     const [simpleDie, setSimpleDie] = useState(new SimpleDie('temp', 1));
+    const [minMaxDie, setMinMaxDie] = useState(new MinMaxDie('temp', 1, 1));
+    const [imbalancedDie, setImbalancedDie] = useState(new ImbalancedDie('temp', [1]));
 
     function handleCreateSimpleDie(die: SimpleDie) {
         setSimpleDie(die);
+        props.addDie(die);
+    }
+
+    function handleCreateMinMaxDie(die: MinMaxDie) {
+        setMinMaxDie(die);
+        props.addDie(die);
+    }
+
+    function handleCreateImbalancedDie(die: ImbalancedDie) {
+        setImbalancedDie(die);
         props.addDie(die);
     }
 
@@ -42,9 +60,13 @@ export function AddDiceButton(props: AddDiceInterface) {
                 <MenuTrigger/>
                 <MenuOptions>
                     <MenuOption style={styles.Menu} onSelect={() => setSimpleModalShown(true)}>
-                        <Text style={styles.MenuText}>
-                            Simple Die
-                        </Text>
+                        <Text style={styles.MenuText}>Simple Die</Text>
+                    </MenuOption>
+                    <MenuOption style={styles.Menu} onSelect={() => setMinMaxModalShown(true)}>
+                        <Text style={styles.MenuText}>Min-Max Die</Text>
+                    </MenuOption>
+                    <MenuOption style={styles.Menu} onSelect={() => setImbalancedModalShown(true)}>
+                        <Text style={styles.MenuText}>Imbalanced Die</Text>
                     </MenuOption>
                 </MenuOptions>
             </Menu>
@@ -69,6 +91,8 @@ export function AddDiceButton(props: AddDiceInterface) {
             </Touchable>
             
             <CreateSimpleDieDialog modalShown={simpleModalShown} die={simpleDie} dismissModal={() => setSimpleModalShown(false)} createDie={handleCreateSimpleDie} />
+            <CreateMinMaxDieDialog modalShown={minMaxModalShown} die={minMaxDie} dismissModal={() => setMinMaxModalShown(false)} createDie={handleCreateMinMaxDie} />
+            <CreateImbalancedDieDialog modalShown={imbalancedModalShown} die={imbalancedDie} dismissModal={() => setImbalancedModalShown(false)} createDie={handleCreateImbalancedDie} />
         </View>
     )
 }

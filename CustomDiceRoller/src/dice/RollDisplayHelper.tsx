@@ -2,7 +2,7 @@
 
 import {Roll} from "./Roll"
 import {createUnknownDie} from "./DieFactory"
-import {getModifierString} from "../helpers/StringHelper"
+import {getModifierString, concatter} from "../helpers/StringHelper"
 import {StruckStringPair} from "./StruckStringPair"
 import { RollProperties, isDouble, isHalve } from "./RollProperties";
 
@@ -25,18 +25,6 @@ export class RollDisplayHelper {
 
         // Lambda method for use in the reduce method to sum all the values.
         const summer = (accumulator: number, current: number) => accumulator + current;
-
-        // Lambda method for use in the reduce method to output a nicely comma separated list.
-        const concatter = (accumulator: string, current: number, index: number) : string => {
-            if(index === 0) 
-            {
-                return current.toString();
-            } 
-            else 
-            {
-                return accumulator + ', ' + current;
-            }
-        }
 
         let rollValues = roll.roll();
 

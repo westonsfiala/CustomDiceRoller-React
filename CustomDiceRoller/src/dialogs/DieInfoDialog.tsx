@@ -9,27 +9,36 @@ import {
 
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { Die } from "../dice/Die";
 
-export function DieInfoDialog({modalShown, die, dismissModal, removeDie, editDie}) {
+interface DieInfoDialogInterface {
+    modalShown : boolean;
+    die : Die;
+    dismissModal : () => void;
+    removeDie : (die : Die) => void;
+    editDie : (die : Die) => void;
+}
+
+export function DieInfoDialog(props : DieInfoDialogInterface) {
 
     function modalContent() {
         return(
             <View>
                 <Text style={styles.ModalName}>
-                    Die info - {die.mDieName}
+                    Die info - {props.die.mDieName}
                 </Text>
                 <Text style={styles.ModalDetailText}>
-                    Rolls a number between {die.min} and {die.max}
+                    Rolls a number between {props.die.min} and {props.die.max}
                 </Text>
                 <Text style={styles.ModalDetailText}>
-                    Average of {die.average}
+                    Average of {props.die.average}
                 </Text>
                 <View style={styles.ModalButtonContainer}>
                     <View>
                         <Touchable 
                         onPress={() => {
-                            editDie(die);
-                            dismissModal();
+                            props.editDie(props.die);
+                            props.dismissModal();
                         }}
                         foreground={Touchable.Ripple('white', true)}
                         hitSlop={styles.HitSlop}
@@ -40,8 +49,8 @@ export function DieInfoDialog({modalShown, die, dismissModal, removeDie, editDie
                     <View style={styles.RemoveOKButtonContainer}>
                         <Touchable 
                         onPress={() => {
-                            removeDie(die);
-                            dismissModal();
+                            props.removeDie(props.die);
+                            props.dismissModal();
                         }}
                         foreground={Touchable.Ripple('white', true)}
                         hitSlop={styles.HitSlop}
@@ -49,7 +58,7 @@ export function DieInfoDialog({modalShown, die, dismissModal, removeDie, editDie
                             <Text style={styles.RemoveOKButtonText}>Remove</Text>
                         </Touchable>
                         <Touchable 
-                        onPress={() => dismissModal()}
+                        onPress={() => props.dismissModal()}
                         foreground={Touchable.Ripple('white', true)}
                         hitSlop={styles.HitSlop}
                         >
@@ -62,7 +71,7 @@ export function DieInfoDialog({modalShown, die, dismissModal, removeDie, editDie
     }
 
     return(
-        <ModalDialogBase modalShown={modalShown} dismissModal={dismissModal} width={.75} content={modalContent()}/>
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.75} content={modalContent()}/>
     );
 }
 
