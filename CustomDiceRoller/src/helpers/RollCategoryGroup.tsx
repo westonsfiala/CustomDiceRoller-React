@@ -1,18 +1,11 @@
 
-import React, { useState } from 'react'
+import React from 'react'
 
 import {
-    View, 
-    Text,
     FlatList,
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import Touchable from 'react-native-platform-touchable';
-
 import {Roll} from '../dice/Roll';
-import { SavedRollView } from './SavedRollView';
 import { SavedCategoryView } from './SavedCategoryView';
 
 interface RollCategoryGroupInterface {
@@ -21,14 +14,12 @@ interface RollCategoryGroupInterface {
     displayRoll : (roll: Roll) => void;
 }
 
-class RollCategoryGroup {
-    category: string;
-    rolls: Array<Roll>;
-}
-
 export function RollCategoryGroupView(props : RollCategoryGroupInterface) {
 
-    const [showRolls, setShowRolls] = useState(false);
+    class RollCategoryGroup {
+        category: string;
+        rolls: Array<Roll>;
+    }
 
     function splitRolls() : Array<RollCategoryGroup> {
 
@@ -51,36 +42,12 @@ export function RollCategoryGroupView(props : RollCategoryGroupInterface) {
     }
 
     return (
-        <View>
-            <FlatList 
-                data={splitRolls()}
-                renderItem={({ item }) =>  (
-                    <SavedCategoryView category={item.category} rolls={item.rolls} displayRoll={props.displayRoll} />
-                )}
-                keyExtractor={(item, index) => index.toString()}
-            />
-        </View>
+        <FlatList 
+            data={splitRolls()}
+            renderItem={({ item }) =>  (
+                <SavedCategoryView category={item.category} rolls={item.rolls} displayRoll={props.displayRoll} />
+            )}
+            keyExtractor={(item, index) => index.toString()}
+        />
     );
 }
-
-const styles = EStyleSheet.create({
-    CategoryContainer:{
-        flex: 1, 
-        flexDirection: 'row', 
-        alignItems: 'center',
-    },
-    CategoryText:{
-        color:'$textColor', 
-        fontSize:'22rem'
-    },
-    IconConstants:{
-        width:'48rem',
-        color:'$textColor',
-        backgroundColor:'transparent'
-    },
-    ShowRolls:{
-    },
-    HideRolls:{
-        height:0,
-    },
-})

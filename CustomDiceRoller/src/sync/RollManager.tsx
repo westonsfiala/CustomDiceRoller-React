@@ -20,7 +20,11 @@ export default class RollManager {
     }
 
     private constructor() {
-        this.getRollStorage().then((rolls) => this.setRolls(rolls))
+        this.getRollStorage().then((rolls) => this.setRolls(rolls));
+    }
+
+    private rollSorter(rollA: Roll, rollB: Roll) {
+        return (rollA.categoryName + rollA.mRollName).localeCompare(rollB.categoryName + rollB.mRollName);
     }
 
     setUpdater(updater : () => void) {
@@ -32,7 +36,7 @@ export default class RollManager {
     }
 
     setRolls(rolls : Array<Roll>) {
-        rolls.sort((rollA, rollB) => {return ('' + rollA.mRollName).localeCompare(rollB.mRollName);})
+        rolls.sort(this.rollSorter)
         this.setRollStorage(rolls).then((rolls) => {
             this.mRolls = rolls;
             if(this.mUpdater !== null) this.mUpdater();
@@ -142,7 +146,7 @@ export default class RollManager {
             }
         }
     
-        returnRollArray.sort((rollA, rollB) => {return (rollA.mRollName).localeCompare(rollB.mRollName);})
+        returnRollArray.sort(this.rollSorter)
     
         return returnRollArray;
     }

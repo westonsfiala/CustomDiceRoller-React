@@ -27,7 +27,6 @@ export function SavedCategoryView(props : SavedCategoryInterface) {
     return (
         <View>
             <Touchable 
-                style={styles.ButtonBackground}
                 foreground={Touchable.Ripple('white')}
                 onPress={() => setShowRolls(!showRolls)}
             >
@@ -69,6 +68,7 @@ const styles = EStyleSheet.create({
         backgroundColor:'transparent'
     },
     ShowRolls:{
+        marginLeft:'10rem',
     },
     HideRolls:{
         height:0,

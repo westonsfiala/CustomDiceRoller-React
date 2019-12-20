@@ -3,14 +3,11 @@ import React, { useState, useEffect } from 'react'
 
 import {
     View, 
-    Text,
-    FlatList,
     Dimensions,
 } from 'react-native';
 
 import EStyleSheet from 'react-native-extended-stylesheet';
 import RollManager from './sync/RollManager';
-import { SavedRollView } from './helpers/SavedRollView';
 import { RollCategoryGroupView } from './helpers/RollCategoryGroup';
 import { Roll } from './dice/Roll';
 
