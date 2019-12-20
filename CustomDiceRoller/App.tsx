@@ -50,9 +50,15 @@ const App = () => {
 
     console.log('refresh app');
 
-    function clearRollHistoryHandler() {
+    function clearRollHistory() {
         previousRollHistory.current = rollHistory;
         setRollHistory(Array<RollDisplayHelper>());
+    }
+
+    function restoreRollHistory() {
+        if(previousRollHistory.current !== null) {
+            setRollHistory(previousRollHistory.current)
+        }
     }
 
     function addRoll(newRoll: Roll) {
@@ -102,13 +108,13 @@ const App = () => {
                         <AppBar 
                         title='RPG Dice Roller' 
                         subtitle='Tap die icons to roll!' 
-                        clearHistoryHandler={clearRollHistoryHandler} 
+                        clearHistoryHandler={clearRollHistory} 
                         tabIndex={currentPage} 
                         tabPressHandler={tabPressHandler}
                         />
                         <ViewPager style={styles.Pager} ref={viewPager} initialPage={currentPage} onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}>
                             <View key="1" >
-                                <HistoryPage rollHistory={rollHistory}/>
+                                <HistoryPage rollHistory={rollHistory} restorableHistory={previousRollHistory.current} restoreHistory={restoreRollHistory}/>
                             </View>
                             <View key="2" >
                                 <SimpleDicePage displayRoll={addRoll}/>

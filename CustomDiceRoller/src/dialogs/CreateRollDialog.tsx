@@ -8,10 +8,8 @@ import {
     TextInput,
 } from 'react-native';
 
-import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
-import { SimpleDie } from "../dice/SimpleDie";
 import { Roll } from "../dice/Roll";
 import { OkCancelButtons } from "../helpers/OkCancelButtons";
 
