@@ -14,8 +14,8 @@ import { Roll } from "../dice/Roll";
 import { OkCancelButtons } from "../helpers/OkCancelButtons";
 
 interface CreateRollDialogInterface {
-    modalShown : boolean,
-    roll: Roll,
+    modalShown : boolean;
+    roll: Roll;
     dismissModal: () => void;
     createRoll: (roll: Roll) => void;
 }

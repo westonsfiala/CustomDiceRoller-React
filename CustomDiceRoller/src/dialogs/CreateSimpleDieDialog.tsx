@@ -1,6 +1,6 @@
 import { ModalDialogBase } from "./ModalDialogBase";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 import {
     View,
@@ -24,13 +24,24 @@ interface CreateSimpleDieInterface {
 export function CreateSimpleDieDialog(props : CreateSimpleDieInterface) {
 
     const [dieName, setDieName] = useState('')
-    const [dieNumberString, setDieNumberString] = useState(props.die.mDie.toString() as string)
+    const [dieNumberString, setDieNumberString] = useState('')
+
+    useEffect(() => {
+        // If the name is the default, let the placeholder text show.
+        let defaultDieString = props.die.mDie.toString();
+        if(props.die.displayName === SimpleDie.tempName(defaultDieString)) {
+            setDieName('');
+        } else {
+            setDieName(props.die.displayName);
+        }
+        setDieNumberString(defaultDieString);
+    }, [props.die])
 
     function acceptHandler() {
         let possibleNumber = Number.parseInt(dieNumberString)
         if(Number.isSafeInteger(possibleNumber) && possibleNumber >= 0)
         {
-            props.createDie(new SimpleDie(dieName, possibleNumber))
+            props.createDie(new SimpleDie(dieName, possibleNumber));
         }
 
         props.dismissModal();

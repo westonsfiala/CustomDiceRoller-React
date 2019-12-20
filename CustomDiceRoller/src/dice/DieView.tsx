@@ -14,12 +14,17 @@ import { getRequiredImage } from './DieImageGetter';
 import { Die } from './Die';
 import { SimpleDie } from './SimpleDie';
 
-export function DieView({die = new SimpleDie("temp", -1) as Die, size}) {
+interface DieViewInterface {
+    die : Die;
+    size : number;
+}
+
+export function DieView(props : DieViewInterface) {
     
     return(
         <View style={styles.Touch}>
-            <Image source={getRequiredImage(die.imageID)} style={{width:size-2, height:size-2}}/>
-            <Text numberOfLines={3} style={[styles.Text, {fontSize:size/4}]}>{die.mDieName}</Text>
+            <Image source={getRequiredImage(props.die.imageID)} style={{width:props.size-2, height:props.size-2}}/>
+            <Text numberOfLines={3} style={[styles.Text, {fontSize:props.size/4}]}>{props.die.mDieName}</Text>
         </View>
     );
 };

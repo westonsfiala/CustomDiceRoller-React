@@ -32,12 +32,14 @@ export function AddDiceButton(props: AddDiceInterface) {
 
     const menuRef = useRef(null);
     const resetMenuRef = useRef(null);
+
     const [simpleModalShown, setSimpleModalShown] = useState(false);
     const [minMaxModalShown, setMinMaxModalShown] = useState(false);
     const [imbalancedModalShown, setImbalancedModalShown] = useState(false);
-    const [simpleDie, setSimpleDie] = useState(new SimpleDie('temp', 1));
-    const [minMaxDie, setMinMaxDie] = useState(new MinMaxDie('temp', 1, 1));
-    const [imbalancedDie, setImbalancedDie] = useState(new ImbalancedDie('temp', [1]));
+
+    const [simpleDie, setSimpleDie] = useState(new SimpleDie('', 1));
+    const [minMaxDie, setMinMaxDie] = useState(new MinMaxDie('', 1, 1));
+    const [imbalancedDie, setImbalancedDie] = useState(new ImbalancedDie('', [1,1,2,3,5]));
 
     function handleCreateSimpleDie(die: SimpleDie) {
         setSimpleDie(die);

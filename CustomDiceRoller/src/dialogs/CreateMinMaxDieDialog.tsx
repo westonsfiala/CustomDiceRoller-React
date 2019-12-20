@@ -1,6 +1,6 @@
 import { ModalDialogBase } from "./ModalDialogBase";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
     View,
@@ -14,17 +14,30 @@ import { MinMaxDie } from "../dice/MinMaxDie";
 import { OkCancelButtons } from "../helpers/OkCancelButtons";
 
 interface MinMaxInterface {
-    modalShown : boolean
-    die : MinMaxDie
-    dismissModal : () => void
-    createDie : (die: MinMaxDie) => void
+    modalShown : boolean;
+    die : MinMaxDie;
+    dismissModal : () => void;
+    createDie : (die: MinMaxDie) => void;
 }
 
 export function CreateMinMaxDieDialog(props : MinMaxInterface) {
 
     const [dieName, setDieName] = useState('');
-    const [minString, setMinString] = useState(props.die.mMinimum.toString() as string);
-    const [maxString, setMaxString] = useState(props.die.mMaximum.toString() as string);
+    const [minString, setMinString] = useState('');
+    const [maxString, setMaxString] = useState('');
+    
+    useEffect(() => {
+        // If the name is the default, let the placeholder text show.
+        let minString = props.die.min.toString();
+        let maxString = props.die.max.toString();
+        if(props.die.displayName === MinMaxDie.tempName(minString, maxString)) {
+            setDieName('');
+        } else {
+            setDieName(props.die.displayName);
+        }
+        setMinString(minString);
+        setMaxString(maxString);
+    }, [props.die])
 
     function acceptHandler() {
         let possibleMin = Number.parseInt(minString);

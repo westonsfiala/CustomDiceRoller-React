@@ -1,6 +1,6 @@
 import { ModalDialogBase } from "./ModalDialogBase";
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 import {
     View,
@@ -15,16 +15,27 @@ import { concatterNoSpace } from "../helpers/StringHelper";
 import { OkCancelButtons } from "../helpers/OkCancelButtons";
 
 interface ImbalancedInterface {
-    modalShown : boolean
-    die : ImbalancedDie
-    dismissModal : () => void
-    createDie : (die: ImbalancedDie) => void
+    modalShown : boolean;
+    die : ImbalancedDie;
+    dismissModal : () => void;
+    createDie : (die: ImbalancedDie) => void;
 }
 
 export function CreateImbalancedDieDialog(props : ImbalancedInterface) {
 
     const [dieName, setDieName] = useState('');
-    const [facesString, setFacesString] = useState(props.die.mFaces.reduce(concatterNoSpace, ''));
+    const [facesString, setFacesString] = useState('');
+
+    useEffect(() => {
+        // If the name is the default, let the placeholder text show.
+        let defaultFacesString = props.die.mFaces.reduce(concatterNoSpace, '');
+        if(props.die.displayName === ImbalancedDie.tempName(defaultFacesString)) {
+            setDieName('');
+        } else {
+            setDieName(props.die.displayName);
+        }
+        setFacesString(defaultFacesString);
+    }, [props.die])
 
     function acceptHandler() {
         let numberStrings = facesString.split(',');
@@ -48,7 +59,7 @@ export function CreateImbalancedDieDialog(props : ImbalancedInterface) {
     function modalContent() {
         return(
             <View>
-                <Text style={styles.ModalTitle}>Create Min Max Die</Text>
+                <Text style={styles.ModalTitle}>Create Imbalanced Die</Text>
                 <Text style={styles.ModalSubTitle}>Use a comma separated list</Text>
                 <View style={styles.ModalTextInputLine}>
                     <Text style={styles.ModalText}>Name</Text>
