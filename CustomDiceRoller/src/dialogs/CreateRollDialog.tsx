@@ -50,6 +50,8 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
                     <Text style={styles.ModalText}>Name</Text>
                     <TextInput 
                         style={styles.ModalInputText}
+                        autoFocus={true}
+                        selectTextOnFocus={true}
                         defaultValue={rollName}
                         placeholder={props.roll.mRollName}
                         placeholderTextColor={styles.PlaceholderText.color}
@@ -60,6 +62,7 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
                     <Text style={styles.ModalText}>Category</Text>
                     <TextInput 
                         style={styles.ModalInputText}
+                        selectTextOnFocus={true}
                         defaultValue={rollCategory}
                         placeholder={props.roll.mRollCategory}
                         placeholderTextColor={styles.PlaceholderText.color}

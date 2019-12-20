@@ -28,7 +28,7 @@ interface CustomRollPageInterface {
 
 export function CustomDicePage(props: CustomRollPageInterface) {
 
-    const [roll, setRoll] = useState(new Roll("Custom Roll", "temp"));
+    const [roll, setRoll] = useState(new Roll("Custom Roll", "Temp"));
     const [editDie, setEditDie] = useState(null as Die);
     const [createRollModalShown, setCreateRollModalShown] = useState(false);
     
