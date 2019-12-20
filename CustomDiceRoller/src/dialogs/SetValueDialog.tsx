@@ -8,9 +8,9 @@ import {
     TextInput,
 } from 'react-native';
 
-import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
+import { OkCancelButtons } from "../helpers/OkCancelButtons";
 
 export function SetValueDialog({modalShown, valueEnforcer, titleText, defaultValue, dismissModal, acceptValue}) {
 
@@ -43,24 +43,7 @@ export function SetValueDialog({modalShown, valueEnforcer, titleText, defaultVal
                     onChangeText={(text) => setCurrentText(text)}
                     />
                 </View>
-                <View style={styles.ModalButtonLine}>
-                    <Touchable 
-                    style={styles.ModalButton}
-                    hitSlop={styles.HitSlop}
-                    foreground={Touchable.Ripple('white', true)}
-                    onPress={() => dismissModal()}
-                    >
-                        <Text style={styles.ModalText}>Cancel</Text>
-                    </Touchable>
-                    <Touchable 
-                    style={styles.ModalButton}
-                    hitSlop={styles.HitSlop}
-                    foreground={Touchable.Ripple('white', true)}
-                    onPress={handleAccept}
-                    >
-                        <Text style={styles.ModalText}>OK</Text>
-                    </Touchable>
-                </View>
+                <OkCancelButtons accept={handleAccept} dismiss={dismissModal}/>
             </View>
         )
     }

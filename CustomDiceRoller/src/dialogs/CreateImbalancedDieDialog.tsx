@@ -8,11 +8,11 @@ import {
     TextInput,
 } from 'react-native';
 
-import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
 import { ImbalancedDie } from "../dice/ImbalancedDie";
 import { concatterNoSpace } from "../helpers/StringHelper";
+import { OkCancelButtons } from "../helpers/OkCancelButtons";
 
 interface ImbalancedInterface {
     modalShown : boolean
@@ -71,24 +71,7 @@ export function CreateImbalancedDieDialog(props : ImbalancedInterface) {
                     onChangeText={(text) => setFacesString(text)}
                     />
                 </View>
-                <View style={styles.ModalButtonLine}>
-                    <Touchable 
-                    style={styles.ModalButton}
-                    hitSlop={styles.HitSlop}
-                    foreground={Touchable.Ripple('white', true)}
-                    onPress={() => props.dismissModal()}
-                    >
-                        <Text style={styles.ModalText}>Cancel</Text>
-                    </Touchable>
-                    <Touchable 
-                    style={styles.ModalButton}
-                    hitSlop={styles.HitSlop}
-                    foreground={Touchable.Ripple('white', true)}
-                    onPress={() => acceptHandler()}
-                    >
-                        <Text style={styles.ModalText}>OK</Text>
-                    </Touchable>
-                </View>
+                <OkCancelButtons accept={acceptHandler} dismiss={props.dismissModal}/>
             </View>
         )
     }

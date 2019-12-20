@@ -8,10 +8,10 @@ import {
     TextInput,
 } from 'react-native';
 
-import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
 import { MinMaxDie } from "../dice/MinMaxDie";
+import { OkCancelButtons } from "../helpers/OkCancelButtons";
 
 interface MinMaxInterface {
     modalShown : boolean
@@ -73,24 +73,7 @@ export function CreateMinMaxDieDialog(props : MinMaxInterface) {
                     onChangeText={(text) => setMaxString(text)}
                     />
                 </View>
-                <View style={styles.ModalButtonLine}>
-                    <Touchable 
-                    style={styles.ModalButton}
-                    hitSlop={styles.HitSlop}
-                    foreground={Touchable.Ripple('white', true)}
-                    onPress={() => props.dismissModal()}
-                    >
-                        <Text style={styles.ModalText}>Cancel</Text>
-                    </Touchable>
-                    <Touchable 
-                    style={styles.ModalButton}
-                    hitSlop={styles.HitSlop}
-                    foreground={Touchable.Ripple('white', true)}
-                    onPress={() => acceptHandler()}
-                    >
-                        <Text style={styles.ModalText}>OK</Text>
-                    </Touchable>
-                </View>
+                <OkCancelButtons accept={acceptHandler} dismiss={props.dismissModal}/>
             </View>
         )
     }

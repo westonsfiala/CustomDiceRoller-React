@@ -13,6 +13,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
 import { SimpleDie } from "../dice/SimpleDie";
 import { Roll } from "../dice/Roll";
+import { OkCancelButtons } from "../helpers/OkCancelButtons";
 
 interface CreateRollDialogInterface {
     modalShown : boolean,
@@ -51,6 +52,7 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
                     <Text style={styles.ModalText}>Name</Text>
                     <TextInput 
                         style={styles.ModalInputText}
+                        defaultValue={rollName}
                         placeholder={props.roll.mRollName}
                         placeholderTextColor={styles.PlaceholderText.color}
                         onChangeText={(text) => setRollName(text)}
@@ -60,29 +62,13 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
                     <Text style={styles.ModalText}>Category</Text>
                     <TextInput 
                         style={styles.ModalInputText}
+                        defaultValue={rollCategory}
                         placeholder={props.roll.mRollCategory}
                         placeholderTextColor={styles.PlaceholderText.color}
                         onChangeText={(text) => setRollCategory(text)}
                     />
                 </View>
-                <View style={styles.ModalButtonLine}>
-                    <Touchable 
-                    style={styles.ModalButton}
-                    hitSlop={styles.HitSlop}
-                    foreground={Touchable.Ripple('white', true)}
-                    onPress={() => props.dismissModal()}
-                    >
-                        <Text style={styles.ModalText}>Cancel</Text>
-                    </Touchable>
-                    <Touchable 
-                    style={styles.ModalButton}
-                    hitSlop={styles.HitSlop}
-                    foreground={Touchable.Ripple('white', true)}
-                    onPress={() => acceptHandler()}
-                    >
-                        <Text style={styles.ModalText}>OK</Text>
-                    </Touchable>
-                </View>
+                <OkCancelButtons accept={acceptHandler} dismiss={props.dismissModal}/>
             </View>
         )
     }
@@ -126,9 +112,9 @@ const styles = EStyleSheet.create({
         color:Color.rgb(128,128,128).hex()
     },
     HitSlop: {
-        top:'10rem',
-        bottom:'10rem',
-        right:'10rem',
-        left:'10rem'
+        top:'5rem',
+        bottom:'5rem',
+        right:'5rem',
+        left:'5rem'
     }
 })

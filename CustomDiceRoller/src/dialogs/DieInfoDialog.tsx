@@ -36,6 +36,7 @@ export function DieInfoDialog(props : DieInfoDialogInterface) {
                 <View style={styles.ModalButtonContainer}>
                     <View>
                         <Touchable 
+                        style={styles.ModalButton}
                         onPress={() => {
                             props.editDie(props.die);
                             props.dismissModal();
@@ -43,27 +44,34 @@ export function DieInfoDialog(props : DieInfoDialogInterface) {
                         foreground={Touchable.Ripple('white', true)}
                         hitSlop={styles.HitSlop}
                         >
-                            <Text style={styles.EditButtonText}>Edit</Text>
+                            <Text style={styles.ButtonText}>Edit</Text>
                         </Touchable>
                     </View>
                     <View style={styles.RemoveOKButtonContainer}>
-                        <Touchable 
-                        onPress={() => {
-                            props.removeDie(props.die);
-                            props.dismissModal();
-                        }}
-                        foreground={Touchable.Ripple('white', true)}
-                        hitSlop={styles.HitSlop}
-                        >
-                            <Text style={styles.RemoveOKButtonText}>Remove</Text>
-                        </Touchable>
-                        <Touchable 
-                        onPress={() => props.dismissModal()}
-                        foreground={Touchable.Ripple('white', true)}
-                        hitSlop={styles.HitSlop}
-                        >
-                            <Text style={styles.RemoveOKButtonText}>OK</Text>
-                        </Touchable>
+                        <View style={styles.ModalButtonPadding}>
+                            <Touchable 
+                            style={styles.ModalButton}
+                            onPress={() => {
+                                props.removeDie(props.die);
+                                props.dismissModal();
+                            }}
+                            foreground={Touchable.Ripple('white', true)}
+                            hitSlop={styles.HitSlop}
+                            >
+                                <Text style={styles.ButtonText}>Remove</Text>
+                            </Touchable>
+                        </View>
+                        
+                        <View style={styles.ModalButtonPadding}>
+                            <Touchable 
+                            style={styles.ModalButton}
+                            onPress={() => props.dismissModal()}
+                            foreground={Touchable.Ripple('white', true)}
+                            hitSlop={styles.HitSlop}
+                            >
+                                <Text style={styles.ButtonText}>OK</Text>
+                            </Touchable>
+                        </View>
                     </View>
                 </View>
             </View>
@@ -84,28 +92,33 @@ const styles = EStyleSheet.create({
         fontSize:'16rem',
         color:'$textColor',
     },
-    EditButtonText: {
+    ButtonText: {
         fontSize:'16rem',
-        color:'$textColor',
-    },
-    RemoveOKButtonText: {
-        fontSize:'16rem',
-        paddingLeft:'8rem',
-        paddingRight:'8rem',
+        paddingLeft:'5rem',
+        paddingRight:'5rem',
         color:'$textColor',
     },
     ModalButtonContainer:{
         flexDirection:'row',
         justifyContent:'space-between',
-        paddingTop:'16rem'
+        paddingTop:'10rem',
     },
     RemoveOKButtonContainer:{
         flexDirection:'row',
     },
+    ModalButton:{
+        padding:'5rem',
+        backgroundColor: '$primaryColorLightened',
+        borderRadius: '10rem',
+        overflow:'hidden'
+    },
+    ModalButtonPadding:{
+        paddingLeft:'10rem',
+    },
     HitSlop: {
-        top:'10rem',
-        bottom:'10rem',
-        right:'10rem',
-        left:'10rem'
+        top:'5rem',
+        bottom:'5rem',
+        right:'5rem',
+        left:'5rem'
     }
 })
