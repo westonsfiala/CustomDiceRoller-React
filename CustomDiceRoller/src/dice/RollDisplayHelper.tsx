@@ -9,7 +9,8 @@ import { RollProperties, isDouble, isHalve } from "./RollProperties";
 // Class that performs a roll when constructed and turns that roll into displayable chunks of information.
 export class RollDisplayHelper {
 
-    public readonly timeStamp : Date;
+    public readonly timeString : string;
+    public readonly dateString : string;
     public readonly storedRoll : Roll;
     public readonly rollNameText : string;
     public readonly rollSumText : StruckStringPair;
@@ -17,7 +18,9 @@ export class RollDisplayHelper {
 
     constructor(roll: Roll) {
         
-        this.timeStamp = new Date();
+        let currentDateTime = new Date();
+        this.timeString = currentDateTime.toLocaleTimeString();
+        this.dateString = currentDateTime.toLocaleDateString();
         this.storedRoll = roll;
         this.rollNameText = '';
         this.rollSumText = new StruckStringPair('','');

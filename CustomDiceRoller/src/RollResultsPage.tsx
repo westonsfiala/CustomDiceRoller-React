@@ -1,6 +1,6 @@
 
 
-import React from 'react'
+import React, { useState } from 'react'
 
 import {
     View, 
@@ -12,11 +12,26 @@ import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import { RollDisplayHelper } from './dice/RollDisplayHelper';
-import { StruckStringPairView, StruckStringPair } from './dice/StruckStringPair';
+import { StruckStringPairView } from './dice/StruckStringPair';
+import HistoryManager from './sync/HistoryManager';
 
-export function RollResultsPage({rollHelper = null as RollDisplayHelper, rollAgainHandler, dismissDialog}) {
+interface RollResultsInterface {
+    dismissDialog: () => void;
+}
+
+export function RollResultsPage(props : RollResultsInterface) {
 
     console.log('refresh roll results');
+    const [reload, setReload] = useState(false);
+
+    HistoryManager.getInstance().setUpdater(() => setReload(!reload));
+
+    let rollHelper = HistoryManager.getInstance().getLastRoll();
+
+    function reroll() {
+        let newRoll = new RollDisplayHelper(rollHelper.storedRoll);
+        HistoryManager.getInstance().addToHistory(newRoll);
+    }
 
     // TODO: lock screen rotation
     //dialog.setOnDismissListener {
@@ -35,14 +50,14 @@ export function RollResultsPage({rollHelper = null as RollDisplayHelper, rollAga
             <View style={styles.Container}>
                 <ScrollView contentContainerStyle={{justifyContent:'center'}} style={{}}>
                     <Text style={styles.TitleText}>
-                        {rollHelper && rollHelper.rollNameText || ''}
+                        {rollHelper.rollNameText}
                     </Text>
                 </ScrollView>
             </View>
-            <StruckStringPairView pair={rollHelper && rollHelper.rollSumText || new StruckStringPair("","")} style={styles.SumText}/>
+            <StruckStringPairView pair={rollHelper.rollSumText} style={styles.SumText}/>
             <View style={styles.ScrollContainer}>
                 <ScrollView>
-                    {(rollHelper && rollHelper.rollResultsText || []).map((item, index) => 
+                    {(rollHelper.rollResultsText).map((item, index) => 
                         <StruckStringPairView key={index} pair={item} style={styles.DetailText}/>)
                     }
                 </ScrollView>
@@ -50,7 +65,7 @@ export function RollResultsPage({rollHelper = null as RollDisplayHelper, rollAga
             <View style={styles.ButtonContainer}>
                 <Touchable 
                 style={styles.ButtonBackground}
-                onPress={() => rollAgainHandler()}
+                onPress={reroll}
                 foreground={Touchable.Ripple('white', true)}
                 hitSlop={styles.HitSlop}
                 >
@@ -58,7 +73,7 @@ export function RollResultsPage({rollHelper = null as RollDisplayHelper, rollAga
                 </Touchable>
                 <Touchable 
                 style={styles.ButtonBackground}
-                onPress={() => dismissDialog()}
+                onPress={() => props.dismissDialog()}
                 foreground={Touchable.Ripple('white', true)}
                 hitSlop={styles.HitSlop}
                 >

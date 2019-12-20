@@ -14,10 +14,12 @@ import { UpDownDeleteButtonColumn } from '../helpers/UpDownDeleteButtonColumn';
 import { PropertiesButton } from '../helpers/PropertiesButton';
 import { DiePropertyPair } from './DiePropertyPair';
 import Touchable from 'react-native-platform-touchable';
+import { Die } from './Die';
+import { CreateDieDialog } from '../dialogs/CreateDieDialog';
 
 interface CustomDieViewProps {
     diePropPair: DiePropertyPair;
-    updateDie: () => void;
+    updateDie: (oldDie: Die, newDie : Die) => void;
     updateProperties: (props : RollProperties) => void;
     moveUpHandler: () => void;
     deleteHandler: () => void;
@@ -26,10 +28,16 @@ interface CustomDieViewProps {
 
 export function CustomPageDieView(props : CustomDieViewProps) {
     
+    const [editModalShown, setEditModalShown] = useState(false);
     const [minWidthHeight, setMinWidthHeight] = useState(Math.min(Dimensions.get("window").width, Dimensions.get("window").height));
 
     function handleScreenChange({window}) {
         setMinWidthHeight(Math.min(window.width, window.height));
+    }
+
+    function handleEndEdit(editDie : Die) {
+        props.updateDie(props.diePropPair.mDie, editDie);
+        setEditModalShown(false);
     }
 
     useEffect(() => {
@@ -50,7 +58,7 @@ export function CustomPageDieView(props : CustomDieViewProps) {
             <Touchable
                 style={styles.ButtonBackground}
                 foreground={Touchable.Ripple('white')}
-                onPress={props.updateDie}
+                onPress={() => setEditModalShown(true)}
                 >
                 <DieView die={props.diePropPair.mDie} size={minWidthHeight*2/7} />
             </Touchable>
@@ -65,6 +73,7 @@ export function CustomPageDieView(props : CustomDieViewProps) {
                 />
                 <PropertiesButton properties={props.diePropPair.mProperties} updateProperties={(newProps : RollProperties) => props.updateProperties(newProps)} />
             </View>
+            <CreateDieDialog modalShown={editModalShown} die={props.diePropPair.mDie} dismissModal={() => setEditModalShown(false)} createDie={handleEndEdit}/>
         </View> 
     );
 }

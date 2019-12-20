@@ -1,5 +1,5 @@
 
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 
 import {
     View, 
@@ -12,18 +12,17 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color'
 import { RestoreHistoryButton } from './helpers/RestoreHistoryButton';
 import { HistoryItemView } from './helpers/HistoryItemView';
+import HistoryManager from './sync/HistoryManager';
 
-interface HistoryPageInterface {
-    rollHistory: Array<RollDisplayHelper>;
-    restorableHistory: Array<RollDisplayHelper>;
-    restoreHistory: () => void;
-}
-
-export function HistoryPage(props : HistoryPageInterface) {
+export function HistoryPage() {
 
     const flatList = useRef(null as FlatList<RollDisplayHelper>);
-    
+
     console.log('refresh history page');
+
+    function divider() {
+        return(<View style={styles.ListDivider}/>);
+    }
 
     return (
         <View>
@@ -32,13 +31,11 @@ export function HistoryPage(props : HistoryPageInterface) {
                 ListEmptyComponent={
                     <View style={styles.NoHistoryTextContainer}>
                         <Text style={styles.NoHistoryText}>No history</Text>
-                        <RestoreHistoryButton restorableHistory={props.restorableHistory} restoreHistory={props.restoreHistory}/>
+                        <RestoreHistoryButton canRestoreHistory={HistoryManager.getInstance().canRestoreHistory()} restoreHistory={() => HistoryManager.getInstance().restoreHistory()}/>
                     </View>
                 }
-                data={props.rollHistory}
-                style={{flexDirection:'column'}}
-                contentContainerStyle={styles.ListItem}
-                ItemSeparatorComponent={ () => <View style={styles.ListDivider} />}
+                data={HistoryManager.getInstance().getHistory()}
+                ItemSeparatorComponent={divider}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) =>  (
                     <HistoryItemView rollHelper={item}/>

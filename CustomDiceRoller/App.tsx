@@ -11,8 +11,8 @@
 // For searchable Icons go to https://oblador.github.io/react-native-vector-icons/
 // For description of how to use icons go to https://github.com/oblador/react-native-vector-icons 
 
-import React, { useState, useRef, useEffect } from 'react'
-import { View, Text, Dimensions } from 'react-native';
+import React, { useState, useRef } from 'react'
+import { View, Dimensions } from 'react-native';
 
 import { AppBar } from "./src/appBar/AppBar";
 import ViewPager from '@react-native-community/viewpager';
@@ -38,59 +38,28 @@ import { Roll } from './src/dice/Roll';
 import { RollResultsPage } from './src/RollResultsPage';
 import { CustomDicePage } from './src/CustomDicePage';
 import { SavedRollPage } from './src/SavedRollPage';
+import HistoryManager from './src/sync/HistoryManager';
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 const App = () => {
-    const [rollHelper, setRollHelper] = useState(null as RollDisplayHelper) 
     const viewPager = useRef(null as ViewPager);
     const dialogPager = useRef(null as ViewPager);
     const [currentPage, setCurrentPage] = useState(1);
-    const [rollHistory, setRollHistory] = useState(Array<RollDisplayHelper>());
-    const previousRollHistory = useRef(null as Array<RollDisplayHelper>);
+    const [dialogPage, setDialogPage] = useState(1);
 
     console.log('refresh app');
-
-    function clearRollHistory() {
-        previousRollHistory.current = rollHistory;
-        setRollHistory(Array<RollDisplayHelper>());
-    }
-
-    function restoreRollHistory() {
-        if(previousRollHistory.current !== null) {
-            setRollHistory(previousRollHistory.current)
-        }
-    }
 
     function addRoll(newRoll: Roll) {
         if(newRoll !== null)
         {
             let newResult = new RollDisplayHelper(newRoll);
-            addRollResultToHistory(newResult);
+            HistoryManager.getInstance().addToHistory(newResult);
             dialogPager.current.setPage(0);
-            setRollHelper(newResult);
         }
     };
 
-    function reRoll() {
-        if(rollHelper !== null)
-        {
-            addRoll(rollHelper.storedRoll);
-        }
-    }
-
-    function addRollResultToHistory(rollResult : RollDisplayHelper) {
-        // If we are adding something to the history, do not allow re-setting the old history.
-        if(previousRollHistory.current !== null) {
-            previousRollHistory.current = null;
-        }
-
-        // Do not set the rollHelper to null. The rollHelperDialog does this when it closes.
-        rollHistory.push(rollResult);
-    }
-
     function dismissRollResultsDialog() {
         dialogPager.current.setPage(1);
-        setRollHelper(null);
     }
 
     function tabPressHandler(index: number) {
@@ -100,21 +69,21 @@ const App = () => {
     return (
         <MenuProvider>
             <View style={styles.AppBackground}>
-                <ViewPager style={styles.Pager} ref={dialogPager} initialPage={1} orientation="vertical" scrollEnabled={false}>
+                <ViewPager style={styles.Pager} ref={dialogPager} initialPage={dialogPage} orientation="vertical" scrollEnabled={false} onPageSelected={(event) => setDialogPage(event.nativeEvent.position)}>
                     <View key="1">
-                        <RollResultsPage rollHelper={rollHelper} rollAgainHandler={reRoll} dismissDialog={dismissRollResultsDialog}/>
+                        <RollResultsPage dismissDialog={dismissRollResultsDialog}/>
                     </View>
                     <View>
                         <AppBar 
                         title='RPG Dice Roller' 
                         subtitle='Tap die icons to roll!' 
-                        clearHistoryHandler={clearRollHistory} 
+                        clearHistoryHandler={() => HistoryManager.getInstance().clearHistory()} 
                         tabIndex={currentPage} 
                         tabPressHandler={tabPressHandler}
                         />
                         <ViewPager style={styles.Pager} ref={viewPager} initialPage={currentPage} onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}>
                             <View key="1" >
-                                <HistoryPage rollHistory={rollHistory} restorableHistory={previousRollHistory.current} restoreHistory={restoreRollHistory}/>
+                                <HistoryPage/>
                             </View>
                             <View key="2" >
                                 <SimpleDicePage displayRoll={addRoll}/>

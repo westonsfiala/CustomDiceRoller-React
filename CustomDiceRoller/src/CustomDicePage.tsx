@@ -70,7 +70,7 @@ export function CustomDicePage(props: CustomRollPageInterface) {
                 renderItem={({ item, index }) =>  (
                     <CustomPageDieView 
                         diePropPair={item} 
-                        updateDie={(die: Die) => updateDie(item, die)}
+                        updateDie={updateDie}
                         updateProperties={(newProperties : RollProperties) => setRoll(roll.addDieToRoll(item.mDie, newProperties))}
                         moveUpHandler={() => setRoll(roll.moveDieUp(index))}
                         deleteHandler={() => setRoll(roll.removeDieFromRoll(item.mDie))}

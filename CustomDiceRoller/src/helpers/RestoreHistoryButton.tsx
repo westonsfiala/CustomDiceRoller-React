@@ -9,14 +9,13 @@ import {
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-import { RollDisplayHelper } from '../dice/RollDisplayHelper';
 interface HistoryButtonInterface {
-    restorableHistory: Array<RollDisplayHelper>;
+    canRestoreHistory: boolean;
     restoreHistory: () => void;
 }
 
 export function RestoreHistoryButton(props : HistoryButtonInterface) {
-    if(props.restorableHistory !== null) {
+    if(props.canRestoreHistory) {
         return (
             <View style={styles.Container}>
                 <Touchable 

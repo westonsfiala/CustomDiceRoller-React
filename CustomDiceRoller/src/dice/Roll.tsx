@@ -83,9 +83,10 @@ export class Roll {
     {
         let newRoll = this.clone();
 
-        let propIndex = newRoll.mDiePropArray.findIndex((value) => value.mDie.displayName === oldDie.displayName)
+        let propIndex = newRoll.mDiePropArray.findIndex((value) => value.mDie.displayName === oldDie.displayName);
+        let newDieIndex = newRoll.mDiePropArray.findIndex((value) => value.mDie.displayName === newDie.displayName);
 
-        if(propIndex !== -1) {
+        if(propIndex !== -1 && newDieIndex === -1) {
             let newPropPair = new DiePropertyPair(cloneDie(newDie, newDie.displayName), newRoll.mDiePropArray[propIndex].mProperties.clone({}) )
             newRoll.mDiePropArray.splice(propIndex, 1, newPropPair);
         } 

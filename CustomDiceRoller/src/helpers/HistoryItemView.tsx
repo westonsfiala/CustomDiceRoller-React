@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { PureComponent } from 'react'
 
 import {
     View, 
@@ -33,10 +33,10 @@ export function HistoryItemView(props : HistoryItemInterface) {
                         </View>
                         <View>
                             <Text style={styles.TimeText}>
-                                {props.rollHelper.timeStamp.toLocaleDateString()}
+                                {props.rollHelper.dateString}
                             </Text>
                             <Text style={styles.TimeText}>
-                                {props.rollHelper.timeStamp.toLocaleTimeString()}
+                                {props.rollHelper.timeString}
                             </Text>
                         </View>
                     </View>
