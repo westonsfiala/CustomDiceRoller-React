@@ -79,6 +79,20 @@ export class Roll {
         return newRoll;
     }
 
+    overrideDieInRoll(oldDie: Die, newDie: Die) : Roll
+    {
+        let newRoll = this.clone();
+
+        let propIndex = newRoll.mDiePropArray.findIndex((value) => value.mDie.displayName === oldDie.displayName)
+
+        if(propIndex !== -1) {
+            let newPropPair = new DiePropertyPair(cloneDie(newDie, newDie.displayName), newRoll.mDiePropArray[propIndex].mProperties.clone({}) )
+            newRoll.mDiePropArray.splice(propIndex, 1, newPropPair);
+        } 
+        
+        return newRoll;
+    }
+
     containsDie(die: Die) : boolean
     {
         return this.mDiePropArray.findIndex((value) => value.mDie.displayName === die.displayName) !== -1;

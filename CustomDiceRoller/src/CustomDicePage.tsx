@@ -20,6 +20,7 @@ import { Die } from './dice/Die';
 import { cloneDie } from './dice/DieFactory';
 import { CreateRollDialog } from './dialogs/CreateRollDialog';
 import RollManager from './sync/RollManager';
+import { CreateDieDialog } from './dialogs/CreateDieDialog';
 
 interface CustomRollPageInterface {
     displayRoll: (roll: Roll) => void;
@@ -27,7 +28,8 @@ interface CustomRollPageInterface {
 
 export function CustomDicePage(props: CustomRollPageInterface) {
 
-    const [roll, setRoll] = useState(new Roll("Custom Roll", "temp"))
+    const [roll, setRoll] = useState(new Roll("Custom Roll", "temp"));
+    const [editDie, setEditDie] = useState(null as Die);
     const [createRollModalShown, setCreateRollModalShown] = useState(false);
     
     console.log('refresh custom page');
@@ -43,6 +45,11 @@ export function CustomDicePage(props: CustomRollPageInterface) {
         }
 
         let newRoll = roll.addDieToRoll(die, new RollProperties({}))
+        setRoll(newRoll);
+    }
+
+    function updateDie(oldDie: Die, newDie: Die) {
+        let newRoll = roll.overrideDieInRoll(oldDie, newDie);
         setRoll(newRoll);
     }
 
@@ -63,6 +70,7 @@ export function CustomDicePage(props: CustomRollPageInterface) {
                 renderItem={({ item, index }) =>  (
                     <CustomPageDieView 
                         diePropPair={item} 
+                        updateDie={(die: Die) => updateDie(item, die)}
                         updateProperties={(newProperties : RollProperties) => setRoll(roll.addDieToRoll(item.mDie, newProperties))}
                         moveUpHandler={() => setRoll(roll.moveDieUp(index))}
                         deleteHandler={() => setRoll(roll.removeDieFromRoll(item.mDie))}

@@ -13,9 +13,11 @@ import { RollProperties } from './RollProperties';
 import { UpDownDeleteButtonColumn } from '../helpers/UpDownDeleteButtonColumn';
 import { PropertiesButton } from '../helpers/PropertiesButton';
 import { DiePropertyPair } from './DiePropertyPair';
+import Touchable from 'react-native-platform-touchable';
 
 interface CustomDieViewProps {
     diePropPair: DiePropertyPair;
+    updateDie: () => void;
     updateProperties: (props : RollProperties) => void;
     moveUpHandler: () => void;
     deleteHandler: () => void;
@@ -45,7 +47,13 @@ export function CustomPageDieView(props : CustomDieViewProps) {
                 deletePressHandler={() => props.deleteHandler()} 
                 downPressHandler={() => props.moveDownHandler()}
             />
-            <DieView die={props.diePropPair.mDie} size={minWidthHeight*2/7} />
+            <Touchable
+                style={styles.ButtonBackground}
+                foreground={Touchable.Ripple('white')}
+                onPress={props.updateDie}
+                >
+                <DieView die={props.diePropPair.mDie} size={minWidthHeight*2/7} />
+            </Touchable>
             <View style={styles.diceColumn}>
                 <NumDiceUpDownButtons 
                     count={props.diePropPair.mProperties.mNumDice} 
