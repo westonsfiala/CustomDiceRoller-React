@@ -109,7 +109,7 @@ const styles = EStyleSheet.create({
     },
     Pager: {
         flex:1,
-    }
+    },
 })
 
 export default App;

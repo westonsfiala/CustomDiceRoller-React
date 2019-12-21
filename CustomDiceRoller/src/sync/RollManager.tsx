@@ -35,6 +35,21 @@ export default class RollManager {
         return this.mRolls;
     }
 
+    getCategories() : Array<string> {
+        let categories = new Set<string>();
+
+        for(let roll of this.mRolls) {
+            categories.add(roll.categoryName);
+        }
+
+        let returnCategories = Array<string>();
+        for(let category of categories) {
+            returnCategories.push(category);
+        }
+
+        return returnCategories;
+    }
+
     setRolls(rolls : Array<Roll>) {
         rolls.sort(this.rollSorter)
         this.setRollStorage(rolls).then((rolls) => {

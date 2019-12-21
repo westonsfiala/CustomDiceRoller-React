@@ -21,8 +21,8 @@ interface DieInfoDialogInterface {
 
 export function DieInfoDialog(props : DieInfoDialogInterface) {
 
-    function modalContent() {
-        return(
+    return(
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.75}>
             <View>
                 <Text style={styles.ModalName}>
                     Die info - {props.die.mDieName}
@@ -75,11 +75,7 @@ export function DieInfoDialog(props : DieInfoDialogInterface) {
                     </View>
                 </View>
             </View>
-        )
-    }
-
-    return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.75} content={modalContent()}/>
+        </ModalDialogBase>
     );
 }
 

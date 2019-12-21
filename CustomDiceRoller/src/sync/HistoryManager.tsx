@@ -50,8 +50,10 @@ export default class HistoryManager {
     }
 
     clearHistory() {
-        this.mRestorableHistory = this.mHistory;
-        this.setHistory(Array<RollDisplayHelper>());
+        if(this.mHistory.length !== 0) {
+            this.mRestorableHistory = this.mHistory;
+            this.setHistory(Array<RollDisplayHelper>());
+        }
     }
 
     restoreHistory() {

@@ -42,40 +42,34 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
         props.dismissModal();
     }
 
-    function modalContent() {
-        return(
-            <View>
-                <Text style={styles.ModalTitle}>Create Roll</Text>
-                <View style={styles.ModalTextInputLine}>
-                    <Text style={styles.ModalText}>Name</Text>
-                    <TextInput 
-                        style={styles.ModalInputText}
-                        autoFocus={true}
-                        selectTextOnFocus={true}
-                        defaultValue={rollName}
-                        placeholder={props.roll.mRollName}
-                        placeholderTextColor={styles.PlaceholderText.color}
-                        onChangeText={(text) => setRollName(text)}
-                    />
-                </View>
-                <View style={styles.ModalTextInputLine}>
-                    <Text style={styles.ModalText}>Category</Text>
-                    <TextInput 
-                        style={styles.ModalInputText}
-                        selectTextOnFocus={true}
-                        defaultValue={rollCategory}
-                        placeholder={props.roll.mRollCategory}
-                        placeholderTextColor={styles.PlaceholderText.color}
-                        onChangeText={(text) => setRollCategory(text)}
-                    />
-                </View>
-                <OkCancelButtons accept={acceptHandler} dismiss={props.dismissModal}/>
-            </View>
-        )
-    }
-
     return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.75} content={modalContent()}/>
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.75}>
+            <Text style={styles.ModalTitle}>Create Roll</Text>
+            <View style={styles.ModalTextInputLine}>
+                <Text style={styles.ModalText}>Name</Text>
+                <TextInput 
+                    style={styles.ModalInputText}
+                    autoFocus={true}
+                    selectTextOnFocus={true}
+                    defaultValue={rollName}
+                    placeholder={props.roll.mRollName}
+                    placeholderTextColor={styles.PlaceholderText.color}
+                    onChangeText={(text) => setRollName(text)}
+                />
+            </View>
+            <View style={styles.ModalTextInputLine}>
+                <Text style={styles.ModalText}>Category</Text>
+                <TextInput 
+                    style={styles.ModalInputText}
+                    selectTextOnFocus={true}
+                    defaultValue={rollCategory}
+                    placeholder={props.roll.mRollCategory}
+                    placeholderTextColor={styles.PlaceholderText.color}
+                    onChangeText={(text) => setRollCategory(text)}
+                />
+            </View>
+            <OkCancelButtons accept={acceptHandler} dismiss={props.dismissModal}/>
+        </ModalDialogBase>
     );
 }
 

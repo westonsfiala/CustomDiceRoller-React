@@ -56,8 +56,8 @@ export function CreateImbalancedDieDialog(props : ImbalancedInterface) {
         props.dismissModal();
     }
 
-    function modalContent() {
-        return(
+    return(
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.75}>
             <View>
                 <Text style={styles.ModalTitle}>Create Imbalanced Die</Text>
                 <Text style={styles.ModalSubTitle}>Use a comma separated list</Text>
@@ -84,11 +84,7 @@ export function CreateImbalancedDieDialog(props : ImbalancedInterface) {
                 </View>
                 <OkCancelButtons accept={acceptHandler} dismiss={props.dismissModal}/>
             </View>
-        )
-    }
-
-    return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.75} content={modalContent()}/>
+        </ModalDialogBase>
     );
 }
 

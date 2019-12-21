@@ -28,8 +28,8 @@ export function SetValueDialog({modalShown, valueEnforcer, titleText, defaultVal
         dismissModal();
     }
 
-    function modalContent() {
-        return(
+    return(
+        <ModalDialogBase modalShown={modalShown} dismissModal={dismissModal} width={.75}>
             <View>
                 <Text style={styles.ModalTitle}>{titleText}</Text>
                 <View style={styles.ModalTextInputLine}>
@@ -45,11 +45,7 @@ export function SetValueDialog({modalShown, valueEnforcer, titleText, defaultVal
                 </View>
                 <OkCancelButtons accept={handleAccept} dismiss={dismissModal}/>
             </View>
-        )
-    }
-
-    return(
-        <ModalDialogBase modalShown={modalShown} dismissModal={dismissModal} width={.75} content={modalContent()}/>
+        </ModalDialogBase>
     );
 }
 

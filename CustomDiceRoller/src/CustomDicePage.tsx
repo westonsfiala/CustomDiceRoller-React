@@ -5,7 +5,6 @@ import {
     View, 
     Text,
     FlatList,
-    Dimensions,
 } from 'react-native';
 
 import Touchable from 'react-native-platform-touchable';
@@ -20,7 +19,6 @@ import { Die } from './dice/Die';
 import { cloneDie } from './dice/DieFactory';
 import { CreateRollDialog } from './dialogs/CreateRollDialog';
 import RollManager from './sync/RollManager';
-import { CreateDieDialog } from './dialogs/CreateDieDialog';
 
 interface CustomRollPageInterface {
     displayRoll: (roll: Roll) => void;
@@ -29,7 +27,6 @@ interface CustomRollPageInterface {
 export function CustomDicePage(props: CustomRollPageInterface) {
 
     const [roll, setRoll] = useState(new Roll("Custom Roll", "Temp"));
-    const [editDie, setEditDie] = useState(null as Die);
     const [createRollModalShown, setCreateRollModalShown] = useState(false);
     
     console.log('refresh custom page');

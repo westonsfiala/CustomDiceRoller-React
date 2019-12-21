@@ -7,19 +7,30 @@ import Modal, {
 } from 'react-native-modals';
 
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { MenuProvider, Menu } from 'react-native-popup-menu';
 
-export function ModalDialogBase({modalShown, dismissModal, width = null, height = null, content, extraStyle = {}}) {
+interface ModalDialogInterface {
+    modalShown : boolean;
+    dismissModal : () => void;
+    width? : number;
+    height? : number;
+    extraStyle? : any;
+    children : any;
+}
+
+export function ModalDialogBase(props : ModalDialogInterface) {
+
     return(
     <Modal 
-        onTouchOutside={() => dismissModal()} 
-        visible={modalShown}
+        onTouchOutside={() => props.dismissModal()} 
+        visible={props.modalShown}
         modalAnimation={new ScaleAnimation()}
-        onDismiss={() => dismissModal()}
-        width={width}
-        height={height}
+        onDismiss={() => props.dismissModal()}
+        width={props.width || 0.75}
+        height={props.height}
     >
-        <ModalContent style={[styles.ModalContainer, extraStyle]}>
-            {content}
+        <ModalContent style={[styles.ModalContainer, props.extraStyle]}>
+            {props.children}
         </ModalContent>
     </Modal>
     )
