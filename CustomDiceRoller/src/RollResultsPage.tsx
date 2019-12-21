@@ -14,6 +14,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { RollDisplayHelper } from './dice/RollDisplayHelper';
 import { StruckStringPairView } from './dice/StruckStringPair';
 import HistoryManager from './sync/HistoryManager';
+import AccelerationManager from './hardware/AccelerometerManager';
 
 interface RollResultsInterface {
     dismissDialog: () => void;
@@ -23,6 +24,7 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     console.log('refresh roll results');
     const [reload, setReload] = useState(false);
+    const [manager, setManager] = useState(AccelerationManager.getInstance());
 
     HistoryManager.getInstance().setUpdater(() => setReload(!reload));
 
