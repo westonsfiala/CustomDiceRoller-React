@@ -36,8 +36,6 @@ export default class AccelerometerManager {
             this.mChangeVector.shift();
 
             let totalChange = this.mChangeVector.reduce((prev, curr) => prev + curr);
-            
-            console.log({ totalChange });
 
             // TODO: Change the 250 to something more meaningful.
             this.mAccelerationStable = totalChange < 100;

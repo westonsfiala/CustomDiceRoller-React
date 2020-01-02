@@ -1,53 +1,80 @@
 
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import {
-    FlatList,
+    FlatList, View,
 } from 'react-native';
 
 import {Roll} from '../dice/Roll';
 import { SavedCategoryView } from './SavedCategoryView';
 
+export class RollCategoryGroup {
+    category: string;
+    rolls: Array<Roll>;
+    subRolls: Array<Roll>;
+}
+
 interface RollCategoryGroupInterface {
-    baseCategoryName: string;
+    baseCategory : string;
+    depth: number;
     rolls : Array<Roll>;
     displayRoll : (roll: Roll) => void;
 }
 
 export function RollCategoryGroupView(props : RollCategoryGroupInterface) {
 
-    class RollCategoryGroup {
-        category: string;
-        rolls: Array<Roll>;
-    }
+    const processedRolls = useMemo(() => splitRolls(), [props.rolls.toString()]);
 
     function splitRolls() : Array<RollCategoryGroup> {
 
         let rollArray = Array<RollCategoryGroup>();
 
         for(let roll of props.rolls) {
-            let rollGroup = rollArray.find((value) => value.category === roll.categoryName);
 
-            if(rollGroup !== undefined) {
-                rollGroup.rolls.push(roll);
+            let splitString = roll.categoryName.split('/');
+
+            let rollGroup = rollArray.find((value) => value.category === splitString[props.depth]);
+
+            if(splitString.length == props.depth + 1) {
+                if(rollGroup !== undefined) {
+                    rollGroup.rolls.push(roll);
+                } else {
+                    let newGroup = new RollCategoryGroup();
+                    newGroup.category = splitString[props.depth];
+                    newGroup.rolls = [roll];
+                    newGroup.subRolls = [];
+                    rollArray.push(newGroup);
+                }
             } else {
-                let newGroup = new RollCategoryGroup();
-                newGroup.category = roll.categoryName;
-                newGroup.rolls = [roll];
-                rollArray.push(newGroup);
+                if(rollGroup !== undefined) {
+                    rollGroup.subRolls.push(roll);
+                } else {
+                    let newGroup = new RollCategoryGroup();
+                    newGroup.category = splitString[props.depth];
+                    newGroup.rolls = [];
+                    newGroup.subRolls = [roll]
+                    rollArray.push(newGroup);
+                }
             }
         }
 
         return rollArray;
     }
 
+    if(processedRolls.length === 0) {
+        return null;
+    }
+
     return (
-        <FlatList 
-            data={splitRolls()}
-            renderItem={({ item }) =>  (
-                <SavedCategoryView category={item.category} rolls={item.rolls} displayRoll={props.displayRoll} />
-            )}
-            keyExtractor={(item, index) => index.toString()}
-        />
+        <View>
+            <FlatList 
+                listKey={props.baseCategory + props.depth.toString()}
+                data={processedRolls}
+                renderItem={({ item }) =>  (
+                    <SavedCategoryView depth={props.depth} rollGroup={item} displayRoll={props.displayRoll} />
+                )}
+                keyExtractor={(item, index) => index.toString()}
+            />
+        </View>
     );
 }

@@ -98,7 +98,7 @@ export default class RollManager {
         for(let rollIndex = 0; rollIndex < this.mRolls.length; ++rollIndex) {
             let currentRoll = this.mRolls[rollIndex]
 
-            if(currentRoll.displayName === removedRoll.displayName) {
+            if(currentRoll.displayName === removedRoll.displayName && currentRoll.categoryName === removedRoll.categoryName) {
                 this.mRolls.splice(rollIndex, 1)
                 removed = true;
             }

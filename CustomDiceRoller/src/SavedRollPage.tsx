@@ -37,7 +37,7 @@ export function SavedRollPage(props : SavedRollPageInterface) {
 
     return (
         <View style={styles.PageBackground}>
-            <RollCategoryGroupView baseCategoryName={''} rolls={RollManager.getInstance().getRolls()} displayRoll={props.displayRoll} />
+            <RollCategoryGroupView baseCategory={''} depth={0} rolls={RollManager.getInstance().getRolls()} displayRoll={props.displayRoll} />
         </View>
     );
 }

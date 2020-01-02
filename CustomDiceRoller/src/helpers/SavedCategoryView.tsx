@@ -13,10 +13,11 @@ import Touchable from 'react-native-platform-touchable';
 
 import {Roll} from '../dice/Roll';
 import { SavedRollView } from './SavedRollView';
+import { RollCategoryGroup, RollCategoryGroupView } from './RollCategoryGroup';
 
 interface SavedCategoryInterface {
-    category: string;
-    rolls : Array<Roll>;
+    depth : number;
+    rollGroup : RollCategoryGroup;
     displayRoll : (roll: Roll) => void;
 }
 
@@ -36,17 +37,18 @@ export function SavedCategoryView(props : SavedCategoryInterface) {
                         size={styles.IconConstants.width}
                         color={styles.IconConstants.color}
                     />
-                    <Text style={styles.CategoryText}>{props.category}</Text>
+                    <Text style={styles.CategoryText}>{props.rollGroup.category}</Text>
                 </View>
             </Touchable>
             <View style={showRolls ? styles.ShowRolls : styles.HideRolls}>
                 <FlatList 
-                    data={props.rolls}
+                    data={props.rollGroup.rolls}
                     renderItem={({ item }) =>  (
                         <SavedRollView roll={item} displayRoll={props.displayRoll}/>
-                    )}
+                        )}
                     keyExtractor={(item, index) => index.toString()}
                 />
+                <RollCategoryGroupView baseCategory={props.rollGroup.category} depth={props.depth+1} rolls={props.rollGroup.subRolls} displayRoll={props.displayRoll}/>
             </View>
         </View>
     );
