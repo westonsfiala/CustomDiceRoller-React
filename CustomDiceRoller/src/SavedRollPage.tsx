@@ -8,7 +8,7 @@ import {
 
 import EStyleSheet from 'react-native-extended-stylesheet';
 import RollManager from './sync/RollManager';
-import { RollCategoryGroupView } from './helpers/RollCategoryGroup';
+import { RollCategoryGroupView } from './helpers/RollCategoryGroupView';
 import { Roll } from './dice/Roll';
 
 interface SavedRollPageInterface {

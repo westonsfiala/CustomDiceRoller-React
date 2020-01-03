@@ -13,12 +13,13 @@ import Touchable from 'react-native-platform-touchable';
 
 import { Roll } from '../dice/Roll';
 import { SavedRollView } from './SavedRollView';
-import { RollCategoryGroup, RollCategoryGroupView } from './RollCategoryGroup';
+import { RollCategoryGroup } from './RollCategoryGroup';
 
 interface SavedCategoryInterface {
     depth : number;
     rollGroup : RollCategoryGroup;
     displayRoll : (roll: Roll) => void;
+    children : any;
 }
 
 export function SavedCategoryView(props : SavedCategoryInterface) {
@@ -32,11 +33,13 @@ export function SavedCategoryView(props : SavedCategoryInterface) {
                 onPress={() => setShowRolls(!showRolls)}
             >
                 <View style={styles.CategoryContainer}>
-                    <Icon 
-                        name='arrow-right-thick'
-                        size={styles.IconConstants.width}
-                        color={styles.IconConstants.color}
-                    />
+                    <View style={ showRolls ? {transform: [{ rotate: '90deg' }]} : {}}>
+                        <Icon 
+                            name='arrow-right-thick'
+                            size={styles.IconConstants.width}
+                            color={styles.IconConstants.color}
+                        />
+                    </View>
                     <Text style={styles.CategoryText}>{props.rollGroup.category}</Text>
                 </View>
             </Touchable>
@@ -48,7 +51,7 @@ export function SavedCategoryView(props : SavedCategoryInterface) {
                         )}
                     keyExtractor={(item, index) => index.toString()}
                 />
-                <RollCategoryGroupView baseCategory={props.rollGroup.category} depth={props.depth+1} rolls={props.rollGroup.subRolls} displayRoll={props.displayRoll}/>
+                {props.children}
             </View>
         </View>
     );
@@ -76,5 +79,10 @@ const styles = EStyleSheet.create({
     },
     HideRolls:{
         height:0,
+    },
+    ExpandedRolls:{
+        transform: [{ rotate: '90deg' }],
+    },
+    CollapsedRolls:{
     },
 })
