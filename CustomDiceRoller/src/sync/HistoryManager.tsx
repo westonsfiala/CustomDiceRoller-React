@@ -9,7 +9,8 @@ export default class HistoryManager {
     mHistory = Array<RollDisplayHelper>();
     mRestorableHistory = null as Array<RollDisplayHelper>;
 
-    mUpdater = null as () => void;
+    mDisplayUpdater = null as () => void;
+    mHistoryUpdater = null as () => void;
 
     static getInstance() : HistoryManager {
         if(HistoryManager.mInstance === null) {
@@ -23,8 +24,12 @@ export default class HistoryManager {
         // TODO: Restore history from storage
     }
 
-    setUpdater(updater : () => void) {
-        this.mUpdater = updater;
+    setDisplayUpdater(updater : () => void) {
+        this.mDisplayUpdater = updater;
+    }
+
+    setHistoryUpdater(updater : () => void) {
+        this.mHistoryUpdater = updater;
     }
 
     getHistory() : Array<RollDisplayHelper> {
@@ -46,7 +51,7 @@ export default class HistoryManager {
     setHistory(history : Array<RollDisplayHelper>) {
         // TODO: save the history to storage
         this.mHistory = history
-        this.mUpdater();
+        this.runUpdaters();
     }
 
     clearHistory() {
@@ -68,6 +73,11 @@ export default class HistoryManager {
         }
 
         this.mHistory.push(newHistory);
-        this.mUpdater();
+        if(this.mDisplayUpdater !== null) this.mDisplayUpdater();
+    }
+
+    runUpdaters() {
+        if(this.mHistoryUpdater !== null) this.mHistoryUpdater();
+        if(this.mDisplayUpdater !== null) this.mDisplayUpdater();
     }
 }

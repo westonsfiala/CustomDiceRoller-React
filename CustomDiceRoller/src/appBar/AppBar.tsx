@@ -1,5 +1,5 @@
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 import {
     View,
@@ -19,8 +19,22 @@ import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import TabManager from '../sync/TabManager';
 
-export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, tabIndex}) {
+interface AppBarInterface {
+    title: string;
+    subtitle: string;
+    clearHistoryHandler: () => void;
+    tabPressHandler: (value: number) => void;
+}
+
+export function AppBar(props: AppBarInterface) {
+
+    const [reload, setReload] = useState(false);
+    
+    TabManager.getInstance().setUpdater(() => setReload(!reload));
+
+    console.log('refresh app bar');
 
     const menuRef = useRef(null);
 
@@ -28,8 +42,8 @@ export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, t
         <View style={styles.AppBarBackground}>
             <View style={styles.ActionBarBackground}>
                 <View>
-                    <Text style={styles.AppTitleText}>{title}</Text>
-                    <Text style={styles.AppSubTitleText}>{subtitle}</Text>
+                    <Text style={styles.AppTitleText}>{props.title}</Text>
+                    <Text style={styles.AppSubTitleText}>{props.subtitle}</Text>
                 </View>
                 <View style={styles.RowLayout}>
                     <Touchable
@@ -42,7 +56,7 @@ export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, t
                     <Menu ref={menuRef}>
                         <MenuTrigger/>
                         <MenuOptions>
-                            <MenuOption style={styles.Menu} onSelect={() => clearHistoryHandler()}>
+                            <MenuOption style={styles.Menu} onSelect={() => props.clearHistoryHandler()}>
                                 <Text style={styles.MenuText}>
                                     Clear History
                                 </Text>
@@ -57,42 +71,40 @@ export function AppBar({title, subtitle, clearHistoryHandler, tabPressHandler, t
                         <Icon 
                         name='dots-vertical'
                         size={styles.IconConstants.width}
-                        iconStyle={{marginRight:0}}
                         color={styles.IconConstants.color}
-                        backgroundColor={styles.IconConstants.backgroundColor}
                         />
                     </Touchable>
                 </View>
             </View>
             <ScrollView contentContainerStyle={styles.ScrollContainer}>
                 <Touchable 
-                style={[styles.TabItem, tabIndex === 0 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
+                style={[styles.TabItem, TabManager.getInstance().tab === 0 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
                 background={Touchable.Ripple('white')}
-                onPress={() => tabPressHandler(0)}>
+                onPress={() => props.tabPressHandler(0)}>
                     <Text style={styles.TabText}>
                         History
                     </Text>
                 </Touchable>
                 <Touchable 
-                style={[styles.TabItem, tabIndex === 1 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
+                style={[styles.TabItem, TabManager.getInstance().tab === 1 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
                 background={Touchable.Ripple('white')}
-                onPress={() => tabPressHandler(1)}>
+                onPress={() => props.tabPressHandler(1)}>
                     <Text style={styles.TabText}>
                         Simple Roll
                     </Text>
                 </Touchable>
                 <Touchable 
-                style={[styles.TabItem, tabIndex === 2 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
+                style={[styles.TabItem, TabManager.getInstance().tab === 2 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
                 background={Touchable.Ripple('white')}
-                onPress={() => tabPressHandler(2)}>
+                onPress={() => props.tabPressHandler(2)}>
                     <Text style={styles.TabText}>
                         Custom Roll
                     </Text>
                 </Touchable>
                 <Touchable 
-                style={[styles.TabItem, tabIndex === 3 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
+                style={[styles.TabItem, TabManager.getInstance().tab === 3 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
                 background={Touchable.Ripple('white')}
-                onPress={() => tabPressHandler(3)}>
+                onPress={() => props.tabPressHandler(3)}>
                     <Text style={styles.TabText}>
                         Saved Rolls
                     </Text>

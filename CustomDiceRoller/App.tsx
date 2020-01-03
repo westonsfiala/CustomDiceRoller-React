@@ -39,13 +39,12 @@ import { RollResultsPage } from './src/RollResultsPage';
 import { CustomDicePage } from './src/CustomDicePage';
 import { SavedRollPage } from './src/SavedRollPage';
 import HistoryManager from './src/sync/HistoryManager';
+import TabManager from './src/sync/TabManager';
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 const App = () => {
     const viewPager = useRef(null as ViewPager);
     const dialogPager = useRef(null as ViewPager);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [dialogPage, setDialogPage] = useState(1);
 
     console.log('refresh app');
 
@@ -60,6 +59,7 @@ const App = () => {
 
     function dismissRollResultsDialog() {
         dialogPager.current.setPage(1);
+        HistoryManager.getInstance().runUpdaters();
     }
 
     function tabPressHandler(index: number) {
@@ -69,19 +69,18 @@ const App = () => {
     return (
         <MenuProvider>
             <View style={styles.AppBackground}>
-                <ViewPager style={styles.Pager} ref={dialogPager} initialPage={dialogPage} orientation="vertical" scrollEnabled={false} onPageSelected={(event) => setDialogPage(event.nativeEvent.position)}>
+                <ViewPager style={styles.Pager} ref={dialogPager} initialPage={1} orientation="vertical" scrollEnabled={false}>
                     <View key="1">
                         <RollResultsPage dismissDialog={dismissRollResultsDialog}/>
                     </View>
                     <View>
                         <AppBar 
-                        title='RPG Dice Roller' 
-                        subtitle='Tap die icons to roll!' 
-                        clearHistoryHandler={() => HistoryManager.getInstance().clearHistory()} 
-                        tabIndex={currentPage} 
-                        tabPressHandler={tabPressHandler}
+                            title='RPG Dice Roller' 
+                            subtitle='Tap die icons to roll!' 
+                            clearHistoryHandler={() => HistoryManager.getInstance().clearHistory()}
+                            tabPressHandler={tabPressHandler}
                         />
-                        <ViewPager style={styles.Pager} ref={viewPager} initialPage={currentPage} onPageSelected={(event) => setCurrentPage(event.nativeEvent.position)}>
+                        <ViewPager style={styles.Pager} ref={viewPager} initialPage={1} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
                             <View key="1" >
                                 <HistoryPage/>
                             </View>

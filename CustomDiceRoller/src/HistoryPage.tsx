@@ -17,6 +17,10 @@ import HistoryManager from './sync/HistoryManager';
 export function HistoryPage() {
 
     const flatList = useRef(null as FlatList<RollDisplayHelper>);
+    
+    const [reload, setReload] = useState(false);
+
+    HistoryManager.getInstance().setHistoryUpdater(() => setReload(!reload));
 
     console.log('refresh history page');
 
@@ -36,7 +40,6 @@ export function HistoryPage() {
                 }
                 data={HistoryManager.getInstance().getHistory()}
                 ItemSeparatorComponent={divider}
-                keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) =>  (
                     <HistoryItemView rollHelper={item}/>
                 )}

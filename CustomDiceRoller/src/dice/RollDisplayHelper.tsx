@@ -15,6 +15,7 @@ export class RollDisplayHelper {
     public readonly rollNameText : string;
     public readonly rollSumText : StruckStringPair;
     public readonly rollResultsText : Array<StruckStringPair>;
+    public readonly key : string;
 
     constructor(roll: Roll) {
         
@@ -25,6 +26,7 @@ export class RollDisplayHelper {
         this.rollNameText = '';
         this.rollSumText = new StruckStringPair('','');
         this.rollResultsText = Array<StruckStringPair>();
+        this.key = Date.now().toString();
 
         // Lambda method for use in the reduce method to sum all the values.
         const summer = (accumulator: number, current: number) => accumulator + current;
