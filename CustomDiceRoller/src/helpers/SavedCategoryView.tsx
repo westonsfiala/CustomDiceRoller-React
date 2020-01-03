@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Touchable from 'react-native-platform-touchable';
 
-import {Roll} from '../dice/Roll';
+import { Roll } from '../dice/Roll';
 import { SavedRollView } from './SavedRollView';
 import { RollCategoryGroup, RollCategoryGroupView } from './RollCategoryGroup';
 
@@ -70,7 +70,9 @@ const styles = EStyleSheet.create({
         backgroundColor:'transparent'
     },
     ShowRolls:{
-        marginLeft:'10rem',
+        marginLeft:'9rem',
+        borderLeftColor:'$primaryColorLightened',
+        borderLeftWidth:'1rem'
     },
     HideRolls:{
         height:0,
