@@ -16,9 +16,9 @@ import { RollProperties } from './dice/RollProperties';
 import { CustomPageDieView } from './dice/CustomPageDieView';
 import { AddCustomDiceButton } from './helpers/AddCustomDiceButton';
 import { Die } from './dice/Die';
-import { cloneDie } from './dice/DieFactory';
 import { CreateRollDialog } from './dialogs/CreateRollDialog';
 import RollManager from './sync/RollManager';
+import CustomRollManager from './sync/CustomRollManager';
 
 interface CustomRollPageInterface {
     displayRoll: (roll: Roll) => void;
@@ -26,39 +26,22 @@ interface CustomRollPageInterface {
 
 export function CustomDicePage(props: CustomRollPageInterface) {
 
-    const [roll, setRoll] = useState(new Roll("Custom Roll", "Temp"));
     const [createRollModalShown, setCreateRollModalShown] = useState(false);
+    const [reload, setReload] = useState(false);
+    
+    CustomRollManager.getInstance().setUpdater(() => setReload(!reload));
     
     console.log('refresh custom page');
 
-    function addDieToRoll(die: Die) {
-        let index = 1;
-        let originalName = die.displayName;
-
-        while(roll.containsDie(die))
-        {
-            die = cloneDie(die, originalName + "(" + index + ")");
-            index += 1;
-        }
-
-        let newRoll = roll.addDieToRoll(die, new RollProperties({}))
-        setRoll(newRoll);
-    }
-
-    function updateDie(oldDie: Die, newDie: Die) {
-        let newRoll = roll.overrideDieInRoll(oldDie, newDie);
-        setRoll(newRoll);
-    }
-
     function handleCreateRoll(newRoll: Roll) {
-        setRoll(newRoll);
+        CustomRollManager.getInstance().setRoll(newRoll);
         RollManager.getInstance().addRoll(newRoll);
     }
 
     return (
         <View style={styles.Background}>
             <FlatList 
-                data={roll.getDiePropArray()}
+                data={CustomRollManager.getInstance().getRoll().getDiePropArray()}
                 ListEmptyComponent={
                     <View style={styles.NoDiceTextContainer}>
                         <Text style={styles.NoDiceText}>No dice</Text>
@@ -67,11 +50,11 @@ export function CustomDicePage(props: CustomRollPageInterface) {
                 renderItem={({ item, index }) =>  (
                     <CustomPageDieView 
                         diePropPair={item} 
-                        updateDie={updateDie}
-                        updateProperties={(newProperties : RollProperties) => setRoll(roll.addDieToRoll(item.mDie, newProperties))}
-                        moveUpHandler={() => setRoll(roll.moveDieUp(index))}
-                        deleteHandler={() => setRoll(roll.removeDieFromRoll(item.mDie))}
-                        moveDownHandler={() => setRoll(roll.moveDieDown(index))}
+                        updateDie={CustomRollManager.getInstance().updateDie}
+                        updateProperties={(newProperties : RollProperties) => CustomRollManager.getInstance().setRoll(CustomRollManager.getInstance().getRoll().addDieToRoll(item.mDie, newProperties))}
+                        moveUpHandler={() => CustomRollManager.getInstance().setRoll(CustomRollManager.getInstance().getRoll().moveDieUp(index))}
+                        deleteHandler={() => CustomRollManager.getInstance().setRoll(CustomRollManager.getInstance().getRoll().removeDieFromRoll(item.mDie))}
+                        moveDownHandler={() => CustomRollManager.getInstance().setRoll(CustomRollManager.getInstance().getRoll().moveDieDown(index))}
                     />
                 )}
                 ItemSeparatorComponent={() => <View style={styles.ListDivider}/>}
@@ -79,8 +62,8 @@ export function CustomDicePage(props: CustomRollPageInterface) {
             />
             <View style={styles.BottomButtonsRow}>
                 <AddCustomDiceButton 
-                    addDie={(die: Die) => addDieToRoll(die)} 
-                    resetDice={() => setRoll(new Roll(roll.displayName, roll.categoryName))}
+                    addDie={(die: Die) => CustomRollManager.getInstance().addDieToRoll(die)} 
+                    resetDice={() => CustomRollManager.getInstance().resetRoll()}
                 />
                 <View style={styles.ButtonContainer}>
                     <Touchable
@@ -95,13 +78,13 @@ export function CustomDicePage(props: CustomRollPageInterface) {
                     <Touchable
                         style={styles.ButtonBackground}
                         foreground={Touchable.Ripple('white')}
-                        onPress={() => props.displayRoll(roll)}
+                        onPress={() => props.displayRoll(CustomRollManager.getInstance().getRoll())}
                     >
                         <Text style={styles.Text}>Roll</Text>
                     </Touchable>
                 </View>
             </View>
-            <CreateRollDialog modalShown={createRollModalShown} roll={roll} dismissModal={() => setCreateRollModalShown(false)} createRoll={handleCreateRoll} />
+            <CreateRollDialog modalShown={createRollModalShown} roll={CustomRollManager.getInstance().getRoll()} dismissModal={() => setCreateRollModalShown(false)} createRoll={handleCreateRoll} />
         </View> 
     );
 }

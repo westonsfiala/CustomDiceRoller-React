@@ -5,7 +5,7 @@ import {
     FlatList, View,
 } from 'react-native';
 
-import {Roll} from '../dice/Roll';
+import { Roll } from '../dice/Roll';
 import { SavedCategoryView } from './SavedCategoryView';
 import { RollCategoryGroup } from './RollCategoryGroup';
 
@@ -13,7 +13,8 @@ interface RollCategoryGroupInterface {
     baseCategory : string;
     depth: number;
     rolls : Array<Roll>;
-    displayRoll : (roll: Roll) => void;
+    displayRoll : (roll: Roll) => void; 
+    editRoll : (roll: Roll) => void; 
 }
 
 export function RollCategoryGroupView(props : RollCategoryGroupInterface) {
@@ -66,8 +67,8 @@ export function RollCategoryGroupView(props : RollCategoryGroupInterface) {
                 listKey={props.baseCategory + props.depth.toString()}
                 data={processedRolls}
                 renderItem={({ item }) =>  (
-                    <SavedCategoryView depth={props.depth} rollGroup={item} displayRoll={props.displayRoll}>
-                        <RollCategoryGroupView baseCategory={item.category} depth={props.depth+1} rolls={item.subRolls} displayRoll={props.displayRoll}/>
+                    <SavedCategoryView depth={props.depth} rollGroup={item} displayRoll={props.displayRoll} editRoll={props.editRoll}>
+                        <RollCategoryGroupView baseCategory={item.category} depth={props.depth+1} rolls={item.subRolls} displayRoll={props.displayRoll} editRoll={props.editRoll}/>
                     </SavedCategoryView>
                 )}
                 keyExtractor={(item, index) => index.toString()}

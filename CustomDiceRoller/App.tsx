@@ -40,6 +40,7 @@ import { CustomDicePage } from './src/CustomDicePage';
 import { SavedRollPage } from './src/SavedRollPage';
 import HistoryManager from './src/sync/HistoryManager';
 import TabManager from './src/sync/TabManager';
+import CustomRollManager from './src/sync/CustomRollManager';
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 const App = () => {
@@ -56,6 +57,11 @@ const App = () => {
             dialogPager.current.setPage(0);
         }
     };
+
+    function editRoll(existingRoll: Roll) {
+        CustomRollManager.getInstance().setRoll(existingRoll);
+        viewPager.current.setPage(2);
+    }
 
     function dismissRollResultsDialog() {
         dialogPager.current.setPage(1);
@@ -91,7 +97,7 @@ const App = () => {
                                 <CustomDicePage displayRoll={addRoll}/>
                             </View>
                             <View key="4" >
-                                <SavedRollPage displayRoll={addRoll}/>
+                                <SavedRollPage displayRoll={addRoll} editRoll={editRoll}/>
                             </View>
                         </ViewPager>
                     </View>

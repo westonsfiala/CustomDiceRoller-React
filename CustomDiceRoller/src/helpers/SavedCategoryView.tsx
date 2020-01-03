@@ -19,6 +19,7 @@ interface SavedCategoryInterface {
     depth : number;
     rollGroup : RollCategoryGroup;
     displayRoll : (roll: Roll) => void;
+    editRoll : (roll: Roll) => void;
     children : any;
 }
 
@@ -47,7 +48,7 @@ export function SavedCategoryView(props : SavedCategoryInterface) {
                 <FlatList 
                     data={props.rollGroup.rolls}
                     renderItem={({ item }) =>  (
-                        <SavedRollView roll={item} displayRoll={props.displayRoll}/>
+                        <SavedRollView roll={item} displayRoll={props.displayRoll} editRoll={props.editRoll} />
                         )}
                     keyExtractor={(item, index) => index.toString()}
                 />

@@ -13,31 +13,19 @@ import { Roll } from './dice/Roll';
 
 interface SavedRollPageInterface {
     displayRoll : (roll: Roll) => void;
+    editRoll : (roll: Roll) => void;
 }
 
 export function SavedRollPage(props : SavedRollPageInterface) {
-    const [width, setWidth] = useState(Dimensions.get("window").width);
     const [reload, setReload] = useState(false);
     
     RollManager.getInstance().setUpdater(() => setReload(!reload));
 
     console.log('refresh saved roll page');
 
-    function handleScreenChange({window}) {
-        setWidth(window.width);
-    }
-
-    useEffect(() => {
-        Dimensions.addEventListener("change", handleScreenChange);
-        
-        return () => {
-            Dimensions.removeEventListener("change", handleScreenChange);
-        }
-    });
-
     return (
         <View style={styles.PageBackground}>
-            <RollCategoryGroupView baseCategory={''} depth={0} rolls={RollManager.getInstance().getRolls()} displayRoll={props.displayRoll} />
+            <RollCategoryGroupView baseCategory={''} depth={0} rolls={RollManager.getInstance().getRolls()} displayRoll={props.displayRoll} editRoll={props.editRoll} />
         </View>
     );
 }

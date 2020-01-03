@@ -23,6 +23,7 @@ import RollManager from '../sync/RollManager';
 interface SavedRollInterface {
     roll: Roll;
     displayRoll: (roll : Roll) => void;
+    editRoll: (roll: Roll) => void;
 }
 
 export function SavedRollView(props : SavedRollInterface) {
@@ -70,7 +71,7 @@ export function SavedRollView(props : SavedRollInterface) {
             <Menu ref={infoMenuRef}>
                 <MenuTrigger/>
                 <MenuOptions>
-                    <MenuOption style={styles.Menu} onSelect={() => null}>
+                    <MenuOption style={styles.Menu} onSelect={() => props.editRoll(props.roll)}>
                         <Text style={styles.MenuText}>Edit</Text>
                     </MenuOption>
                     <MenuOption style={styles.Menu} onSelect={() => null}>
