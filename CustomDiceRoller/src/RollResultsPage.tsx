@@ -63,6 +63,7 @@ export function RollResultsPage(props : RollResultsInterface) {
                     }
                 </ScrollView>
             </View>
+            <Text style={styles.DateTimeText}>{rollHelper.dateString} - {rollHelper.timeString}</Text>
             <View style={styles.ButtonContainer}>
                 <Touchable 
                 style={styles.ButtonBackground}
@@ -129,6 +130,11 @@ const styles = EStyleSheet.create({
         fontSize: '30rem', 
         textAlign: 'center', 
         color: '$textColor',
+    },
+    DateTimeText: {
+        fontSize: '12rem', 
+        textAlign: 'right', 
+        color: '$textColorDarkened',
     },
     HitSlop: {
         top:'10rem',
