@@ -48,6 +48,7 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     return (
         <View style={styles.Container}>
+            <Text style={styles.DateTimeText}>{rollHelper.dateString} - {rollHelper.timeString}</Text>
             <View style={styles.Container}>
                 <ScrollView contentContainerStyle={{justifyContent:'center'}} style={{}}>
                     <Text style={styles.TitleText}>
@@ -63,7 +64,6 @@ export function RollResultsPage(props : RollResultsInterface) {
                     }
                 </ScrollView>
             </View>
-            <Text style={styles.DateTimeText}>{rollHelper.dateString} - {rollHelper.timeString}</Text>
             <View style={styles.ButtonContainer}>
                 <Touchable 
                 style={styles.ButtonBackground}
