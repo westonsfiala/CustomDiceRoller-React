@@ -61,11 +61,11 @@ export function SimpleDicePage({displayRoll}) {
                 }
                 renderItem={({ item }) =>  (
                     <SimplePageDieView 
-                    die={item} 
-                    size={width/4} 
-                    pressDieCallback={createNewRollHelper}
-                    removeDieCallback={(die: Die) => DiceManager.getInstance().removeDie(die)} 
-                    editDieCallback={(oldDie: Die, newDie: Die) => DiceManager.getInstance().editDie(oldDie, newDie)} 
+                        die={item} 
+                        size={width/4} 
+                        pressDieCallback={() => createNewRollHelper(item)}
+                        removeDieCallback={() => DiceManager.getInstance().removeDie(item)} 
+                        editDieCallback={(newDie: Die) => DiceManager.getInstance().editDie(item, newDie)} 
                     />
                 )}
                 keyExtractor={(item, index) => index.toString()}

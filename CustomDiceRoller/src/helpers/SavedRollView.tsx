@@ -19,6 +19,7 @@ import Touchable from 'react-native-platform-touchable';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Roll } from '../dice/Roll';
 import RollManager from '../sync/RollManager';
+import { ConfirmRemoveDialog } from '../dialogs/ConfirmRemoveDialog';
 
 interface SavedRollInterface {
     roll: Roll;
@@ -30,6 +31,8 @@ export function SavedRollView(props : SavedRollInterface) {
 
     const infoMenuRef = useRef(null);
     const categoryMenuRef = useRef(null);
+    const [showRemoveModal, setShowRemoveModal] = useState(false);
+    const [showChangeCategoryModal, setShowChangeCategoryModal] = useState(false);
 
     let categories = RollManager.getInstance().getCategories();
     // If you don't give a height to the menu, the scroll feature doesn't work. 
@@ -77,7 +80,7 @@ export function SavedRollView(props : SavedRollInterface) {
                     <MenuOption style={styles.Menu} onSelect={() => null}>
                         <Text style={styles.MenuText}>Change Category</Text>
                     </MenuOption>
-                    <MenuOption style={styles.Menu} onSelect={() => null}>
+                    <MenuOption style={styles.Menu} onSelect={() => setShowRemoveModal(true)}>
                         <Text style={styles.MenuText}>Remove</Text>
                     </MenuOption>
                 </MenuOptions>
@@ -97,6 +100,12 @@ export function SavedRollView(props : SavedRollInterface) {
                 />
                 </MenuOptions>
             </Menu>
+            <ConfirmRemoveDialog 
+                modalShown={showRemoveModal} 
+                removeName={props.roll.mRollName} 
+                dismissModal={() => setShowRemoveModal(false)} 
+                remove={() => RollManager.getInstance().removeRoll(props.roll)}
+            />
         </View>
     );
 }

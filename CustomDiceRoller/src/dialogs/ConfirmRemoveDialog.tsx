@@ -9,59 +9,27 @@ import {
 
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { Die } from "../dice/Die";
 
-interface DieInfoDialogInterface {
+interface ConfirmRemoveDialogInterface {
     modalShown : boolean;
-    die : Die;
+    removeName : string;
     dismissModal : () => void;
-    removeDie : () => void;
-    editDie : () => void;
+    remove : () => void;
 }
 
-export function DieInfoDialog(props : DieInfoDialogInterface) {
+export function ConfirmRemoveDialog(props : ConfirmRemoveDialogInterface) {
 
     return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.75}>
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.85}>
             <View>
                 <Text style={styles.ModalName}>
-                    Die info - {props.die.mDieName}
+                    Remove - {props.removeName}
                 </Text>
                 <Text style={styles.ModalDetailText}>
-                    Rolls a number between {props.die.min} and {props.die.max}
-                </Text>
-                <Text style={styles.ModalDetailText}>
-                    Average of {props.die.average}
+                    Are you sure you wish to remove - {props.removeName}
                 </Text>
                 <View style={styles.ModalButtonContainer}>
-                    <View>
-                        <Touchable 
-                        style={styles.ModalButton}
-                        onPress={() => {
-                            props.editDie();
-                            props.dismissModal();
-                        }}
-                        foreground={Touchable.Ripple('white', true)}
-                        hitSlop={styles.HitSlop}
-                        >
-                            <Text style={styles.ButtonText}>Edit</Text>
-                        </Touchable>
-                    </View>
                     <View style={styles.RemoveOKButtonContainer}>
-                        <View style={styles.ModalButtonPadding}>
-                            <Touchable 
-                            style={styles.ModalButton}
-                            onPress={() => {
-                                props.removeDie();
-                                props.dismissModal();
-                            }}
-                            foreground={Touchable.Ripple('white', true)}
-                            hitSlop={styles.HitSlop}
-                            >
-                                <Text style={styles.ButtonText}>Remove</Text>
-                            </Touchable>
-                        </View>
-                        
                         <View style={styles.ModalButtonPadding}>
                             <Touchable 
                             style={styles.ModalButton}
@@ -69,7 +37,20 @@ export function DieInfoDialog(props : DieInfoDialogInterface) {
                             foreground={Touchable.Ripple('white', true)}
                             hitSlop={styles.HitSlop}
                             >
-                                <Text style={styles.ButtonText}>OK</Text>
+                                <Text style={styles.ButtonText}>No</Text>
+                            </Touchable>
+                        </View>
+                        <View style={styles.ModalButtonPadding}>
+                            <Touchable 
+                            style={styles.ModalButton}
+                            onPress={() => {
+                                props.remove();
+                                props.dismissModal();
+                            }}
+                            foreground={Touchable.Ripple('white', true)}
+                            hitSlop={styles.HitSlop}
+                            >
+                                <Text style={styles.ButtonText}>Yes</Text>
                             </Touchable>
                         </View>
                     </View>
@@ -96,7 +77,7 @@ const styles = EStyleSheet.create({
     },
     ModalButtonContainer:{
         flexDirection:'row',
-        justifyContent:'space-between',
+        justifyContent:'flex-end',
         paddingTop:'10rem',
     },
     RemoveOKButtonContainer:{
