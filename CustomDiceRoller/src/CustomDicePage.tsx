@@ -19,6 +19,7 @@ import { Die } from './dice/Die';
 import { CreateRollDialog } from './dialogs/CreateRollDialog';
 import RollManager from './sync/RollManager';
 import CustomRollManager from './sync/CustomRollManager';
+import { ConfirmOverrideDialog } from './dialogs/ConfirmOverrideDialog';
 
 interface CustomRollPageInterface {
     displayRoll: (roll: Roll) => void;
@@ -27,15 +28,18 @@ interface CustomRollPageInterface {
 export function CustomDicePage(props: CustomRollPageInterface) {
 
     const [createRollModalShown, setCreateRollModalShown] = useState(false);
+    const [overrideRollModalShown, setOverrideRollModalShown] = useState(false);
     const [reload, setReload] = useState(false);
     
     CustomRollManager.getInstance().setUpdater(() => setReload(!reload));
     
     console.log('refresh custom page');
 
-    function handleCreateRoll(newRoll: Roll) {
+    function handleCreateRoll(newRoll: Roll, force: boolean = false) {
         CustomRollManager.getInstance().setRoll(newRoll);
-        RollManager.getInstance().addRoll(newRoll);
+        if(!RollManager.getInstance().addRoll(newRoll, force)) {
+            setOverrideRollModalShown(true);
+        }
     }
 
     return (
@@ -84,7 +88,18 @@ export function CustomDicePage(props: CustomRollPageInterface) {
                     </Touchable>
                 </View>
             </View>
-            <CreateRollDialog modalShown={createRollModalShown} roll={CustomRollManager.getInstance().getRoll()} dismissModal={() => setCreateRollModalShown(false)} createRoll={handleCreateRoll} />
+            <CreateRollDialog 
+                modalShown={createRollModalShown} 
+                roll={CustomRollManager.getInstance().getRoll()} 
+                dismissModal={() => setCreateRollModalShown(false)} 
+                createRoll={handleCreateRoll} 
+            />
+            <ConfirmOverrideDialog 
+                modalShown={overrideRollModalShown} 
+                dismissModal={() => setOverrideRollModalShown(false)} 
+                itemName={CustomRollManager.getInstance().getRoll().displayName} 
+                override={() => handleCreateRoll(CustomRollManager.getInstance().getRoll(), true)} 
+            />
         </View> 
     );
 }

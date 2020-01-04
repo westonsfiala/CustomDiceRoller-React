@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import {
     View, 
@@ -14,6 +14,7 @@ import Touchable from 'react-native-platform-touchable';
 import { Roll } from '../dice/Roll';
 import { SavedRollView } from './SavedRollView';
 import { RollCategoryGroup } from './RollCategoryGroup';
+import ExpandedCategoryManager from '../sync/ExpandedCategoryManager';
 
 interface SavedCategoryInterface {
     depth : number;
@@ -25,13 +26,17 @@ interface SavedCategoryInterface {
 
 export function SavedCategoryView(props : SavedCategoryInterface) {
 
-    const [showRolls, setShowRolls] = useState(false);
+    const [reload, setReload] = useState(false);
+    
+    let showRolls = ExpandedCategoryManager.getInstance().isExpanded(props.rollGroup.baseCategory);
+
+    ExpandedCategoryManager.getInstance().setUpdater(props.rollGroup.baseCategory, () => setReload(!reload));
 
     return (
         <View>
             <Touchable 
                 foreground={Touchable.Ripple('white')}
-                onPress={() => setShowRolls(!showRolls)}
+                onPress={() => ExpandedCategoryManager.getInstance().expandContract(props.rollGroup.baseCategory)}
             >
                 <View style={styles.CategoryContainer}>
                     <View style={ showRolls ? {transform: [{ rotate: '90deg' }]} : {}}>
@@ -48,7 +53,7 @@ export function SavedCategoryView(props : SavedCategoryInterface) {
                 <FlatList 
                     data={props.rollGroup.rolls}
                     renderItem={({ item }) =>  (
-                        <SavedRollView roll={item} displayRoll={props.displayRoll} editRoll={props.editRoll} />
+                        <SavedRollView roll={item} displayRoll={() => props.displayRoll(item)} editRoll={() => props.editRoll(item)} />
                         )}
                     keyExtractor={(item, index) => index.toString()}
                 />

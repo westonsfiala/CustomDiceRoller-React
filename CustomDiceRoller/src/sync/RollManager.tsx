@@ -4,12 +4,22 @@ import { Roll } from '../dice/Roll';
 
 const RollKey = 'RollPoolKey';
 
+const DefaultCategories = [
+    'Ability Check',
+    'Attack',
+    'Critical Hit!',
+    'Damage',
+    'Saving Throw',
+    'Spell',
+    'Category/Sub-Category'
+]
+
 export default class RollManager {
 
     static mInstance = null as RollManager;
 
     mRolls = [] as Array<Roll>;
-    mUpdater = null
+    mUpdater = null;
 
     static getInstance() : RollManager {
         if(RollManager.mInstance === null) {
@@ -35,17 +45,40 @@ export default class RollManager {
         return this.mRolls;
     }
 
-    getCategories() : Array<string> {
+    private getCategorySet() : Set<string> {
         let categories = new Set<string>();
 
         for(let roll of this.mRolls) {
             categories.add(roll.categoryName);
         }
 
+        return categories;
+    }
+
+    getExistingCategories() : Array<string> {
+        let returnCategories = Array<string>();
+        for(let category of this.getCategorySet()) {
+            returnCategories.push(category);
+        }
+
+        returnCategories.sort();
+
+        return returnCategories;
+    }
+
+    getPossibleCategories() : Array<string> {
+        
+        let categories = this.getCategorySet()
+        for(let category of DefaultCategories) {
+            categories.add(category);
+        }
+
         let returnCategories = Array<string>();
         for(let category of categories) {
             returnCategories.push(category);
         }
+
+        returnCategories.sort();
 
         return returnCategories;
     }
@@ -74,7 +107,11 @@ export default class RollManager {
         this.setRolls([]);
     }
 
-    addRoll(newRoll: Roll, supressUpdate : boolean = false) : boolean {
+    addRoll(newRoll: Roll, force: boolean = false) {
+        return this.addRollInternal(newRoll, force, false);
+    }
+
+    private addRollInternal(newRoll: Roll, force: boolean, supressUpdate : boolean) : boolean {
         let added = false;
 
         if(!this.hasRollByNameCategory(newRoll))
@@ -84,15 +121,22 @@ export default class RollManager {
         }
         else 
         {
-            // TODO: tell the user when something goes wrong.
+            if(force) {
+                this.removeRollInternal(newRoll, supressUpdate);
+                added = this.addRollInternal(newRoll, true, supressUpdate);
+            }
         }
 
         if(!supressUpdate) this.setRolls(this.mRolls);
 
         return added;
     }
+    
+    removeRoll(removedRoll: Roll) : boolean {
+        return this.removeRollInternal(removedRoll, false)
+    }
 
-    removeRoll(removedRoll: Roll, supressUpdate : boolean = false) : boolean {
+    private removeRollInternal(removedRoll: Roll, supressUpdate : boolean) : boolean {
         let removed = false;
 
         for(let rollIndex = 0; rollIndex < this.mRolls.length; ++rollIndex) {
@@ -109,14 +153,14 @@ export default class RollManager {
         return removed;
     }
 
-    editRoll(originalRoll: Roll, newRoll: Roll) : boolean {
+    editRoll(originalRoll: Roll, newRoll: Roll, force: boolean = false) : boolean {
         let edited = false;
 
-        if(this.removeRoll(originalRoll, true)) {
-            if(this.addRoll(newRoll, true)) {
+        if(this.removeRollInternal(originalRoll, true)) {
+            if(this.addRollInternal(newRoll, force, true)) {
                 edited = true
             } else {
-                this.addRoll(originalRoll, true);
+                this.addRollInternal(originalRoll, force, true);
             }
         }
 

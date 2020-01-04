@@ -5,31 +5,55 @@ import React from 'react';
 import {
     View,
     Text,
+    FlatList,
 } from 'react-native';
 
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import RollManager from "../sync/RollManager";
 
-interface ConfirmRemoveDialogInterface {
+interface ChangeCategoryDialogInterface {
     modalShown : boolean;
-    removeName : string;
     dismissModal : () => void;
-    remove : () => void;
+    chooseCategory : (category: string) => void;
 }
 
-export function ConfirmRemoveDialog(props : ConfirmRemoveDialogInterface) {
+export function ChangeCategoryDialog(props : ChangeCategoryDialogInterface) {
+
+    let dice = RollManager.getInstance().getPossibleCategories();
+    // If you don't give a height to the menu, the scroll feature doesn't work. 
+    // There is a small gap between each item, so the 1.2 is for making it fit a bit better
+    let displayItems = Math.min(6, dice.length)
+    let menuHeight = displayItems * styles.MenuConstants.height;
 
     return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.85}>
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.75}>
             <View>
                 <Text style={styles.ModalName}>
-                    Remove - {props.removeName}
+                    Select Catagory
                 </Text>
-                <Text style={styles.ModalDetailText}>
-                    Are you sure you wish to remove - {props.removeName}
-                </Text>
+                <FlatList 
+                    style={{height:menuHeight}}
+                    data={RollManager.getInstance().getPossibleCategories()}
+                    renderItem={({ item }) =>  (
+                        <View style={styles.SelectCategoryButton}>
+                            <Touchable 
+                            style={styles.ModalButton}
+                            onPress={() => {
+                                props.dismissModal();
+                                props.chooseCategory(item);
+                            }}
+                            foreground={Touchable.Ripple('white', true)}
+                            hitSlop={styles.HitSlop}
+                            >
+                                <Text style={styles.ButtonText}>{item}</Text>
+                            </Touchable>
+                        </View>
+                    )}
+                    keyExtractor={(item, index) => index.toString()}
+                />
                 <View style={styles.ModalButtonContainer}>
-                    <View style={styles.YesNoButtonContainer}>
+                    <View style={styles.CancelButtonContainer}>
                         <View style={styles.ModalButtonPadding}>
                             <Touchable 
                             style={styles.ModalButton}
@@ -37,20 +61,7 @@ export function ConfirmRemoveDialog(props : ConfirmRemoveDialogInterface) {
                             foreground={Touchable.Ripple('white', true)}
                             hitSlop={styles.HitSlop}
                             >
-                                <Text style={styles.ButtonText}>No</Text>
-                            </Touchable>
-                        </View>
-                        <View style={styles.ModalButtonPadding}>
-                            <Touchable 
-                            style={styles.ModalButton}
-                            onPress={() => {
-                                props.remove();
-                                props.dismissModal();
-                            }}
-                            foreground={Touchable.Ripple('white', true)}
-                            hitSlop={styles.HitSlop}
-                            >
-                                <Text style={styles.ButtonText}>Yes</Text>
+                                <Text style={styles.ButtonText}>Cancel</Text>
                             </Touchable>
                         </View>
                     </View>
@@ -80,7 +91,7 @@ const styles = EStyleSheet.create({
         justifyContent:'flex-end',
         paddingTop:'10rem',
     },
-    YesNoButtonContainer:{
+    CancelButtonContainer:{
         flexDirection:'row',
     },
     ModalButton:{
@@ -91,6 +102,12 @@ const styles = EStyleSheet.create({
     },
     ModalButtonPadding:{
         paddingLeft:'10rem',
+    },
+    SelectCategoryButton:{
+        padding:'5rem',
+    },
+    MenuConstants:{
+        height:'40rem',
     },
     HitSlop: {
         top:'5rem',

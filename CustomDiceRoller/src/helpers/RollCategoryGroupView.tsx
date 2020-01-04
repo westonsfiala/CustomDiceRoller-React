@@ -19,10 +19,9 @@ interface RollCategoryGroupInterface {
 
 export function RollCategoryGroupView(props : RollCategoryGroupInterface) {
 
-    const processedRolls = useMemo(() => splitRolls(), [props.rolls.toString()]);
+    const processedRolls = useMemo(() => splitRolls(), [JSON.stringify(props.rolls)]);
 
     function splitRolls() : Array<RollCategoryGroup> {
-
         let rollArray = Array<RollCategoryGroup>();
 
         for(let roll of props.rolls) {
@@ -36,6 +35,7 @@ export function RollCategoryGroupView(props : RollCategoryGroupInterface) {
                     rollGroup.rolls.push(roll);
                 } else {
                     let newGroup = new RollCategoryGroup();
+                    newGroup.baseCategory = roll.categoryName;
                     newGroup.category = splitString[props.depth];
                     newGroup.rolls = [roll];
                     newGroup.subRolls = [];
@@ -46,6 +46,16 @@ export function RollCategoryGroupView(props : RollCategoryGroupInterface) {
                     rollGroup.subRolls.push(roll);
                 } else {
                     let newGroup = new RollCategoryGroup();
+
+                    // We want to partially built category name.
+                    // i.e. Category/SubCategory
+                    let groupCategory = '';
+                    for(let index = 0; index < props.depth + 1; index += 1) {
+                        groupCategory += splitString[index] + '/';
+                    }
+                    groupCategory = groupCategory.substr(0, groupCategory.length-1);
+
+                    newGroup.baseCategory = groupCategory;
                     newGroup.category = splitString[props.depth];
                     newGroup.rolls = [];
                     newGroup.subRolls = [roll]

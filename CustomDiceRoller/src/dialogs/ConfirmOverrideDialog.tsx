@@ -10,23 +10,23 @@ import {
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-interface ConfirmRemoveDialogInterface {
+interface ConfirmOverrideDialogInterface {
     modalShown : boolean;
-    removeName : string;
+    itemName : string;
     dismissModal : () => void;
-    remove : () => void;
+    override : () => void;
 }
 
-export function ConfirmRemoveDialog(props : ConfirmRemoveDialogInterface) {
+export function ConfirmOverrideDialog(props : ConfirmOverrideDialogInterface) {
 
     return(
         <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.85}>
             <View>
                 <Text style={styles.ModalName}>
-                    Remove - {props.removeName}
+                    Override Item - {props.itemName}
                 </Text>
                 <Text style={styles.ModalDetailText}>
-                    Are you sure you wish to remove - {props.removeName}
+                    Would you like to override the existing item?
                 </Text>
                 <View style={styles.ModalButtonContainer}>
                     <View style={styles.YesNoButtonContainer}>
@@ -44,7 +44,7 @@ export function ConfirmRemoveDialog(props : ConfirmRemoveDialogInterface) {
                             <Touchable 
                             style={styles.ModalButton}
                             onPress={() => {
-                                props.remove();
+                                props.override();
                                 props.dismissModal();
                             }}
                             foreground={Touchable.Ripple('white', true)}

@@ -20,11 +20,13 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Roll } from '../dice/Roll';
 import RollManager from '../sync/RollManager';
 import { ConfirmRemoveDialog } from '../dialogs/ConfirmRemoveDialog';
+import { ChangeCategoryDialog } from '../dialogs/ChangeCategoryDialog';
+import { ConfirmOverrideDialog } from '../dialogs/ConfirmOverrideDialog';
 
 interface SavedRollInterface {
     roll: Roll;
-    displayRoll: (roll : Roll) => void;
-    editRoll: (roll: Roll) => void;
+    displayRoll: () => void;
+    editRoll: () => void;
 }
 
 export function SavedRollView(props : SavedRollInterface) {
@@ -33,19 +35,29 @@ export function SavedRollView(props : SavedRollInterface) {
     const categoryMenuRef = useRef(null);
     const [showRemoveModal, setShowRemoveModal] = useState(false);
     const [showChangeCategoryModal, setShowChangeCategoryModal] = useState(false);
+    const overrideCategoryRef = useRef('');
+    const [overrideRollModalShown, setOverrideRollModalShown] = useState(false);
 
-    let categories = RollManager.getInstance().getCategories();
+    let categories = RollManager.getInstance().getPossibleCategories();
     // If you don't give a height to the menu, the scroll feature doesn't work. 
-    // There is a small gap between each item, so the 1.2 is for making it fit a bit better
     let displayItems = Math.min(10, categories.length)
     let menuHeight = displayItems * styles.MenuImage.height;
+
+    function handleChangeCategory(category: string, force: boolean = false) {
+        let newRoll = props.roll.setNameCategory(props.roll.mRollName, category);
+        if(!RollManager.getInstance().editRoll(props.roll, newRoll, force))
+        {
+            overrideCategoryRef.current = category;
+            setOverrideRollModalShown(true);
+        }
+    }
    
     return (
         <View style={styles.ButtonContainer}>
             <Touchable 
                 style={styles.ButtonBackground}
                 foreground={Touchable.Ripple('white')}
-                onPress={() => props.displayRoll(props.roll)}
+                onPress={() => props.displayRoll()}
                 delayLongPress={300}
                 onLongPress={() => infoMenuRef.current.open()}
             >
@@ -74,10 +86,10 @@ export function SavedRollView(props : SavedRollInterface) {
             <Menu ref={infoMenuRef}>
                 <MenuTrigger/>
                 <MenuOptions>
-                    <MenuOption style={styles.Menu} onSelect={() => props.editRoll(props.roll)}>
+                    <MenuOption style={styles.Menu} onSelect={() => props.editRoll()}>
                         <Text style={styles.MenuText}>Edit</Text>
                     </MenuOption>
-                    <MenuOption style={styles.Menu} onSelect={() => null}>
+                    <MenuOption style={styles.Menu} onSelect={() => setShowChangeCategoryModal(true)}>
                         <Text style={styles.MenuText}>Change Category</Text>
                     </MenuOption>
                     <MenuOption style={styles.Menu} onSelect={() => setShowRemoveModal(true)}>
@@ -105,6 +117,17 @@ export function SavedRollView(props : SavedRollInterface) {
                 removeName={props.roll.mRollName} 
                 dismissModal={() => setShowRemoveModal(false)} 
                 remove={() => RollManager.getInstance().removeRoll(props.roll)}
+            />
+            <ChangeCategoryDialog 
+                modalShown={showChangeCategoryModal}
+                dismissModal={() => setShowChangeCategoryModal(false)}
+                chooseCategory={handleChangeCategory}
+            />
+            <ConfirmOverrideDialog 
+                modalShown={overrideRollModalShown} 
+                dismissModal={() => setOverrideRollModalShown(false)} 
+                itemName={props.roll.displayName} 
+                override={() => handleChangeCategory(overrideCategoryRef.current, true)} 
             />
         </View>
     );
