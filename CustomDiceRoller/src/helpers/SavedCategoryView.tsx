@@ -43,13 +43,13 @@ export function SavedCategoryView(props : SavedCategoryInterface) {
     let showRolls = ExpandedCategoryManager.getInstance().isExpanded(props.rollGroup.baseCategory);
 
     ExpandedCategoryManager.getInstance().setUpdater(props.rollGroup.baseCategory, () => {
-        if(showRolls) {
+        if(ExpandedCategoryManager.getInstance().isExpanded(props.rollGroup.baseCategory)) {
             Animated.timing(animatedRotation, {
-                toValue: 0,
+                toValue: 1,
             }).start();
         } else {
             Animated.timing(animatedRotation, {
-                toValue: 1,
+                toValue: 0,
             }).start()
         }
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
