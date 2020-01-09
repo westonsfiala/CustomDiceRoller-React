@@ -70,7 +70,6 @@ export function SavedCategoryView(props : SavedCategoryInterface) {
                 <View style={styles.CategoryContainer}>
                     <Animated.View 
                         style={{transform: [{ rotate: RotateData }]}}
-                        animation={{}}
                     >
                         <Icon 
                             name='arrow-right-thick'
