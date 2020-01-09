@@ -75,7 +75,6 @@ export default class ExpandedCategoryManager {
         // If we don't have the value, or its empty, set the standard and return it.
         if(categoriesString === null || categoriesString.length === 0)
         {
-            await this.setCategoriesStorage([]);
             return [];
         }
     

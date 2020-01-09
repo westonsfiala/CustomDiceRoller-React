@@ -1,10 +1,14 @@
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import {
     View, 
     Text,
     FlatList,
+    Animated,
+    Platform,
+    UIManager,
+    LayoutAnimation,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -27,10 +31,35 @@ interface SavedCategoryInterface {
 export function SavedCategoryView(props : SavedCategoryInterface) {
 
     const [reload, setReload] = useState(false);
+    const [animatedRotation] = useState(new Animated.Value(0));
+
+    if (
+        Platform.OS === 'android' &&
+        UIManager.setLayoutAnimationEnabledExperimental
+    ) {
+        UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
     
     let showRolls = ExpandedCategoryManager.getInstance().isExpanded(props.rollGroup.baseCategory);
 
-    ExpandedCategoryManager.getInstance().setUpdater(props.rollGroup.baseCategory, () => setReload(!reload));
+    ExpandedCategoryManager.getInstance().setUpdater(props.rollGroup.baseCategory, () => {
+        if(showRolls) {
+            Animated.timing(animatedRotation, {
+                toValue: 0,
+            }).start();
+        } else {
+            Animated.timing(animatedRotation, {
+                toValue: 1,
+            }).start()
+        }
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setReload(!reload)
+    });
+
+    const RotateData = animatedRotation.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '90deg'],
+    });
 
     return (
         <View>
@@ -39,17 +68,20 @@ export function SavedCategoryView(props : SavedCategoryInterface) {
                 onPress={() => ExpandedCategoryManager.getInstance().expandContract(props.rollGroup.baseCategory)}
             >
                 <View style={styles.CategoryContainer}>
-                    <View style={ showRolls ? {transform: [{ rotate: '90deg' }]} : {}}>
+                    <Animated.View 
+                        style={{transform: [{ rotate: RotateData }]}}
+                        animation={{}}
+                    >
                         <Icon 
                             name='arrow-right-thick'
                             size={styles.IconConstants.width}
                             color={styles.IconConstants.color}
                         />
-                    </View>
+                    </Animated.View>
                     <Text style={styles.CategoryText}>{props.rollGroup.category}</Text>
                 </View>
             </Touchable>
-            <View style={showRolls ? styles.ShowRolls : styles.HideRolls}>
+            <View style={[styles.ShowRolls, {height: showRolls ? null : 0, overflow: 'hidden'}]}>
                 <FlatList 
                     data={props.rollGroup.rolls}
                     renderItem={({ item }) =>  (
