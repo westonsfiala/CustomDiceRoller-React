@@ -32,13 +32,6 @@ export function SavedCategoryView(props : SavedCategoryInterface) {
 
     const [reload, setReload] = useState(false);
     const [animatedRotation] = useState(new Animated.Value(0));
-
-    if (
-        Platform.OS === 'android' &&
-        UIManager.setLayoutAnimationEnabledExperimental
-    ) {
-        UIManager.setLayoutAnimationEnabledExperimental(true);
-    }
     
     let showRolls = ExpandedCategoryManager.getInstance().isExpanded(props.rollGroup.baseCategory);
 

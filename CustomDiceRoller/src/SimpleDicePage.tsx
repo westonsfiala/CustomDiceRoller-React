@@ -6,6 +6,7 @@ import {
     Text,
     FlatList,
     Dimensions,
+    LayoutAnimation,
 } from 'react-native';
 
 import { SimplePageDieView } from "./dice/SimplePageDieView";
@@ -23,7 +24,10 @@ export function SimpleDicePage({displayRoll}) {
     const [rollProperties, setRollProperties] = useState(new RollProperties({}))
     const [reload, setReload] = useState(false);
     
-    DiceManager.getInstance().setUpdater(() => setReload(!reload));
+    DiceManager.getInstance().setUpdater(() =>  {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setReload(!reload)
+    });
 
     console.log('refresh simple page');
 

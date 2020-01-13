@@ -5,6 +5,7 @@ import {
     View, 
     Text,
     FlatList,
+    LayoutAnimation,
 } from 'react-native';
 
 import Touchable from 'react-native-platform-touchable';
@@ -31,7 +32,10 @@ export function CustomDicePage(props: CustomRollPageInterface) {
     const [overrideRollModalShown, setOverrideRollModalShown] = useState(false);
     const [reload, setReload] = useState(false);
     
-    CustomRollManager.getInstance().setUpdater(() => setReload(!reload));
+    CustomRollManager.getInstance().setUpdater(() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setReload(!reload)
+    });
     
     console.log('refresh custom page');
 
@@ -54,7 +58,7 @@ export function CustomDicePage(props: CustomRollPageInterface) {
                 renderItem={({ item, index }) =>  (
                     <CustomPageDieView 
                         diePropPair={item} 
-                        updateDie={CustomRollManager.getInstance().updateDie}
+                        updateDie={(oldDie : Die, newDie : Die) => CustomRollManager.getInstance().updateDie(oldDie, newDie)}
                         updateProperties={(newProperties : RollProperties) => CustomRollManager.getInstance().setRoll(CustomRollManager.getInstance().getRoll().addDieToRoll(item.mDie, newProperties))}
                         moveUpHandler={() => CustomRollManager.getInstance().setRoll(CustomRollManager.getInstance().getRoll().moveDieUp(index))}
                         deleteHandler={() => CustomRollManager.getInstance().setRoll(CustomRollManager.getInstance().getRoll().removeDieFromRoll(item.mDie))}

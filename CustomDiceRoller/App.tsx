@@ -12,7 +12,7 @@
 // For description of how to use icons go to https://github.com/oblador/react-native-vector-icons 
 
 import React, { useState, useRef } from 'react'
-import { View, Dimensions } from 'react-native';
+import { View, Dimensions, UIManager } from 'react-native';
 
 import { AppBar } from "./src/appBar/AppBar";
 import ViewPager from '@react-native-community/viewpager';
@@ -48,6 +48,9 @@ const App = () => {
     const dialogPager = useRef(null as ViewPager);
 
     console.log('refresh app');
+    
+    // This block of code enables layout animations to happen.
+    UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
     function addRoll(newRoll: Roll) {
         if(newRoll !== null)
