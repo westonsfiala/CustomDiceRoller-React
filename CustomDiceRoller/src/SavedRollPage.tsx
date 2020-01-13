@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 
 import {
     View, 
+    Text,
     Dimensions,
 } from 'react-native';
 
@@ -23,6 +24,16 @@ export function SavedRollPage(props : SavedRollPageInterface) {
 
     console.log('refresh saved roll page');
 
+    let rolls = RollManager.getInstance().getRolls();
+
+    if(rolls.length === 0) {
+        return(
+            <View style={styles.PageBackground}>
+                <Text style={styles.NoRollsText}>No saved rolls</Text>
+            </View>
+        )
+    }
+
     return (
         <View style={styles.PageBackground}>
             <RollCategoryGroupView baseCategory={''} depth={0} rolls={RollManager.getInstance().getRolls()} displayRoll={props.displayRoll} editRoll={props.editRoll} />
@@ -41,6 +52,7 @@ const styles = EStyleSheet.create({
     },
     NoRollsText:{
         color:'$textColor', 
+        textAlign:'center',
         fontSize:'22rem'
     },
 })

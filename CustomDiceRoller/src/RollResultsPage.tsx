@@ -16,7 +16,7 @@ import { StruckStringPairView } from './dice/StruckStringPair';
 import HistoryManager from './sync/HistoryManager';
 
 interface RollResultsInterface {
-    dismissDialog: () => void;
+    dismissPage: () => void;
 }
 
 export function RollResultsPage(props : RollResultsInterface) {
@@ -75,7 +75,7 @@ export function RollResultsPage(props : RollResultsInterface) {
                 </Touchable>
                 <Touchable 
                 style={styles.ButtonBackground}
-                onPress={() => props.dismissDialog()}
+                onPress={() => props.dismissPage()}
                 foreground={Touchable.Ripple('white', true)}
                 hitSlop={styles.HitSlop}
                 >

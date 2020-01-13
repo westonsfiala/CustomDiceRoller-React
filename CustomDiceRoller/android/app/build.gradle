@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.customdiceroller"
+        applicationId "com.fialasfiasco.rpgdiceroller"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

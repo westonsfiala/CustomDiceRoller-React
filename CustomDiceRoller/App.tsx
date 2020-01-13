@@ -41,6 +41,7 @@ import { SavedRollPage } from './src/SavedRollPage';
 import HistoryManager from './src/sync/HistoryManager';
 import TabManager from './src/sync/TabManager';
 import CustomRollManager from './src/sync/CustomRollManager';
+import { AboutPage } from './src/AboutPage';
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 const App = () => {
@@ -66,9 +67,13 @@ const App = () => {
         viewPager.current.setPage(2);
     }
 
-    function dismissRollResultsDialog() {
+    function dismissRollResultsPage() {
         dialogPager.current.setPage(1);
         HistoryManager.getInstance().runUpdaters();
+    }
+
+    function dismissAboutPage() {
+        dialogPager.current.setPage(1);
     }
 
     function tabPressHandler(index: number) {
@@ -80,9 +85,9 @@ const App = () => {
             <View style={styles.AppBackground}>
                 <ViewPager style={styles.Pager} ref={dialogPager} initialPage={1} orientation="vertical" scrollEnabled={false}>
                     <View key="1">
-                        <RollResultsPage dismissDialog={dismissRollResultsDialog}/>
+                        <RollResultsPage dismissPage={dismissRollResultsPage}/>
                     </View>
-                    <View>
+                    <View key="2">
                         <AppBar 
                             title='RPG Dice Roller' 
                             subtitle='Tap die icons to roll!' 
@@ -103,6 +108,9 @@ const App = () => {
                                 <SavedRollPage displayRoll={addRoll} editRoll={editRoll}/>
                             </View>
                         </ViewPager>
+                    </View>
+                    <View key="3">
+                        <AboutPage dismissPage={dismissAboutPage}/>
                     </View>
                 </ViewPager>
             </View>

@@ -1,4 +1,4 @@
-package com.customdiceroller;
+package com.fialasfiasco.rpgdiceroller;
 
 import android.app.Application;
 import android.content.Context;
