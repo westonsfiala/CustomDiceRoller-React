@@ -1,5 +1,5 @@
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 import {
     View,
@@ -7,6 +7,7 @@ import {
     Image,
     ScrollView,
     Linking,
+    FlatList,
 } from 'react-native';
 
 import {
@@ -22,6 +23,14 @@ import Color from 'color'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import TabManager from '../sync/TabManager';
 
+const Tabs = [
+    'Settings',
+    'History',
+    'Simple Roll',
+    'Custom Roll',
+    'Saved Rolls'
+]
+
 interface AppBarInterface {
     subtitle: string;
     clearHistoryHandler: () => void;
@@ -32,13 +41,21 @@ interface AppBarInterface {
 export function AppBar(props: AppBarInterface) {
 
     const [reload, setReload] = useState(false);
-    
     TabManager.getInstance().setUpdater(() => setReload(!reload));
 
     console.log('refresh app bar');
 
     const clearHistoryMenuRef = useRef(null);
     const tripleDotMenuRef = useRef(null);
+    const tabListRef = useRef(null);
+
+    useEffect(() => {
+        tabListRef.current.scrollToIndex({
+            index:TabManager.getInstance().tab,
+            viewOffset:0,
+            viewPosition:0.5
+        });
+    });
 
     const appPkg = require("../../app.json");
 
@@ -70,9 +87,9 @@ export function AppBar(props: AppBarInterface) {
                         </MenuOptions>
                     </Menu>
                     <Touchable 
-                    onPress={() => tripleDotMenuRef.current.open()} 
-                    style={{marginStart:20}}
-                    foreground={Touchable.Ripple('white', true)}
+                        onPress={() => tripleDotMenuRef.current.open()} 
+                        style={{marginStart:20}}
+                        foreground={Touchable.Ripple('white', true)}
                     >
                         <Icon 
                         name='dots-vertical'
@@ -83,6 +100,11 @@ export function AppBar(props: AppBarInterface) {
                     <Menu ref={tripleDotMenuRef}>
                         <MenuTrigger/>
                         <MenuOptions>
+                            <MenuOption style={styles.Menu} onSelect={() => props.tabPressHandler(0)}>
+                                <Text style={styles.MenuText}>
+                                    Settings
+                                </Text>
+                            </MenuOption>
                             <MenuOption style={styles.Menu} onSelect={() => props.showAboutPage()}>
                                 <Text style={styles.MenuText}>
                                     About
@@ -103,40 +125,24 @@ export function AppBar(props: AppBarInterface) {
                     </Menu>
                 </View>
             </View>
-            <ScrollView contentContainerStyle={styles.ScrollContainer}>
-                <Touchable 
-                style={[styles.TabItem, TabManager.getInstance().tab === 0 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
-                background={Touchable.Ripple('white')}
-                onPress={() => props.tabPressHandler(0)}>
-                    <Text style={styles.TabText}>
-                        History
-                    </Text>
-                </Touchable>
-                <Touchable 
-                style={[styles.TabItem, TabManager.getInstance().tab === 1 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
-                background={Touchable.Ripple('white')}
-                onPress={() => props.tabPressHandler(1)}>
-                    <Text style={styles.TabText}>
-                        Simple Roll
-                    </Text>
-                </Touchable>
-                <Touchable 
-                style={[styles.TabItem, TabManager.getInstance().tab === 2 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
-                background={Touchable.Ripple('white')}
-                onPress={() => props.tabPressHandler(2)}>
-                    <Text style={styles.TabText}>
-                        Custom Roll
-                    </Text>
-                </Touchable>
-                <Touchable 
-                style={[styles.TabItem, TabManager.getInstance().tab === 3 ? styles.ActiveTabItem : styles.InactiveTabItem]} 
-                background={Touchable.Ripple('white')}
-                onPress={() => props.tabPressHandler(3)}>
-                    <Text style={styles.TabText}>
-                        Saved Rolls
-                    </Text>
-                </Touchable>
-            </ScrollView>
+            <FlatList
+                ref={tabListRef}
+                data={Tabs}
+                renderItem={({item, index}) => 
+                    <Touchable 
+                        style={[styles.TabItem, TabManager.getInstance().tab === index ? styles.ActiveTabItem : styles.InactiveTabItem]} 
+                        background={Touchable.Ripple('white')}
+                        onPress={() => props.tabPressHandler(index)}>
+                        <Text style={styles.TabText}>
+                            {item}
+                        </Text>
+                    </Touchable>
+                }
+                onScrollToIndexFailed={() => null}
+                keyExtractor={(item) => item}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+            />
         </View>
     );
 };
@@ -161,7 +167,6 @@ const styles = EStyleSheet.create({
         fontSize:'14rem',
     },
     ScrollContainer: {
-        flexDirection:'row',
         alignItems:'center',
         justifyContent:'center'
     },

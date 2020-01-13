@@ -42,6 +42,7 @@ import HistoryManager from './src/sync/HistoryManager';
 import TabManager from './src/sync/TabManager';
 import CustomRollManager from './src/sync/CustomRollManager';
 import { AboutPage } from './src/AboutPage';
+import { SettingsPage } from './src/SettingsPage';
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 const App = () => {
@@ -64,7 +65,7 @@ const App = () => {
 
     function editRoll(existingRoll: Roll) {
         CustomRollManager.getInstance().setRoll(existingRoll);
-        viewPager.current.setPage(2);
+        viewPager.current.setPage(3);
     }
 
     function dismissRollResultsPage() {
@@ -98,17 +99,20 @@ const App = () => {
                             tabPressHandler={tabPressHandler}
                             showAboutPage={showAboutPage}
                         />
-                        <ViewPager style={styles.Pager} ref={viewPager} initialPage={1} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
+                        <ViewPager style={styles.Pager} ref={viewPager} initialPage={2} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
                             <View key="1" >
-                                <HistoryPage/>
+                                <SettingsPage/>
                             </View>
                             <View key="2" >
-                                <SimpleDicePage displayRoll={addRoll}/>
+                                <HistoryPage/>
                             </View>
                             <View key="3" >
-                                <CustomDicePage displayRoll={addRoll}/>
+                                <SimpleDicePage displayRoll={addRoll}/>
                             </View>
                             <View key="4" >
+                                <CustomDicePage displayRoll={addRoll}/>
+                            </View>
+                            <View key="5" >
                                 <SavedRollPage displayRoll={addRoll} editRoll={editRoll}/>
                             </View>
                         </ViewPager>
