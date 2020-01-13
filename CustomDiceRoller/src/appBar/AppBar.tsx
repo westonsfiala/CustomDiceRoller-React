@@ -6,6 +6,7 @@ import {
     Text,
     Image,
     ScrollView,
+    Linking,
 } from 'react-native';
 
 import {
@@ -40,6 +41,8 @@ export function AppBar(props: AppBarInterface) {
     const tripleDotMenuRef = useRef(null);
 
     const appPkg = require("../../app.json");
+
+    // TODO: Make it so you can open the app store when that is supported.
 
     return (
         <View style={styles.AppBarBackground}>
@@ -85,6 +88,17 @@ export function AppBar(props: AppBarInterface) {
                                     About
                                 </Text>
                             </MenuOption>
+                            <MenuOption style={styles.Menu} onSelect={() => Linking.openURL('mailto:support@fialasfiasco.com?subject=Feedback / Request')}>
+                                <Text style={styles.MenuText}>
+                                    Feedback
+                                </Text>
+                            </MenuOption>
+                            <MenuOption style={styles.Menu} onSelect={() => Linking.openURL("market://details?id=com.fialasfiasco.customdiceroller")}>
+                                <Text style={styles.MenuText}>
+                                    Rate
+                                </Text>
+                            </MenuOption>
+                             
                         </MenuOptions>
                     </Menu>
                 </View>
