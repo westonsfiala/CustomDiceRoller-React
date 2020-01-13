@@ -72,6 +72,10 @@ const App = () => {
         HistoryManager.getInstance().runUpdaters();
     }
 
+    function showAboutPage() {
+        dialogPager.current.setPage(2);
+    }
+
     function dismissAboutPage() {
         dialogPager.current.setPage(1);
     }
@@ -88,11 +92,11 @@ const App = () => {
                         <RollResultsPage dismissPage={dismissRollResultsPage}/>
                     </View>
                     <View key="2">
-                        <AppBar 
-                            title='RPG Dice Roller' 
+                        <AppBar
                             subtitle='Tap die icons to roll!' 
                             clearHistoryHandler={() => HistoryManager.getInstance().clearHistory()}
                             tabPressHandler={tabPressHandler}
+                            showAboutPage={showAboutPage}
                         />
                         <ViewPager style={styles.Pager} ref={viewPager} initialPage={1} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
                             <View key="1" >

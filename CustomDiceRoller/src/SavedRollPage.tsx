@@ -1,10 +1,9 @@
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import {
     View, 
     Text,
-    Dimensions,
 } from 'react-native';
 
 import EStyleSheet from 'react-native-extended-stylesheet';

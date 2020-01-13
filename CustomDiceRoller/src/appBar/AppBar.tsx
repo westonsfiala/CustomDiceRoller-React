@@ -22,10 +22,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import TabManager from '../sync/TabManager';
 
 interface AppBarInterface {
-    title: string;
     subtitle: string;
     clearHistoryHandler: () => void;
     tabPressHandler: (value: number) => void;
+    showAboutPage: () => void;
 }
 
 export function AppBar(props: AppBarInterface) {
@@ -36,24 +36,27 @@ export function AppBar(props: AppBarInterface) {
 
     console.log('refresh app bar');
 
-    const menuRef = useRef(null);
+    const clearHistoryMenuRef = useRef(null);
+    const tripleDotMenuRef = useRef(null);
+
+    const appPkg = require("../../app.json");
 
     return (
         <View style={styles.AppBarBackground}>
             <View style={styles.ActionBarBackground}>
                 <View>
-                    <Text style={styles.AppTitleText}>{props.title}</Text>
+                    <Text style={styles.AppTitleText}>{appPkg.displayName}</Text>
                     <Text style={styles.AppSubTitleText}>{props.subtitle}</Text>
                 </View>
                 <View style={styles.RowLayout}>
                     <Touchable
-                        onPress={() => menuRef.current.open()}
+                        onPress={() => clearHistoryMenuRef.current.open()}
                         hitSlop={styles.HitSlop}
                         foreground={Touchable.Ripple('white', true)}
                     >
                         <Image source={require('./BurningBook.png')} style={styles.ClearHistory}/>
                     </Touchable>
-                    <Menu ref={menuRef}>
+                    <Menu ref={clearHistoryMenuRef}>
                         <MenuTrigger/>
                         <MenuOptions>
                             <MenuOption style={styles.Menu} onSelect={() => props.clearHistoryHandler()}>
@@ -64,7 +67,7 @@ export function AppBar(props: AppBarInterface) {
                         </MenuOptions>
                     </Menu>
                     <Touchable 
-                    onPress={() => null} 
+                    onPress={() => tripleDotMenuRef.current.open()} 
                     style={{marginStart:20}}
                     foreground={Touchable.Ripple('white', true)}
                     >
@@ -74,6 +77,16 @@ export function AppBar(props: AppBarInterface) {
                         color={styles.IconConstants.color}
                         />
                     </Touchable>
+                    <Menu ref={tripleDotMenuRef}>
+                        <MenuTrigger/>
+                        <MenuOptions>
+                            <MenuOption style={styles.Menu} onSelect={() => props.showAboutPage()}>
+                                <Text style={styles.MenuText}>
+                                    About
+                                </Text>
+                            </MenuOption>
+                        </MenuOptions>
+                    </Menu>
                 </View>
             </View>
             <ScrollView contentContainerStyle={styles.ScrollContainer}>
