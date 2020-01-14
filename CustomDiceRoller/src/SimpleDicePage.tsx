@@ -7,6 +7,7 @@ import {
     FlatList,
     Dimensions,
     LayoutAnimation,
+    ScaledSize,
 } from 'react-native';
 
 import { SimplePageDieView } from "./dice/SimplePageDieView";
@@ -19,8 +20,12 @@ import DiceManager from './sync/DiceManager';
 import { AddDiceButton } from './helpers/AddDiceButton';
 import { PropertiesButton } from './helpers/PropertiesButton';
 
-export function SimpleDicePage({displayRoll}) {
-    const [width, setWidth] = useState(Dimensions.get("window").width);
+interface SimpleDiePageInterface {
+    displayRoll : (roll: Roll) => void;
+    window : ScaledSize
+}
+
+export function SimpleDicePage(props : SimpleDiePageInterface) {
     const [rollProperties, setRollProperties] = useState(new RollProperties({}))
     const [reload, setReload] = useState(false);
     
@@ -31,31 +36,23 @@ export function SimpleDicePage({displayRoll}) {
 
     console.log('refresh simple page');
 
-    function handleScreenChange({window}) {
-        setWidth(window.width);
-    }
-
     function createNewRollHelper(clickedDie: Die) {
         let tempRoll = new Roll("Simple Roll","");
 
         tempRoll = tempRoll.addDieToRoll(clickedDie, rollProperties);
 
-        displayRoll(tempRoll);
+        props.displayRoll(tempRoll);
     }
 
-    useEffect(() => {
-        Dimensions.addEventListener("change", handleScreenChange);
-        
-        return () => {
-            Dimensions.removeEventListener("change", handleScreenChange);
-        }
-    });
+    let dieSize = Math.min(props.window.width, props.window.height)/4;
+    let itemsPerRow = Math.floor(props.window.width / dieSize);
 
     return (
         <View style={styles.SimpleDiePageBackground}>
             <FlatList 
+                key={props.window.width}
                 data={DiceManager.getInstance().getDice()}
-                numColumns={4}
+                numColumns={itemsPerRow}
                 ListEmptyComponent={
                     <View style={styles.NoDiceTextContainer}>
                         <Text style={styles.NoDiceText}>
@@ -66,14 +63,14 @@ export function SimpleDicePage({displayRoll}) {
                 renderItem={({ item }) =>  (
                     <SimplePageDieView 
                         die={item} 
-                        size={width/4} 
+                        size={dieSize} 
                         pressDieCallback={() => createNewRollHelper(item)}
                         removeDieCallback={() => DiceManager.getInstance().removeDie(item)} 
                         editDieCallback={(newDie: Die) => DiceManager.getInstance().editDie(item, newDie)} 
                     />
                 )}
                 keyExtractor={(item, index) => index.toString()}
-                extraData={width}
+                extraData={props.window.width}
             />
             <View style={styles.ButtonsRow}>
                 <NumDiceUpDownButtons 

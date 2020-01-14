@@ -34,26 +34,5 @@ export function SettingsPage(props : SettingsInterface) {
 const styles = EStyleSheet.create({
     Container: {
         flex:1,
-        alignContent:'center',
     },
-    SettingContainer: {
-        flexDirection:'row',
-        alignContent:'center',
-        flex:1
-    },
-    TextContainer: {
-        justifyContent:'center',
-    },
-    TitleText: {
-        fontSize:'20rem',
-        color:'$textColor',
-    },
-    ValueText: {
-        fontSize:'15rem',
-        color:'$textColorDarkened',
-    },
-    IconConstants: {
-        width:'60rem',
-        color:'$textColor'
-    }
 })

@@ -11,8 +11,8 @@
 // For searchable Icons go to https://oblador.github.io/react-native-vector-icons/
 // For description of how to use icons go to https://github.com/oblador/react-native-vector-icons 
 
-import React, { useState, useRef } from 'react'
-import { View, Dimensions, UIManager } from 'react-native';
+import React, { useRef, useState, useEffect } from 'react'
+import { View, Dimensions, UIManager, LayoutAnimation } from 'react-native';
 
 import { AppBar } from "./src/appBar/AppBar";
 import ViewPager from '@react-native-community/viewpager';
@@ -48,6 +48,7 @@ import { SettingsPage } from './src/SettingsPage';
 const App = () => {
     const viewPager = useRef(null as ViewPager);
     const dialogPager = useRef(null as ViewPager);
+    const [window, setWindow] = useState(Dimensions.get('window'));
 
     console.log('refresh app');
     
@@ -85,6 +86,19 @@ const App = () => {
         viewPager.current.setPage(index);
     }
 
+    function handleScreenChange({window}) {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setWindow(window);
+    }
+
+    useEffect(() => {
+        Dimensions.addEventListener("change", handleScreenChange);
+        
+        return () => {
+            Dimensions.removeEventListener("change", handleScreenChange);
+        }
+    });
+
     return (
         <MenuProvider>
             <View style={styles.AppBackground}>
@@ -100,19 +114,19 @@ const App = () => {
                             showAboutPage={showAboutPage}
                         />
                         <ViewPager style={styles.Pager} ref={viewPager} initialPage={2} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
-                            <View key="1" >
+                            <View key="a" >
                                 <SettingsPage/>
                             </View>
-                            <View key="2" >
+                            <View key="b" >
                                 <HistoryPage/>
                             </View>
-                            <View key="3" >
-                                <SimpleDicePage displayRoll={addRoll}/>
+                            <View key="c" >
+                                <SimpleDicePage displayRoll={addRoll} window={window}/>
                             </View>
-                            <View key="4" >
+                            <View key="d" >
                                 <CustomDicePage displayRoll={addRoll}/>
                             </View>
-                            <View key="5" >
+                            <View key="e" >
                                 <SavedRollPage displayRoll={addRoll} editRoll={editRoll}/>
                             </View>
                         </ViewPager>
