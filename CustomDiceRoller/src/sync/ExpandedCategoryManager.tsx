@@ -4,7 +4,7 @@ const ExpandedCategoryKey = 'ExpandedCategoryKey';
 
 export default class ExpandedCategoryManager {
 
-    static mInstance = null as ExpandedCategoryManager;
+    private static mInstance = null as ExpandedCategoryManager;
 
     private mCategories = [] as Array<string>;
 

@@ -4,13 +4,13 @@ import { Roll } from '../dice/Roll';
 
 export default class HistoryManager {
 
-    static mInstance = null as HistoryManager;
+    private static mInstance = null as HistoryManager;
 
-    mHistory = Array<RollDisplayHelper>();
-    mRestorableHistory = null as Array<RollDisplayHelper>;
+    private mHistory = Array<RollDisplayHelper>();
+    private mRestorableHistory = null as Array<RollDisplayHelper>;
 
-    mDisplayUpdater = null as () => void;
-    mHistoryUpdater = null as () => void;
+    private mDisplayUpdater = null as () => void;
+    private mHistoryUpdater = null as () => void;
 
     static getInstance() : HistoryManager {
         if(HistoryManager.mInstance === null) {

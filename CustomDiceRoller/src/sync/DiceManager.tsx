@@ -23,10 +23,10 @@ const standardDice = [
 
 export default class DiceManager {
 
-    static mInstance = null as DiceManager;
+    private static mInstance = null as DiceManager;
 
-    mDice = [] as Array<Die>;
-    mUpdater = null
+    private mDice = [] as Array<Die>;
+    private mUpdater = null
 
     static getInstance() : DiceManager {
         if(DiceManager.mInstance === null) {

@@ -16,10 +16,10 @@ const DefaultCategories = [
 
 export default class RollManager {
 
-    static mInstance = null as RollManager;
+    private static mInstance = null as RollManager;
 
-    mRolls = [] as Array<Roll>;
-    mUpdater = null;
+    private mRolls = [] as Array<Roll>;
+    private mUpdater = null;
 
     static getInstance() : RollManager {
         if(RollManager.mInstance === null) {

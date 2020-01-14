@@ -59,7 +59,7 @@ function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = fal
                 onLongPress={() => {handleChange(-100)}}
                 delayLongPress={300}
             >
-                <Icon style={styles.ButtonBackground} iconStyle={styles.ButtonForeground} size={styles.IconConstants.width} name='arrow-down-bold' color={styles.IconConstants.color}/>
+                <Icon style={styles.ButtonBackground} size={styles.IconConstants.width} name='arrow-down-bold' color={styles.IconConstants.color}/>
             </Touchable>
             <Touchable 
                 style={styles.TextTouchable}
@@ -74,7 +74,7 @@ function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = fal
                 onLongPress={() => {handleChange(100)}}
                 delayLongPress={300}
             >
-                <Icon style={styles.ButtonBackground} iconStyle={styles.ButtonForeground} size={styles.IconConstants.width} name='arrow-up-bold' color={styles.IconConstants.color}/>
+                <Icon style={styles.ButtonBackground} size={styles.IconConstants.width} name='arrow-up-bold' color={styles.IconConstants.color}/>
             </Touchable>
             <SetValueDialog 
                 modalShown={modalShown} 

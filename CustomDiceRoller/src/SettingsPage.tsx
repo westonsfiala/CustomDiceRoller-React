@@ -6,9 +6,13 @@ import {
     View, 
     Text,
     FlatList,
+    ScrollView,
 } from 'react-native';
 
+import SortTypeManager, { SortSetting } from './sync/SortTypeManager';
+
 import Touchable from 'react-native-platform-touchable';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 interface SettingsInterface {
@@ -20,6 +24,9 @@ export function SettingsPage(props : SettingsInterface) {
 
     return (
         <View style={styles.Container}>
+            <ScrollView>
+                <SortSetting/>
+            </ScrollView>
         </View>
     );
 }
@@ -29,46 +36,24 @@ const styles = EStyleSheet.create({
         flex:1,
         alignContent:'center',
     },
+    SettingContainer: {
+        flexDirection:'row',
+        alignContent:'center',
+        flex:1
+    },
+    TextContainer: {
+        justifyContent:'center',
+    },
     TitleText: {
-        fontSize:'40rem',
+        fontSize:'20rem',
         color:'$textColor',
-        textAlign:'center',
     },
-    DetailText: {
-        fontSize:'18rem',
-        color:'$textColor',
-        textAlign:'center',
+    ValueText: {
+        fontSize:'15rem',
+        color:'$textColorDarkened',
     },
-    TipText: {
-        fontSize:'18rem',
-        color:'$textColor',
-        margin:'5rem',
-        paddingLeft:'5rem',
-        backgroundColor:'$primaryColorLightened',
-    },
-    ButtonContainer: {
-        flexDirection:'row', 
-        alignItems:'stretch',
-        alignContent:'stretch',
-        justifyContent:'space-around',
-        marginTop:'8rem'
-    },
-    ButtonBackground: {
-        flex:1,
-        backgroundColor: '$primaryColorLightened',
-        borderRadius: '10rem',
-        overflow:'hidden',
-        margin:'10rem'
-    },
-    ButtonText: {
-        fontSize: '30rem', 
-        textAlign: 'center', 
-        color: '$textColor',
-    },
-    HitSlop: {
-        top:'10rem',
-        bottom:'10rem',
-        right:'10rem',
-        left:'10rem'
+    IconConstants: {
+        width:'60rem',
+        color:'$textColor'
     }
 })

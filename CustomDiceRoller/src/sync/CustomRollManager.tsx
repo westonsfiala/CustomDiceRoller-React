@@ -9,10 +9,10 @@ const CustomRollKey = 'CustomRollPoolKey';
 
 export default class CustomRollManager {
 
-    static mInstance = null as CustomRollManager;
+    private static mInstance = null as CustomRollManager;
 
-    mRoll = new Roll("Custom Roll", "Temp");
-    mUpdater = null
+    private mRoll = new Roll("Custom Roll", "Temp");
+    private mUpdater = null
 
     static getInstance() : CustomRollManager {
         if(CustomRollManager.mInstance === null) {

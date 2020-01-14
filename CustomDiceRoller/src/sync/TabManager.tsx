@@ -1,7 +1,7 @@
 
 export default class TabManager {
 
-    static mInstance = null as TabManager;
+    private static mInstance = null as TabManager;
 
     mTab = 1;
     mUpdater = null;
