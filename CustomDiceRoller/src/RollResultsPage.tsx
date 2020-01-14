@@ -98,7 +98,7 @@ const styles = EStyleSheet.create({
         justifyContent:'center'
     },
     TitleText: {
-        fontSize:'40rem',
+        fontSize:'30rem',
         color:'$textColor',
         textAlign:'center',
     },
@@ -108,7 +108,7 @@ const styles = EStyleSheet.create({
         textAlign:'center',
     },
     DetailText: {
-        fontSize:'22rem',
+        fontSize:'20rem',
         color:'$textColor',
         textAlign:'center',
     },

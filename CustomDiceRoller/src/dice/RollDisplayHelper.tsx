@@ -5,6 +5,7 @@ import {createUnknownDie} from "./DieFactory"
 import {getModifierString, concatter} from "../helpers/StringHelper"
 import {StruckStringPair} from "./StruckStringPair"
 import { RollProperties, isDouble, isHalve } from "./RollProperties";
+import SortTypeManager from "../sync/SortTypeManager";
 
 // Class that performs a roll when constructed and turns that roll into displayable chunks of information.
 export class RollDisplayHelper {
@@ -30,6 +31,8 @@ export class RollDisplayHelper {
 
         // Lambda method for use in the reduce method to sum all the values.
         const summer = (accumulator: number, current: number) => accumulator + current;
+        const sortAscending = (left: number, right: number) => left - right;
+        const sortDescending = (left: number, right: number) => right - left;
 
         let rollValues = roll.roll();
 
@@ -49,6 +52,22 @@ export class RollDisplayHelper {
             let rollResultsStruckDropped = rollValues.mStruckDroppedRolls.get(dieJson);
             let rollResultsStruckReRolled = rollValues.mStruckReRolledRolls.get(dieJson);
             let rollProperties = rollValues.mRollProperties.get(dieJson);
+
+            if(SortTypeManager.getInstance().sortAscending()) {
+                rollResults.sort(sortAscending);
+                rollResultsDropped.sort(sortAscending);
+                rollResultsReRolled.sort(sortAscending);
+                rollResultsStruck.sort(sortAscending);
+                rollResultsStruckDropped.sort(sortAscending);
+                rollResultsStruckReRolled.sort(sortAscending);
+            } else if(SortTypeManager.getInstance().sortDescending()) {
+                rollResults.sort(sortDescending);
+                rollResultsDropped.sort(sortDescending);
+                rollResultsReRolled.sort(sortDescending);
+                rollResultsStruck.sort(sortDescending);
+                rollResultsStruckDropped.sort(sortDescending);
+                rollResultsStruckReRolled.sort(sortDescending);
+            }
 
             // Lambda method for turning the roll numbers into a displayable string.
             const processRollPair = (dieName: string, mainList: Array<number>, strikeList: Array<number>, properties : RollProperties, showPropInfo : boolean) : StruckStringPair =>

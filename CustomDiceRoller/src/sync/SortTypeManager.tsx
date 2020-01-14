@@ -8,6 +8,7 @@ export default class SortTypeManager {
 
     readonly sortTypeList = ['Ascending', 'Natural', 'Descending'];
     private mSortType = 'Natural';
+    private mSettingsUpdater = null;
     private mUpdater = null;
 
     static getInstance() : SortTypeManager {
@@ -19,17 +20,36 @@ export default class SortTypeManager {
     }
 
     private constructor() {
-        this.retrieveSortType().then((sortType) => this.mSortType = sortType);
+        this.retrieveSortType().then((sortType) => {
+            this.sortType = sortType;
+        });
+    }
+
+    sortAscending() : boolean {
+        return this.mSortType == this.sortTypeList[0];
+    }
+
+    sortDescending() : boolean {
+        return this.mSortType == this.sortTypeList[2];
+    }
+
+    setSettingsUpdater(updater : () => void) {
+        this.mSettingsUpdater = updater;
     }
 
     setUpdater(updater : () => void) {
         this.mUpdater = updater;
     }
 
+    runUpdaters() {
+        if(this.mUpdater !== null) this.mUpdater();
+        if(this.mSettingsUpdater !== null) this.mSettingsUpdater();
+    }
+
     set sortType(sortType : string) {
         this.saveSortType(sortType).then((value) => {
             this.mSortType = value;
-            if(this.mUpdater !== null) this.mUpdater();
+            this.runUpdaters();
         });
     }
 
@@ -44,9 +64,7 @@ export default class SortTypeManager {
 
     private async retrieveSortType() : Promise<string> {
         const sortType = await AsyncStorage.getItem(SortTypeKey);
-    
         if(sortType === null) { return 'Natural'; }
-    
         return sortType;
     }
 }
@@ -73,7 +91,7 @@ export function SortSetting() {
 
     const [reload, setReload] = useState(false);
 
-    SortTypeManager.getInstance().setUpdater(() => setReload(!reload));
+    SortTypeManager.getInstance().setSettingsUpdater(() => setReload(!reload));
 
     const menuRef = useRef(null);
 
@@ -85,7 +103,7 @@ export function SortSetting() {
                     <MenuTrigger/>
                     <MenuOptions>
                     {SortTypeManager.getInstance().sortTypeList.map((value, index) => 
-                        <MenuOption key={index} style={styles.Menu} onSelect={() => SortTypeManager.getInstance().sortType = value}>
+                        <MenuOption key={index} style={styles.MenuBackground} onSelect={() => SortTypeManager.getInstance().sortType = value}>
                             <Text style={styles.MenuText}>{value}</Text>
                         </MenuOption>
                     )}
@@ -122,7 +140,7 @@ const styles = EStyleSheet.create({
         width:'60rem',
         color:'$textColor'
     },
-    Menu:{
+    MenuBackground:{
         backgroundColor:'$primaryColor',
     },
     MenuText:{
