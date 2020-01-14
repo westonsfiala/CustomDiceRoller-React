@@ -1,11 +1,10 @@
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import {
     View, 
     Text,
     FlatList,
-    Dimensions,
     LayoutAnimation,
     ScaledSize,
 } from 'react-native';
@@ -19,6 +18,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import DiceManager from './sync/DiceManager';
 import { AddDiceButton } from './helpers/AddDiceButton';
 import { PropertiesButton } from './helpers/PropertiesButton';
+import DieSizeManager, { DieSizeSetting } from './sync/DieSizeManager';
 
 interface SimpleDiePageInterface {
     displayRoll : (roll: Roll) => void;
@@ -34,6 +34,11 @@ export function SimpleDicePage(props : SimpleDiePageInterface) {
         setReload(!reload)
     });
 
+    DieSizeManager.getInstance().setUpdater(() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setReload(!reload)
+    })
+
     console.log('refresh simple page');
 
     function createNewRollHelper(clickedDie: Die) {
@@ -44,13 +49,13 @@ export function SimpleDicePage(props : SimpleDiePageInterface) {
         props.displayRoll(tempRoll);
     }
 
-    let dieSize = Math.min(props.window.width, props.window.height)/4;
+    let dieSize = Math.min(props.window.width, props.window.height) / DieSizeManager.getInstance().itemsPerRow;
     let itemsPerRow = Math.floor(props.window.width / dieSize);
 
     return (
         <View style={styles.SimpleDiePageBackground}>
             <FlatList 
-                key={props.window.width}
+                key={props.window.width.toString() + dieSize.toString() + itemsPerRow.toString()}
                 data={DiceManager.getInstance().getDice()}
                 numColumns={itemsPerRow}
                 ListEmptyComponent={

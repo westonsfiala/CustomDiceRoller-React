@@ -1,36 +1,33 @@
 import AsyncStorage from "@react-native-community/async-storage";
 
-const SortTypeKey = 'SortTypeKey';
+const DieSizeKey = 'DieSizeKey';
 
-export default class SortTypeManager {
+export default class DieSizeManager {
 
-    private static mInstance = null as SortTypeManager;
+    private static mInstance = null as DieSizeManager;
 
-    readonly sortTypeList = ['Ascending', 'Natural', 'Descending'];
-    private mSortTypeIndex = 1;
+    readonly DieSizeList = ['Tiny', 'Small', 'Medium', 'Large', 'Huge'];
+    private mDieSizeIndex = 2;
     private mSettingsUpdater = null;
     private mUpdater = null;
 
-    static getInstance() : SortTypeManager {
-        if(SortTypeManager.mInstance === null) {
-            SortTypeManager.mInstance = new SortTypeManager();
+    static getInstance() : DieSizeManager {
+        if(DieSizeManager.mInstance === null) {
+            DieSizeManager.mInstance = new DieSizeManager();
         }
 
         return this.mInstance;
     }
 
     private constructor() {
-        this.retrieveSortType().then((sortType) => {
-            this.mSortTypeIndex = sortType;
+        this.retrieveDieSize().then((dieSize) => {
+            this.mDieSizeIndex = dieSize;
         });
     }
-
-    sortAscending() : boolean {
-        return this.mSortTypeIndex === 0;
-    }
-
-    sortDescending() : boolean {
-        return this.mSortTypeIndex === 2;
+    
+    get itemsPerRow() : number {
+        // 6 is an arbitrary number that works.
+        return 6 - this.mDieSizeIndex
     }
 
     setSettingsUpdater(updater : () => void) {
@@ -46,31 +43,26 @@ export default class SortTypeManager {
         if(this.mSettingsUpdater !== null) this.mSettingsUpdater();
     }
 
-    setSortTypeIndex(sortTypeIndex : number) {
-        this.saveSortType(sortTypeIndex).then((value) => {
-            this.mSortTypeIndex = value;
+    setDieSizeIndex(dieSizeIndex : number) {
+        this.saveDieSize(dieSizeIndex).then((value) => {
+            this.mDieSizeIndex = value;
             this.runUpdaters();
         });
     }
 
-    getSortTypeString() : string {
-        return this.sortTypeList[this.mSortTypeIndex];
+    getDieSizeString() : string {
+        return this.DieSizeList[this.mDieSizeIndex];
     }
 
-    private async saveSortType(sortTypeIndex : number) : Promise<number> {
-        await AsyncStorage.setItem(SortTypeKey, sortTypeIndex.toString());
-        return sortTypeIndex;
+    private async saveDieSize(dieSize : number) : Promise<number> {
+        await AsyncStorage.setItem(DieSizeKey, dieSize.toString());
+        return dieSize;
     }
 
-    private async retrieveSortType() : Promise<number> {
-        const sortTypeIndexString = await AsyncStorage.getItem(SortTypeKey);
-        if(sortTypeIndexString === null) { return 1; }
-
-        try {
-            return Number.parseInt(sortTypeIndexString);
-        } catch {
-            return 1;
-        }
+    private async retrieveDieSize() : Promise<number> {
+        const dieSize = await AsyncStorage.getItem(DieSizeKey);
+        if(dieSize === null) { return 2; }
+        return Number.parseInt(dieSize);
     }
 }
 
@@ -92,31 +84,31 @@ import {
     MenuOption,
 } from 'react-native-popup-menu';
 
-export function SortSetting() {
+export function DieSizeSetting() {
 
     const [reload, setReload] = useState(false);
 
-    SortTypeManager.getInstance().setSettingsUpdater(() => setReload(!reload));
+    DieSizeManager.getInstance().setSettingsUpdater(() => setReload(!reload));
 
     const menuRef = useRef(null);
 
     return (
         <Touchable onPress={() => menuRef.current.open()} foreground={Touchable.Ripple('white')}>
             <View style={styles.SettingContainer} >
-                <Icon size={styles.IconConstants.width} name='sort' color={styles.IconConstants.color}/>
+                <Icon size={styles.IconConstants.width} name='resize' color={styles.IconConstants.color}/>
                 <Menu ref={menuRef}>
                     <MenuTrigger/>
                     <MenuOptions>
-                    {SortTypeManager.getInstance().sortTypeList.map((value, index) => 
-                        <MenuOption key={index} style={styles.MenuBackground} onSelect={() => SortTypeManager.getInstance().setSortTypeIndex(index)}>
+                    {DieSizeManager.getInstance().DieSizeList.map((value, index) => 
+                        <MenuOption key={index} style={styles.MenuBackground} onSelect={() => DieSizeManager.getInstance().setDieSizeIndex(index)}>
                             <Text style={styles.MenuText}>{value}</Text>
                         </MenuOption>
                     )}
                     </MenuOptions>
                 </Menu>
                 <View style={styles.TextContainer}>
-                    <Text style={styles.TitleText}>Sort Type</Text>
-                    <Text style={styles.ValueText}>{SortTypeManager.getInstance().getSortTypeString()}</Text>
+                    <Text style={styles.TitleText}>Die Size</Text>
+                    <Text style={styles.ValueText}>{DieSizeManager.getInstance().getDieSizeString()}</Text>
                 </View>
             </View>
         </Touchable>

@@ -9,11 +9,12 @@ import {
     ScrollView,
 } from 'react-native';
 
-import SortTypeManager, { SortSetting } from './sync/SortTypeManager';
+import { SortSetting } from './sync/SortTypeManager';
 
 import Touchable from 'react-native-platform-touchable';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { DieSizeSetting } from './sync/DieSizeManager';
 
 interface SettingsInterface {
 }
@@ -26,6 +27,7 @@ export function SettingsPage(props : SettingsInterface) {
         <View style={styles.Container}>
             <ScrollView>
                 <SortSetting/>
+                <DieSizeSetting/>
             </ScrollView>
         </View>
     );
