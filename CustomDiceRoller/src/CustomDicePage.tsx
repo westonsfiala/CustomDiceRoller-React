@@ -21,6 +21,7 @@ import { CreateRollDialog } from './dialogs/CreateRollDialog';
 import RollManager from './sync/RollManager';
 import CustomRollManager from './sync/CustomRollManager';
 import { ConfirmOverrideDialog } from './dialogs/ConfirmOverrideDialog';
+import ThemeManager from './sync/ThemeManager';
 
 interface CustomRollPageInterface {
     displayRoll: (roll: Roll) => void;
@@ -31,11 +32,14 @@ export function CustomDicePage(props: CustomRollPageInterface) {
     const [createRollModalShown, setCreateRollModalShown] = useState(false);
     const [overrideRollModalShown, setOverrideRollModalShown] = useState(false);
     const [reload, setReload] = useState(false);
-    
-    CustomRollManager.getInstance().setUpdater(() => {
+
+    function updateHandler() {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setReload(!reload)
-    });
+    }
+    
+    CustomRollManager.getInstance().setUpdater(updateHandler);
+    ThemeManager.getInstance().setCustomPageUpdater(updateHandler);
     
     console.log('refresh custom page');
 

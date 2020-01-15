@@ -19,6 +19,7 @@ import DiceManager from './sync/DiceManager';
 import { AddDiceButton } from './helpers/AddDiceButton';
 import { PropertiesButton } from './helpers/PropertiesButton';
 import DieSizeManager, { DieSizeSetting } from './sync/DieSizeManager';
+import ThemeManager from './sync/ThemeManager';
 
 interface SimpleDiePageInterface {
     displayRoll : (roll: Roll) => void;
@@ -28,16 +29,15 @@ interface SimpleDiePageInterface {
 export function SimpleDicePage(props : SimpleDiePageInterface) {
     const [rollProperties, setRollProperties] = useState(new RollProperties({}))
     const [reload, setReload] = useState(false);
-    
-    DiceManager.getInstance().setUpdater(() =>  {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setReload(!reload)
-    });
 
-    DieSizeManager.getInstance().setUpdater(() => {
+    function updateHandler() {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setReload(!reload)
-    })
+    }
+    
+    DiceManager.getInstance().setUpdater(updateHandler);
+    DieSizeManager.getInstance().setUpdater(updateHandler);
+    ThemeManager.getInstance().setSimplePageUpdater(updateHandler);
 
     console.log('refresh simple page');
 

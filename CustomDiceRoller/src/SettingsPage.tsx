@@ -5,29 +5,28 @@ import React from 'react'
 import {
     View, 
     Text,
-    FlatList,
     ScrollView,
 } from 'react-native';
 
 import { SortSetting } from './sync/SortTypeManager';
 
-import Touchable from 'react-native-platform-touchable';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { DieSizeSetting } from './sync/DieSizeManager';
+import Color from 'color';
+import { DieThemeSetting } from './sync/ThemeSetting';
 
-interface SettingsInterface {
-}
-
-export function SettingsPage(props : SettingsInterface) {
+export function SettingsPage() {
 
     console.log('refresh settings page');
 
     return (
         <View style={styles.Container}>
-            <ScrollView>
+            <ScrollView style={styles.ScrollPadding}>
+                <Text style={styles.DividerText}>General</Text>
                 <SortSetting/>
                 <DieSizeSetting/>
+                <DieThemeSetting/>
+                <View style={styles.Divider}/>
             </ScrollView>
         </View>
     );
@@ -36,5 +35,19 @@ export function SettingsPage(props : SettingsInterface) {
 const styles = EStyleSheet.create({
     Container: {
         flex:1,
+    },
+    ScrollPadding: {
+        marginLeft:'10rem',
+        marginRight:'10rem',
+    },
+    DividerText: {
+        color:'$textColorHighlight',
+        fontSize:'18rem',
+        marginTop:'10rem',
+        marginBottom:'5rem',
+    },
+    Divider:{
+        borderBottomColor: Color.rgb(128,128,128).hex(), 
+        borderBottomWidth: 1,
     },
 })

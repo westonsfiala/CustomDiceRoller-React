@@ -25,6 +25,7 @@ EStyleSheet.build({
     $rem: Math.min(height,width) / 380, // This is an arbitrary value that allows for better scaling.
     $textColor: Color.rgb(255,255,255).hex(),
     $textColorDarkened: Color.rgb(255,255,255).darken(.25).hex(),
+    $textColorHighlight: Color.rgb(0,255,255).darken(.25).hex(),
     $textColorBad: Color.rgb(255,0,0).hex(),
     $primaryColor: Color.rgb(63,63,63).hex(),
     $primaryColorLightened: Color.rgb(63,63,63).lighten(.5).hex(),
@@ -78,7 +79,7 @@ const App = () => {
         dialogPager.current.setPage(2);
     }
 
-    function dismissAboutPage() {
+    function returnToMainPage() {
         dialogPager.current.setPage(1);
     }
 
@@ -132,7 +133,10 @@ const App = () => {
                         </ViewPager>
                     </View>
                     <View key="3">
-                        <AboutPage dismissPage={dismissAboutPage}/>
+                        <AboutPage dismissPage={returnToMainPage}/>
+                    </View>
+                    <View key="4">
+                        <AboutPage dismissPage={returnToMainPage}/>
                     </View>
                 </ViewPager>
             </View>
