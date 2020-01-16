@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "androidRelease": "react-native run-android --variant=release",
+    "androidBundle": "./android/gradlew bundleRelease",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest"
@@ -14,7 +16,7 @@
     "color": "^3.1.2",
     "core-js": "^3.2.1",
     "react": "16.9.0",
-    "react-native": "0.61.2",
+    "react-native": "0.61.5",
     "react-native-extended-stylesheet": "^0.12.0",
     "react-native-modals": "^0.19.8",
     "react-native-platform-touchable": "^1.1.1",
