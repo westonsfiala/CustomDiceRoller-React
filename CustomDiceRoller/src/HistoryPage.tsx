@@ -1,5 +1,5 @@
 
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 
 import {
     View, 
@@ -17,16 +17,21 @@ import HistoryManager from './sync/HistoryManager';
 export function HistoryPage() {
 
     const flatList = useRef(null as FlatList<RollDisplayHelper>);
+    const lastNumItemsRef = useRef(HistoryManager.getInstance().getHistory().length);
     
     const [reload, setReload] = useState(false);
 
-    HistoryManager.getInstance().setHistoryUpdater(() => setReload(!reload));
+    HistoryManager.getInstance().setHistoryUpdater(() => {
+        setReload(!reload)
+    });
 
     console.log('refresh history page');
 
     function divider() {
         return(<View style={styles.ListDivider}/>);
     }
+
+    function renderItem({item}) { return <HistoryItemView rollHelper={item}/> }
 
     return (
         <View>
@@ -40,11 +45,16 @@ export function HistoryPage() {
                 }
                 data={HistoryManager.getInstance().getHistory()}
                 ItemSeparatorComponent={divider}
-                renderItem={({ item }) =>  (
-                    <HistoryItemView rollHelper={item}/>
-                )}
-                onContentSizeChange={() => flatList.current.scrollToEnd()}
+                renderItem={renderItem}
                 inverted={true}
+                onContentSizeChange={() => {
+                    let numItems = HistoryManager.getInstance().getHistory().length;
+                    // You need this block because sometimes this triggers when you haven't actually changed the data.
+                    if(numItems !== lastNumItemsRef.current) {
+                        lastNumItemsRef.current = numItems;
+                        flatList.current.scrollToEnd();
+                    }
+                }}
             />
         </View>
     );
