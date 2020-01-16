@@ -6,6 +6,7 @@ import {getModifierString, concatter} from "../helpers/StringHelper"
 import {StruckStringPair} from "./StruckStringPair"
 import { RollProperties, isDouble, isHalve } from "./RollProperties";
 import SortTypeManager from "../sync/SortTypeManager";
+import ExpectedResultManager from "../sync/ExpectedResultManager";
 
 // Class that performs a roll when constructed and turns that roll into displayable chunks of information.
 export class RollDisplayHelper {
@@ -134,8 +135,7 @@ export class RollDisplayHelper {
             }
         }
 
-        // TODO: When settings are made, SHOW AVERAGE
-        if(true) {
+        if(ExpectedResultManager.getInstance().getShowExpected()) {
             let averageText = 'Expected Result - [' + roll.average() + ']';
 
             this.rollResultsText.push(new StruckStringPair(averageText,'', 'expected'));

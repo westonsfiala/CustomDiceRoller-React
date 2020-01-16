@@ -36,7 +36,7 @@ function ThemeButton (props : ThemeButtonInterface) {
             foreground={Touchable.Ripple('white')}
         >
             <View style={styles.SettingContainer}>
-                <Icon size={styles.ButtonIconConstants.width} name={props.icon} color={styles.ButtonIconConstants.color}/>
+                <Icon style={styles.IconContainer} size={styles.ButtonIconConstants.width} name={props.icon} color={styles.ButtonIconConstants.color}/>
                 <Menu ref={props.menuRef}>
                     <MenuTrigger/>
                     <MenuOptions>
@@ -76,7 +76,7 @@ export function DieThemeSetting() {
                 foreground={Touchable.Ripple('white')}
             >
                 <View style={styles.SettingContainer} >
-                    <Icon size={styles.IconConstants.width} name='palette' color={styles.IconConstants.color}/>
+                    <Icon style={styles.IconTextContainer} size={styles.IconConstants.width} name='palette' color={styles.IconConstants.color}/>
                     <View style={styles.TextContainer}>
                         <Text style={styles.TitleText}>Die Theme</Text>
                         <Text style={styles.ValueText}>{ThemeManager.getInstance().getDieThemeString()}</Text>
@@ -103,9 +103,12 @@ const styles = EStyleSheet.create({
         alignContent:'center',
         flex:1
     },
+    IconContainer: {
+        alignSelf:'center',
+    },
     TextContainer: {
+        marginLeft:'10rem',
         justifyContent:'center',
-        marginLeft:'10rem'
     },
     TitleText: {
         fontSize:'20rem',
@@ -136,13 +139,13 @@ const styles = EStyleSheet.create({
         margin:'5rem',
         backgroundColor: '$primaryColorLightened',
         borderRadius: '10rem',
-        overflow:'hidden',
     },
     ButtonContainer:{
         flexDirection:'row',
         alignContent:'center',
         justifyContent:'center',
         marginLeft:'10rem',
+        overflow:'hidden',
     },
     ThemeButtonContainer:{
         flex:1

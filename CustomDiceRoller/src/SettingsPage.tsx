@@ -14,6 +14,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { DieSizeSetting } from './sync/DieSizeManager';
 import Color from 'color';
 import { DieThemeSetting } from './sync/ThemeSetting';
+import { ExpectedResultSetting } from './sync/ExpectedResultManager';
 
 export function SettingsPage() {
 
@@ -22,10 +23,13 @@ export function SettingsPage() {
     return (
         <View style={styles.Container}>
             <ScrollView style={styles.ScrollPadding}>
-                <Text style={styles.DividerText}>General</Text>
-                <SortSetting/>
+                <Text style={styles.DividerText}>Dice</Text>
                 <DieSizeSetting/>
                 <DieThemeSetting/>
+                <View style={styles.Divider}/>
+                <Text style={styles.DividerText}>Results</Text>
+                <SortSetting/>
+                <ExpectedResultSetting/>
                 <View style={styles.Divider}/>
             </ScrollView>
         </View>
@@ -43,11 +47,12 @@ const styles = EStyleSheet.create({
     DividerText: {
         color:'$textColorHighlight',
         fontSize:'18rem',
-        marginTop:'10rem',
+        marginTop:'5rem',
         marginBottom:'5rem',
     },
     Divider:{
         borderBottomColor: Color.rgb(128,128,128).hex(), 
         borderBottomWidth: 1,
+        marginTop:'10rem',
     },
 })
