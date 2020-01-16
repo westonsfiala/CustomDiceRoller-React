@@ -17,19 +17,6 @@ import { View, Dimensions, UIManager, LayoutAnimation } from 'react-native';
 import { AppBar } from "./appBar/AppBar";
 import ViewPager from '@react-native-community/viewpager';
 import EStyleSheet from 'react-native-extended-stylesheet'; 
-import Color from 'color';
-
-let {height, width} = Dimensions.get('window');
-EStyleSheet.build({
-    $rem: Math.min(height,width) / 380, // This is an arbitrary value that allows for better scaling.
-    $textColor: Color.rgb(255,255,255).hex(),
-    $textColorDarkened: Color.rgb(255,255,255).darken(.25).hex(),
-    $textColorHighlight: Color.rgb(0,255,255).darken(.25).hex(),
-    $textColorBad: Color.rgb(255,0,0).hex(),
-    $primaryColor: Color.rgb(63,63,63).hex(),
-    $primaryColorLightened: Color.rgb(63,63,63).lighten(.5).hex(),
-    $primaryColorDarkened: Color.rgb(63,63,63).darken(.5).hex(),
-});
 
 import { SimpleDicePage } from './SimpleDicePage';
 import { RollDisplayHelper } from './dice/RollDisplayHelper'

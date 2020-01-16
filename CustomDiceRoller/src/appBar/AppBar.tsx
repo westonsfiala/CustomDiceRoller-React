@@ -115,7 +115,7 @@ export function AppBar(props: AppBarInterface) {
                                     Feedback
                                 </Text>
                             </MenuOption>
-                            <MenuOption style={styles.Menu} onSelect={() => Linking.openURL("market://details?id=com.fialasfiasco.customdiceroller")}>
+                            <MenuOption style={styles.Menu} onSelect={() => Linking.openURL("market://details?id=com.fialasfiasco.rpgdiceroller")}>
                                 <Text style={styles.MenuText}>
                                     Rate
                                 </Text>
