@@ -2,6 +2,19 @@ apply plugin: "com.android.application"
 
 import com.android.build.OutputFile
 
+import groovy.json.JsonSlurper
+
+def getNpmVersion() {
+    def inputFile = new File("../package.json")
+    def packageJson = new JsonSlurper().parseText(inputFile.text)
+    return packageJson["version"]
+}
+/* calculated from git commits to give sequential integers */
+def getGitVersion() {
+    def process = "git rev-list master --first-parent --count".execute()
+    return process.text.toInteger()
+}
+
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
  * and bundleReleaseJsAndAssets).
@@ -77,7 +90,7 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     entryFile: "index.js",
-    enableHermes: false,  // clean and rebuild if changing
+    enableHermes: true,  // clean and rebuild if changing
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -118,7 +131,11 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  * on project.ext.react, JavaScript will not be compiled to Hermes Bytecode
  * and the benefits of using Hermes will therefore be sharply reduced.
  */
-def enableHermes = project.ext.react.get("enableHermes", false);
+def enableHermes = project.ext.react.get("enableHermes", true);
+
+
+def userVer = getNpmVersion()
+def googleVer = getGitVersion()
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -132,8 +149,8 @@ android {
         applicationId "com.fialasfiasco.rpgdiceroller"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 80
-        versionName "2.0.0"
+        versionCode googleVer
+        versionName userVer
     }
     splits {
         abi {
