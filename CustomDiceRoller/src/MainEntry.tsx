@@ -88,9 +88,9 @@ export function MainEntry() {
 
     return (
         <View style={styles.AppBackground}>
-            <ViewPager style={styles.Pager} ref={dialogPager} initialPage={1} orientation="vertical" scrollEnabled={false}>
+            <ViewPager style={styles.Pager} ref={dialogPager} initialPage={1} orientation="vertical" scrollEnabled={false} onPageSelected={(event) => TabManager.getInstance().secondaryTab = event.nativeEvent.position}>
                 <View key="1">
-                    <RollResultsPage dismissPage={dismissRollResultsPage} window={window} runAnimations={true}/>
+                    <RollResultsPage dismissPage={dismissRollResultsPage} window={window}/>
                 </View>
                 <View key="2">
                     <AppBar

@@ -1,4 +1,3 @@
-
 export default class TabManager {
 
     private static mInstance = null as TabManager;

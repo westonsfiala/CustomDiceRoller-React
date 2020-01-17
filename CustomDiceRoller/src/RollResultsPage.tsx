@@ -27,7 +27,6 @@ const ANIMATION_RUNTIME = 50;
 interface RollResultsInterface {
     dismissPage: () => void;
     window : ScaledSize;
-    displayedPage : boolean;
 }
 
 class ShakeDie {
@@ -95,14 +94,15 @@ class ShakeDie {
             this.yVelocity += Math.random() - 0.5;
         }
 
-        if(this.maxX > this.maxY) {
+        if(this.maxX < this.maxY) {
+            // Portrait
             this.xVelocity -= AccelerometerManager.getInstance().xAccel;
             this.yVelocity += AccelerometerManager.getInstance().yAccel;
         } else {
-            this.xVelocity += AccelerometerManager.getInstance().yAccel;
-            this.yVelocity += AccelerometerManager.getInstance().xAccel;
+            // Landscape
+            this.xVelocity -= AccelerometerManager.getInstance().yAccel;
+            this.yVelocity -= AccelerometerManager.getInstance().xAccel;
         }
-
 
         this.rotation += this.rotationVelocity;
     }
@@ -141,7 +141,7 @@ export function RollResultsPage(props : RollResultsInterface) {
         }
 
         return newArray;
-    }, [rollHelper]);
+    }, [rollHelper, props.window]);
 
     console.log('refresh roll results');
 
@@ -193,13 +193,9 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     useEffect(() => {
         let intervalHandler = setInterval(animateDice, ANIMATION_RUNTIME);
+
         return (() => clearInterval(intervalHandler))
     })
-
-    // TODO: lock screen rotation
-    //dialog.setOnDismissListener {
-    //    unlockRotation()
-    //}
 
     // TODO: Add sound
     //if (rollValues.mRollMaximumValue) {
