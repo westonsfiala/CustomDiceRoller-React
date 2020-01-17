@@ -9,6 +9,7 @@ import {
     Animated,
     ScaledSize,
     Easing,
+    Dimensions,
 } from 'react-native';
 
 import Touchable from 'react-native-platform-touchable';
@@ -193,7 +194,6 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     useEffect(() => {
         let intervalHandler = setInterval(animateDice, ANIMATION_RUNTIME);
-
         return (() => clearInterval(intervalHandler))
     })
 
@@ -206,7 +206,7 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     return (
         <View style={styles.Container}>
-            {shakeDieArray.map(renderShakeDie)}
+            {shakeDieArray.length !== 0 ? shakeDieArray.map(renderShakeDie) : null}
             <Text style={styles.DateTimeText}>{rollHelper.dateString} - {rollHelper.timeString}</Text>
             <View style={styles.Container}>
                 <ScrollView contentContainerStyle={{justifyContent:'center'}} style={{}}>
