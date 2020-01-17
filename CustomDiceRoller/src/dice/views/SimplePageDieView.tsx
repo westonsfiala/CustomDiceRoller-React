@@ -8,11 +8,11 @@ import
 
 import Touchable from 'react-native-platform-touchable';
 
-import { Die } from './Die';
-import { DieInfoDialog } from '../dialogs/DieInfoDialog';
+import { Die } from '../Die';
+import { DieInfoDialog } from '../../dialogs/DieInfoDialog';
 import { DieView } from './DieView';
-import { CreateDieDialog } from '../dialogs/CreateDieDialog';
-import { ConfirmRemoveDialog } from '../dialogs/ConfirmRemoveDialog';
+import { CreateDieDialog } from '../../dialogs/CreateDieDialog';
+import { ConfirmRemoveDialog } from '../../dialogs/ConfirmRemoveDialog';
 
 interface SimpleDieViewInterface {
     die : Die;

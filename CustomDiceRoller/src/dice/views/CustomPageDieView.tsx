@@ -8,14 +8,14 @@ import {
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import { DieView } from "./DieView";
-import { NumDiceUpDownButtons, ModifierUpDownButtons } from '../helpers/UpDownButtons';
-import { RollProperties } from './RollProperties';
-import { UpDownDeleteButtonColumn } from '../helpers/UpDownDeleteButtonColumn';
-import { PropertiesButton } from '../helpers/PropertiesButton';
+import { NumDiceUpDownButtons, ModifierUpDownButtons } from '../../helpers/UpDownButtons';
+import { RollProperties } from '../RollProperties';
+import { UpDownDeleteButtonColumn } from '../../helpers/UpDownDeleteButtonColumn';
+import { PropertiesButton } from '../../helpers/PropertiesButton';
 import { DiePropertyPair } from './DiePropertyPair';
 import Touchable from 'react-native-platform-touchable';
-import { Die } from './Die';
-import { CreateDieDialog } from '../dialogs/CreateDieDialog';
+import { Die } from '../Die';
+import { CreateDieDialog } from '../../dialogs/CreateDieDialog';
 
 interface CustomDieViewProps {
     diePropPair: DiePropertyPair;

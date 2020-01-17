@@ -7,7 +7,7 @@ import {
     FlatList,
 } from 'react-native';
 
-import { RollDisplayHelper } from './dice/RollDisplayHelper';
+import { RollDisplayHelper } from './dice/views/RollDisplayHelper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color'
 import { RestoreHistoryButton } from './helpers/RestoreHistoryButton';

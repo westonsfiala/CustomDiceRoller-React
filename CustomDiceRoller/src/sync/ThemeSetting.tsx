@@ -17,7 +17,7 @@ import {
     MenuOptions,
     MenuOption,
 } from 'react-native-popup-menu';
-import { DieView } from "../dice/DieView";
+import { DieView } from "../dice/views/DieView";
 import { SimpleDie } from "../dice/SimpleDie";
 import ThemeManager from './ThemeManager';
 

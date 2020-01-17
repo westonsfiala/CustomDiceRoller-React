@@ -3,7 +3,7 @@ import { Die } from "./Die"
 import {randomIntFromInterval} from "./RandomNumberRoller"
 import { 
     DIE_UNKNOWN,
-} from "./DieImageGetter"
+} from "./dieImages/DieImageGetter"
 import { concatterNoSpace } from "../helpers/StringHelper";
 
 export class ImbalancedDie extends Die

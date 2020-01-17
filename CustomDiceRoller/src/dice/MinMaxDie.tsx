@@ -13,7 +13,7 @@ import {
     DIE_20,
     DIE_100,
     DIE_FATE
-} from "./DieImageGetter"
+} from "./dieImages/DieImageGetter"
 
 export class MinMaxDie extends Die
 {

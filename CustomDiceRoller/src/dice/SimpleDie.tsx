@@ -12,7 +12,7 @@ import {
     DIE_12,
     DIE_20,
     DIE_100
-} from "./DieImageGetter"
+} from "./dieImages/DieImageGetter"
 
 export class SimpleDie extends Die
 {

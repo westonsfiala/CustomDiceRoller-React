@@ -1,4 +1,4 @@
-import { RollProperties } from "./RollProperties";
+import { RollProperties } from "../RollProperties";
 
 // Contains up to 4 groups of rolls, high valid, high dropped, low valid, low dropped
 // High valid will always be filled out and is the actual values in the results

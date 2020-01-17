@@ -9,8 +9,8 @@ import {
 
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color'
-import { RollDisplayHelper } from '../dice/RollDisplayHelper';
-import { StruckStringPairView } from '../dice/StruckStringPair';
+import { RollDisplayHelper } from '../dice/views/RollDisplayHelper';
+import { StruckStringPairView } from '../dice/views/StruckStringPair';
 
 interface HistoryItemInterface {
     rollHelper : RollDisplayHelper

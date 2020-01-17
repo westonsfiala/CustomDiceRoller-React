@@ -9,7 +9,7 @@ import {
     ScaledSize,
 } from 'react-native';
 
-import { SimplePageDieView } from "./dice/SimplePageDieView";
+import { SimplePageDieView } from "./dice/views/SimplePageDieView";
 import { Die } from "./dice/Die";
 import { NumDiceUpDownButtons, ModifierUpDownButtons } from './helpers/UpDownButtons';
 import { Roll } from './dice/Roll';

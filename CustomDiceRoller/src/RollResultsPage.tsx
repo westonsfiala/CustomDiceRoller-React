@@ -11,8 +11,8 @@ import {
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-import { RollDisplayHelper } from './dice/RollDisplayHelper';
-import { StruckStringPairView } from './dice/StruckStringPair';
+import { RollDisplayHelper } from './dice/views/RollDisplayHelper';
+import { StruckStringPairView } from './dice/views/StruckStringPair';
 import HistoryManager from './sync/HistoryManager';
 
 interface RollResultsInterface {

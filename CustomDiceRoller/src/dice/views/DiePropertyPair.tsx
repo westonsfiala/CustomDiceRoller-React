@@ -1,5 +1,5 @@
-import { Die } from "./Die";
-import { RollProperties } from "./RollProperties";
+import { Die } from "../Die";
+import { RollProperties } from "../RollProperties";
 
 export class DiePropertyPair {
 

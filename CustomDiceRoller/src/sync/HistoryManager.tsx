@@ -1,5 +1,5 @@
 
-import { RollDisplayHelper } from '../dice/RollDisplayHelper';
+import { RollDisplayHelper } from '../dice/views/RollDisplayHelper';
 import { Roll } from '../dice/Roll';
 
 export default class HistoryManager {

@@ -19,7 +19,7 @@ import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { Die } from '../dice/Die';
 import DiceManager from '../sync/DiceManager';
-import { getRequiredImage } from '../dice/DieImageGetter';
+import { getRequiredImage } from '../dice/dieImages/DieImageGetter';
 
 interface AddCustomDiceInterface {
     addDie: (die: Die) => void;

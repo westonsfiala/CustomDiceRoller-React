@@ -10,9 +10,9 @@ import
 
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-import { getRequiredImage } from './DieImageGetter';
-import { Die } from './Die';
-import { SimpleDie } from './SimpleDie';
+import { getRequiredImage } from '../dieImages/DieImageGetter';
+import { Die } from '../Die';
+import { SimpleDie } from '../SimpleDie';
 
 interface DieViewInterface {
     die : Die;

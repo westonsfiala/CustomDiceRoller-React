@@ -3,7 +3,7 @@ import { Die } from './Die'
 import { SimpleDie } from './SimpleDie';
 import { cloneDie } from './DieFactory'
 import { RollProperties } from './RollProperties'
-import { RollResults } from './RollResults'
+import { RollResults } from './views/RollResults'
 
 import {
     getModifierString,
@@ -14,7 +14,7 @@ import {
     getMinimumString,
     getReRollString
  } from '../helpers/StringHelper'
-import { DiePropertyPair } from './DiePropertyPair';
+import { DiePropertyPair } from './views/DiePropertyPair';
 
 export class Roll {
     public static readonly aggregateRollStringStart = "Aggregate"

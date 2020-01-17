@@ -19,7 +19,7 @@ import ViewPager from '@react-native-community/viewpager';
 import EStyleSheet from 'react-native-extended-stylesheet'; 
 
 import { SimpleDicePage } from './SimpleDicePage';
-import { RollDisplayHelper } from './dice/RollDisplayHelper'
+import { RollDisplayHelper } from './dice/views/RollDisplayHelper'
 import { HistoryPage } from './HistoryPage';
 import { Roll } from './dice/Roll';
 import { RollResultsPage } from './RollResultsPage';

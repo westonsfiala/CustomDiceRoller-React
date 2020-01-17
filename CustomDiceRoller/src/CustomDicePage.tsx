@@ -14,7 +14,7 @@ import Color from 'color'
 
 import { Roll } from './dice/Roll';
 import { RollProperties } from './dice/RollProperties';
-import { CustomPageDieView } from './dice/CustomPageDieView';
+import { CustomPageDieView } from './dice/views/CustomPageDieView';
 import { AddCustomDiceButton } from './helpers/AddCustomDiceButton';
 import { Die } from './dice/Die';
 import { CreateRollDialog } from './dialogs/CreateRollDialog';
