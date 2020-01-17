@@ -2,8 +2,8 @@ export default class TabManager {
 
     private static mInstance = null as TabManager;
 
-    mTab = 1;
-    mUpdater = null;
+    private mTab = 1;
+    private mUpdater = null;
 
     static getInstance() : TabManager {
         if(TabManager.mInstance === null) {

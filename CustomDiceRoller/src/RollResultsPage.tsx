@@ -9,7 +9,6 @@ import {
     Animated,
     ScaledSize,
     Easing,
-    Dimensions,
 } from 'react-native';
 
 import Touchable from 'react-native-platform-touchable';
@@ -22,8 +21,8 @@ import { getRequiredImage } from './dice/dieImages/DieImageGetter';
 import { randomIntFromInterval } from './helpers/NumberHelper';
 import AccelerometerManager from './hardware/AccelerometerManager';
 
-const MAX_DICE_IN_ROLL = 50;
-const ANIMATION_RUNTIME = 50;
+const MAX_DICE_IN_ROLL = 25;
+const ANIMATION_RUNTIME = 100;
 
 interface RollResultsInterface {
     dismissPage: () => void;
@@ -110,9 +109,11 @@ class ShakeDie {
 }
 
 export function RollResultsPage(props : RollResultsInterface) {
-
+    
     const [reload, setReload] = useState(false);
     HistoryManager.getInstance().setDisplayUpdater(() => setReload(!reload));
+
+    const [animationsRunning, setAnimationsRunning] = useState(false);
 
     let rollHelper = HistoryManager.getInstance().getLastRoll();
 
@@ -153,7 +154,7 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     function renderShakeDie(shakeDie: ShakeDie) {
         return(
-            <Animated.Image source={getRequiredImage(shakeDie.dieImageID)} style={[{transform:[
+            <Animated.Image key={shakeDie.key} source={getRequiredImage(shakeDie.dieImageID)} style={[{transform:[
                 { translateX: shakeDie.xPositionAnimated },
                 { translateY: shakeDie.yPositionAnimated },
                 { rotate: shakeDie.rotationAnimated.interpolate({
@@ -193,8 +194,13 @@ export function RollResultsPage(props : RollResultsInterface) {
     }
 
     useEffect(() => {
-        let intervalHandler = setInterval(animateDice, ANIMATION_RUNTIME);
-        return (() => clearInterval(intervalHandler))
+        if(animationsRunning) {
+            let intervalHandler = setInterval(animateDice, ANIMATION_RUNTIME);
+
+            return (() => {
+                clearInterval(intervalHandler)
+            })
+        }
     })
 
     // TODO: Add sound
@@ -206,7 +212,7 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     return (
         <View style={styles.Container}>
-            {shakeDieArray.length !== 0 ? shakeDieArray.map(renderShakeDie) : null}
+            {animationsRunning ? shakeDieArray.map(renderShakeDie) : null}
             <Text style={styles.DateTimeText}>{rollHelper.dateString} - {rollHelper.timeString}</Text>
             <View style={styles.Container}>
                 <ScrollView contentContainerStyle={{justifyContent:'center'}} style={{}}>
@@ -225,18 +231,18 @@ export function RollResultsPage(props : RollResultsInterface) {
             </View>
             <View style={styles.ButtonContainer}>
                 <Touchable 
-                style={styles.ButtonBackground}
-                onPress={reroll}
-                foreground={Touchable.Ripple('white', true)}
-                hitSlop={styles.HitSlop}
+                    style={styles.ButtonBackground}
+                    onPress={reroll}
+                    foreground={Touchable.Ripple('white', true)}
+                    hitSlop={styles.HitSlop}
                 >
                     <Text style={styles.ButtonText}>Roll Again</Text>
                 </Touchable>
                 <Touchable 
-                style={styles.ButtonBackground}
-                onPress={() => props.dismissPage()}
-                foreground={Touchable.Ripple('white', true)}
-                hitSlop={styles.HitSlop}
+                    style={styles.ButtonBackground}
+                    onPress={() => props.dismissPage()}
+                    foreground={Touchable.Ripple('white', true)}
+                    hitSlop={styles.HitSlop}
                 >
                     <Text style={styles.ButtonText}>Exit</Text>
                 </Touchable>
