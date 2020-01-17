@@ -1,11 +1,13 @@
 
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import {
     View, 
     Text,
     ScrollView,
+    Animated,
+    Dimensions,
 } from 'react-native';
 
 import Touchable from 'react-native-platform-touchable';
@@ -14,6 +16,8 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { RollDisplayHelper } from './dice/views/RollDisplayHelper';
 import { StruckStringPairView } from './dice/views/StruckStringPair';
 import HistoryManager from './sync/HistoryManager';
+import { getRequiredImage } from './dice/dieImages/DieImageGetter';
+import { SimpleDie } from './dice/SimpleDie';
 
 interface RollResultsInterface {
     dismissPage: () => void;
@@ -22,12 +26,15 @@ interface RollResultsInterface {
 export function RollResultsPage(props : RollResultsInterface) {
 
     const [reload, setReload] = useState(false);
+    const [xyPosition] = useState(new Animated.ValueXY({x:0,y:0}));
 
     HistoryManager.getInstance().setDisplayUpdater(() => setReload(!reload));
 
     console.log('refresh roll results');
 
     let rollHelper = HistoryManager.getInstance().getLastRoll();
+
+    const testDie = new SimpleDie('test', 20);
 
     function reroll() {
         let newRoll = new RollDisplayHelper(rollHelper.storedRoll);
@@ -48,6 +55,10 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     return (
         <View style={styles.Container}>
+            <Animated.Image source={getRequiredImage(testDie.imageID)} style={[{transform:[
+                { translateX: xyPosition.x },
+                { translateY: xyPosition.y },
+            ]}, styles.DisplayDice]}/>
             <Text style={styles.DateTimeText}>{rollHelper.dateString} - {rollHelper.timeString}</Text>
             <View style={styles.Container}>
                 <ScrollView contentContainerStyle={{justifyContent:'center'}} style={{}}>
@@ -90,7 +101,6 @@ const styles = EStyleSheet.create({
     Container: {
         flex:1,
         alignContent:'center',
-        justifyContent:'center'
     },
     ScrollContainer: {
         flex:2,
@@ -141,5 +151,10 @@ const styles = EStyleSheet.create({
         bottom:'10rem',
         right:'10rem',
         left:'10rem'
+    },
+    DisplayDice: {
+        width:'30rem',
+        height:'30rem',
+        position:'absolute'
     }
 })
