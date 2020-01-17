@@ -23,7 +23,7 @@ import ThemeManager from './sync/ThemeManager';
 
 interface SimpleDiePageInterface {
     displayRoll : (roll: Roll) => void;
-    window : ScaledSize
+    window : ScaledSize;
 }
 
 export function SimpleDicePage(props : SimpleDiePageInterface) {

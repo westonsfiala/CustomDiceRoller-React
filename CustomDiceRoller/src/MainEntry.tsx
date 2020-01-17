@@ -90,7 +90,7 @@ export function MainEntry() {
         <View style={styles.AppBackground}>
             <ViewPager style={styles.Pager} ref={dialogPager} initialPage={1} orientation="vertical" scrollEnabled={false}>
                 <View key="1">
-                    <RollResultsPage dismissPage={dismissRollResultsPage}/>
+                    <RollResultsPage dismissPage={dismissRollResultsPage} window={window} runAnimations={true}/>
                 </View>
                 <View key="2">
                     <AppBar

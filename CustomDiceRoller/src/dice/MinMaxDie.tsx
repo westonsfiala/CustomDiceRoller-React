@@ -1,6 +1,5 @@
 
 import { Die } from "./Die"
-import {randomIntFromInterval} from "./RandomNumberRoller"
 import { 
     DIE_UNKNOWN,
     DIE_2,
@@ -14,6 +13,7 @@ import {
     DIE_100,
     DIE_FATE
 } from "./dieImages/DieImageGetter"
+import { randomIntFromInterval } from "../helpers/NumberHelper";
 
 export class MinMaxDie extends Die
 {

@@ -1,10 +1,10 @@
 
 import { Die } from "./Die"
-import {randomIntFromInterval} from "./RandomNumberRoller"
 import { 
     DIE_UNKNOWN,
 } from "./dieImages/DieImageGetter"
 import { concatterNoSpace } from "../helpers/StringHelper";
+import { randomIntFromInterval } from "../helpers/NumberHelper";
 
 export class ImbalancedDie extends Die
 {

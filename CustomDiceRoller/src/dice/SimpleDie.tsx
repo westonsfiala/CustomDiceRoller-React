@@ -1,6 +1,5 @@
 
 import { Die } from "./Die"
-import {randomIntFromInterval} from "./RandomNumberRoller"
 import { 
     DIE_UNKNOWN,
     DIE_2,
@@ -13,6 +12,7 @@ import {
     DIE_20,
     DIE_100
 } from "./dieImages/DieImageGetter"
+import { randomIntFromInterval } from "../helpers/NumberHelper";
 
 export class SimpleDie extends Die
 {
