@@ -6,6 +6,8 @@ export default class HistoryManager {
 
     private static mInstance = null as HistoryManager;
 
+    private mTempHelper = new RollDisplayHelper(new Roll('temp', 'temp'));
+
     private mHistory = Array<RollDisplayHelper>();
     private mRestorableHistory = null as Array<RollDisplayHelper>;
 
@@ -41,7 +43,7 @@ export default class HistoryManager {
             return this.mHistory[this.mHistory.length-1]
         }
 
-        return new RollDisplayHelper(new Roll('temp', 'temp'));
+        return this.mTempHelper;
     }
 
     canRestoreHistory() : boolean {
