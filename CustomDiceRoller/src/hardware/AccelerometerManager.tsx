@@ -3,6 +3,7 @@ import {
     setUpdateIntervalForType, 
     SensorTypes,
 } from "react-native-sensors";
+import ShakeSensitivityManager from "../sync/ShakeSensitivityManager";
 
 export default class AccelerometerManager {
 
@@ -37,8 +38,7 @@ export default class AccelerometerManager {
 
             let totalChange = this.mChangeVector.reduce((prev, curr) => prev + curr);
 
-            // TODO: Change the 250 to something more meaningful.
-            this.mAccelerationStable = totalChange < 100;
+            this.mAccelerationStable = totalChange < ShakeSensitivityManager.getInstance().getShakeSensitivityValue();
 
             this.xAcceleration = x;
             this.yAcceleration = y;

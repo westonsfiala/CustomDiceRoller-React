@@ -9,6 +9,7 @@ import {
     Animated,
     ScaledSize,
     Easing,
+    LayoutAnimation,
 } from 'react-native';
 
 import Touchable from 'react-native-platform-touchable';
@@ -20,9 +21,11 @@ import HistoryManager from './sync/HistoryManager';
 import { getRequiredImage } from './dice/dieImages/DieImageGetter';
 import { randomIntFromInterval } from './helpers/NumberHelper';
 import AccelerometerManager from './hardware/AccelerometerManager';
+import ShakeEnabledManager from './sync/ShakeEnabledManager';
 
 const MAX_DICE_IN_ROLL = 25;
-const ANIMATION_RUNTIME = 100;
+const ANIMATION_RUNTIME = 25;
+const MAX_SHAKE_TIME = 10;
 
 interface RollResultsInterface {
     dismissPage: () => void;
@@ -109,11 +112,12 @@ class ShakeDie {
 }
 
 export function RollResultsPage(props : RollResultsInterface) {
-    
+
     const [reload, setReload] = useState(false);
     HistoryManager.getInstance().setDisplayUpdater(() => setReload(!reload));
+    ShakeEnabledManager.getInstance().setUpdater(() => setReload(!reload));
 
-    const [animationsRunning, setAnimationsRunning] = useState(false);
+    const [animationsRunning, setAnimationsRunning] = useState(ShakeEnabledManager.getInstance().getShakeEnabled());
 
     let rollHelper = HistoryManager.getInstance().getLastRoll();
 
@@ -150,6 +154,16 @@ export function RollResultsPage(props : RollResultsInterface) {
     function reroll() {
         let newRoll = new RollDisplayHelper(rollHelper.storedRoll);
         HistoryManager.getInstance().addToHistory(newRoll);
+    }
+
+    function exitShake() {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setAnimationsRunning(false);
+    }
+
+    function exitDialog() {
+        setAnimationsRunning(false);
+        props.dismissPage();
     }
 
     function renderShakeDie(shakeDie: ShakeDie) {
@@ -203,12 +217,42 @@ export function RollResultsPage(props : RollResultsInterface) {
         }
     })
 
+    useEffect(() => {
+        // Replace with enable shake setting.
+        if(ShakeEnabledManager.getInstance().getShakeEnabled()) {
+            setAnimationsRunning(true);
+        }
+    }, [rollHelper])
+
     // TODO: Add sound
     //if (rollValues.mRollMaximumValue) {
     //    playTripleHorn()
     //} else if (rollValues.mRollMinimumValue) {
     //    playWilhelmScream()
     //}
+
+    if(animationsRunning) {
+        return (
+            <View style={styles.Container}>
+            {shakeDieArray.map(renderShakeDie)}
+            <View style={styles.ShakeContainer}>
+                <Text style={styles.TitleText}>
+                    Shake!
+                </Text>
+            </View>
+            <View style={styles.ButtonContainer}>
+                <Touchable 
+                    style={styles.ButtonBackground}
+                    onPress={exitShake}
+                    foreground={Touchable.Ripple('white', true)}
+                    hitSlop={styles.HitSlop}
+                >
+                    <Text style={styles.ButtonText}>Go To Results</Text>
+                </Touchable>
+            </View>
+        </View>
+        )
+    }
 
     return (
         <View style={styles.Container}>
@@ -240,7 +284,7 @@ export function RollResultsPage(props : RollResultsInterface) {
                 </Touchable>
                 <Touchable 
                     style={styles.ButtonBackground}
-                    onPress={() => props.dismissPage()}
+                    onPress={exitDialog}
                     foreground={Touchable.Ripple('white', true)}
                     hitSlop={styles.HitSlop}
                 >
@@ -254,6 +298,11 @@ export function RollResultsPage(props : RollResultsInterface) {
 const styles = EStyleSheet.create({
     Container: {
         flex:1,
+        alignContent:'center',
+    },
+    ShakeContainer: {
+        flex:1,
+        justifyContent:'center',
         alignContent:'center',
     },
     ScrollContainer: {

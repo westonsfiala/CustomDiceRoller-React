@@ -15,6 +15,7 @@ import { DieSizeSetting } from './sync/DieSizeManager';
 import Color from 'color';
 import { DieThemeSetting } from './sync/ThemeSetting';
 import { ExpectedResultSetting } from './sync/ExpectedResultManager';
+import { ShakeEnabledSetting } from './sync/ShakeEnabledManager';
 
 export function SettingsPage() {
 
@@ -26,6 +27,9 @@ export function SettingsPage() {
                 <Text style={styles.DividerText}>Dice</Text>
                 <DieSizeSetting/>
                 <DieThemeSetting/>
+                <View style={styles.Divider}/>
+                <Text style={styles.DividerText}>Roller</Text>
+                <ShakeEnabledSetting/>
                 <View style={styles.Divider}/>
                 <Text style={styles.DividerText}>Results</Text>
                 <SortSetting/>

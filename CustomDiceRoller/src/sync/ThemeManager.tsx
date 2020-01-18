@@ -42,7 +42,7 @@ export default class ThemeManager {
 
     private constructor() {
         this.retrieveDieTheme().then((dieTheme) => {
-            this.mDieTheme = dieTheme;
+            this.setDieTheme(dieTheme);
         });
     }
 
