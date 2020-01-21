@@ -1,20 +1,12 @@
 import AsyncStorage from "@react-native-community/async-storage";
 
 const ShakeEnabledKey = 'ShakeEnabledKey';
-const ShakeSensitivityKey = 'ShakeSensitivityKey';
-const ShakeDurationKey = 'ShakeDurationKey';
-const HoldDurationKey = 'HoldDurationKey';
 
 export default class ShakeEnabledManager {
 
     private static mInstance = null as ShakeEnabledManager;
 
     private mShakeEnabled = true;
-
-    private readonly shakeOptionsList = ['Low', 'Medium', 'High'];
-    private mShakeSensitivity = this.shakeOptionsList[1];
-    private mShakeDurationKey = this.shakeOptionsList[1];
-    private mHoldDurationKey = this.shakeOptionsList[1];
 
     private mSettingsUpdater = null;
     private mUpdater = null;

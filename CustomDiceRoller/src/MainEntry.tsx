@@ -47,6 +47,7 @@ export function MainEntry() {
         {
             let newResult = new RollDisplayHelper(newRoll);
             HistoryManager.getInstance().addToHistory(newResult);
+            TabManager.getInstance().secondaryTab = 0;
             dialogPager.current.setPage(0);
         }
     };
@@ -56,17 +57,19 @@ export function MainEntry() {
         viewPager.current.setPage(3);
     }
 
-    function dismissRollResultsPage() {
-        dialogPager.current.setPage(1);
-        HistoryManager.getInstance().runUpdaters();
-    }
-
     function showAboutPage() {
+        TabManager.getInstance().secondaryTab = 2;
         dialogPager.current.setPage(2);
     }
 
     function returnToMainPage() {
+        TabManager.getInstance().secondaryTab = 1;
         dialogPager.current.setPage(1);
+    }
+
+    function dismissRollResultsPage() {
+        returnToMainPage();
+        HistoryManager.getInstance().runUpdaters();
     }
 
     function tabPressHandler(index: number) {

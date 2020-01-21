@@ -7,7 +7,7 @@ import ShakeSensitivityManager from "../sync/ShakeSensitivityManager";
 
 export default class AccelerometerManager {
 
-    static mInstance = null as AccelerometerManager;
+    private static mInstance = null as AccelerometerManager;
 
     private mChangeVector = [0,0,0,0,0,0,0,0,0];
     private xAcceleration = 0;

@@ -22,10 +22,12 @@ import { getRequiredImage } from './dice/dieImages/DieImageGetter';
 import { randomIntFromInterval } from './helpers/NumberHelper';
 import AccelerometerManager from './hardware/AccelerometerManager';
 import ShakeEnabledManager from './sync/ShakeEnabledManager';
+import SoundManager from './hardware/SoundManager';
+import TabManager from './sync/TabManager';
 
 const MAX_DICE_IN_ROLL = 25;
 const ANIMATION_RUNTIME = 50;
-const HOLD_TIME = 1000;
+const HOLD_TIME = 750;
 const MAX_SHAKE_TIME = 10000;
 
 interface RollResultsInterface {
@@ -48,6 +50,8 @@ class ShakeDie {
     rotationAnimated : Animated.Value;
     rotationVelocity : number;
 
+    collisionVelocity : number;
+
     key : string;
 
     constructor(imageID : number, maxX : number, maxY: number) {
@@ -64,9 +68,17 @@ class ShakeDie {
         this.rotation = Math.random();
         this.rotationAnimated = new Animated.Value(this.rotation);
         this.rotationVelocity = Math.random() / 10;
+
+        this.collisionVelocity = 0;
     }
 
-    updatePosition(killSpeed : boolean) {
+    getCollisionVelocity() : number {
+        return this.collisionVelocity;
+    }
+
+    updatePosition(killSpeed : boolean) : Animated.CompositeAnimation {
+
+        this.collisionVelocity = 0;
 
         let hitXBound = false;
         this.xPosition += this.xVelocity;
@@ -79,6 +91,7 @@ class ShakeDie {
         }
 
         if(hitXBound) {
+            this.collisionVelocity = Math.abs(this.xVelocity);
             this.xVelocity *= -0.95;
             this.xVelocity += Math.random() - 0.5;
         }
@@ -94,8 +107,13 @@ class ShakeDie {
         }
 
         if(hitYBound) {
+            this.collisionVelocity = Math.abs(this.yVelocity);
             this.yVelocity *= -0.95;
             this.yVelocity += Math.random() - 0.5;
+        }
+
+        if(hitXBound || hitYBound) {
+            this.rotationVelocity += (Math.random() - 0.5) / 20;
         }
 
         if(this.maxX < this.maxY) {
@@ -115,6 +133,27 @@ class ShakeDie {
             this.yVelocity *= .80;
             this.rotationVelocity *= .80;
         }
+
+        return Animated.parallel([
+            Animated.timing(this.xPositionAnimated, {
+                toValue: this.xPosition,
+                duration: ANIMATION_RUNTIME,
+                easing: Easing.linear,
+                useNativeDriver: true,
+            }),
+            Animated.timing(this.yPositionAnimated, {
+                toValue: this.yPosition,
+                duration:ANIMATION_RUNTIME,
+                easing: Easing.linear,
+                useNativeDriver:true,
+            }),
+            Animated.timing(this.rotationAnimated, {
+                toValue: this.rotation,
+                duration:ANIMATION_RUNTIME,
+                easing: Easing.linear,
+                useNativeDriver:true,
+            }),
+        ]);
     }
 }
 
@@ -131,7 +170,7 @@ export function RollResultsPage(props : RollResultsInterface) {
     const hasShookRef = useRef(false);
     const hasHeldRef = useRef(false);
 
-    const [animationsState, setAnimationsState] = useState({animationsRunning:ShakeEnabledManager.getInstance().getShakeEnabled(), hasShook:false});
+    const [animationsState, setAnimationsState] = useState({animationsRunning:false, hasShook:false});
 
     let rollHelper = HistoryManager.getInstance().getLastRoll();
 
@@ -163,8 +202,6 @@ export function RollResultsPage(props : RollResultsInterface) {
         return newArray;
     }, [rollHelper, props.window]);
 
-    console.log('refresh roll results');
-
     function reroll() {
         let newRoll = new RollDisplayHelper(rollHelper.storedRoll);
         HistoryManager.getInstance().addToHistory(newRoll);
@@ -173,22 +210,17 @@ export function RollResultsPage(props : RollResultsInterface) {
     function exitShake() {
         clearInterval(updateIntervalRef.current)
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        console.log('exitShake');
         setAnimationsState({animationsRunning:false, hasShook:false});
     }
 
     function softExitShake() {
         if(!killedAnimations.current){
             killedAnimations.current = true;
-            console.log('softExitShake');
-            setTimeout(() => {
-                exitShake();
-            }, HOLD_TIME);
+            setTimeout(() => exitShake(), HOLD_TIME);
         }
     }
 
     function exitDialog() {
-        console.log('exitDialog');
         setAnimationsState({animationsRunning:false, hasShook:false});
         props.dismissPage();
     }
@@ -214,58 +246,45 @@ export function RollResultsPage(props : RollResultsInterface) {
 
         let isStable = AccelerometerManager.getInstance().accelStable;
         if(!hasShookRef.current && !isStable) {
-            console.log('starting hold');
             hasShookRef.current = true;
-            setAnimationsState({animationsRunning:true, hasShook:true});
+            setTimeout(() => setAnimationsState({animationsRunning:true, hasShook:true}), HOLD_TIME);
         }
 
         if(hasShookRef.current && !hasHeldRef.current && isStable) {
             hasHeldRef.current = true;
-            console.log('held timeout');
             setTimeout(() => softExitShake(), HOLD_TIME);
         }
 
+        let newAnimations = Array<Animated.CompositeAnimation>();
+
+        let maxCollisionVelocity = 0;
+
         for(let shakeDie of shakeDieArray) {
 
-            shakeDie.updatePosition(killedAnimations.current);
-            
-            Animated.parallel([
-                Animated.timing(shakeDie.xPositionAnimated, {
-                    toValue: shakeDie.xPosition,
-                    duration: ANIMATION_RUNTIME,
-                    easing: Easing.linear,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(shakeDie.yPositionAnimated, {
-                    toValue: shakeDie.yPosition,
-                    duration:ANIMATION_RUNTIME,
-                    easing: Easing.linear,
-                    useNativeDriver:true,
-                }),
-                Animated.timing(shakeDie.rotationAnimated, {
-                    toValue: shakeDie.rotation,
-                    duration:ANIMATION_RUNTIME,
-                    easing: Easing.linear,
-                    useNativeDriver:true,
-                }),
-            ]).start();
+            let updateAnimation = shakeDie.updatePosition(killedAnimations.current);
+            newAnimations.push(updateAnimation);
+
+            maxCollisionVelocity = Math.max(maxCollisionVelocity, shakeDie.collisionVelocity);
         }
+
+        SoundManager.getInstance().playDiceRoll(maxCollisionVelocity/300);
+
+        Animated.parallel(newAnimations).start();
     }
 
     useEffect(() => {
-        if(rollHelper.storedRoll.getTotalDiceInRoll() !== 0) {
+        if(rollHelper.storedRoll.getTotalDiceInRoll() !== 0 && TabManager.getInstance().isOnDiceRollTab()) {
             let startAnimations = ShakeEnabledManager.getInstance().getShakeEnabled();
             
             if(startAnimations) {
                 hasHeldRef.current = false;
                 hasShookRef.current = false;
-                setAnimationsState({animationsRunning:true, hasShook:false});
-            }
 
-            if(startAnimations) {
                 startTimeRef.current = Date.now();
                 killedAnimations.current = false;
                 updateIntervalRef.current = setInterval(animateDice, ANIMATION_RUNTIME);
+                
+                setAnimationsState({animationsRunning:true, hasShook:false});
 
                 return (() => {
                     clearInterval(updateIntervalRef.current)
@@ -284,23 +303,23 @@ export function RollResultsPage(props : RollResultsInterface) {
     if(animationsState.animationsRunning) {
         return (
             <View style={styles.Container}>
-            {shakeDieArray.map(renderShakeDie)}
-            <View style={styles.ShakeContainer}>
-                <Text style={styles.TitleText}>
-                    {animationsState.hasShook ? "Hold Still" : "Shake!"}
-                </Text>
+                {animationsState.animationsRunning ? shakeDieArray.map(renderShakeDie) : null}
+                <View style={styles.ShakeContainer}>
+                    <Text style={styles.ShakeText}>
+                        {animationsState.hasShook ? "Hold Still" : "Shake!"}
+                    </Text>
+                </View>
+                <View style={styles.ButtonContainer}>
+                    <Touchable 
+                        style={styles.ButtonBackground}
+                        onPress={exitShake}
+                        foreground={Touchable.Ripple('white', true)}
+                        hitSlop={styles.HitSlop}
+                    >
+                        <Text style={styles.ButtonText}>Go To Results</Text>
+                    </Touchable>
+                </View>
             </View>
-            <View style={styles.ButtonContainer}>
-                <Touchable 
-                    style={styles.ButtonBackground}
-                    onPress={exitShake}
-                    foreground={Touchable.Ripple('white', true)}
-                    hitSlop={styles.HitSlop}
-                >
-                    <Text style={styles.ButtonText}>Go To Results</Text>
-                </Touchable>
-            </View>
-        </View>
         )
     }
 
@@ -359,6 +378,11 @@ const styles = EStyleSheet.create({
         flex:2,
         alignContent:'center',
         justifyContent:'center'
+    },
+    ShakeText: {
+        fontSize:'40rem',
+        color:'$textColorDarkened',
+        textAlign:'center',
     },
     TitleText: {
         fontSize:'30rem',
