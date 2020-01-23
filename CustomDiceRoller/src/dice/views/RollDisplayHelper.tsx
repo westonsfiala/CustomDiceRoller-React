@@ -48,6 +48,12 @@ export class RollDisplayHelper {
 
             let die = createUnknownDie(dieJson);
 
+            if(SortTypeManager.getInstance().sortAscending()) {
+                this.storedResults.sortAscending();
+            } else if(SortTypeManager.getInstance().sortDescending()) {
+                this.storedResults.sortDescending();
+            }
+
             let rollResults = this.storedResults.mRollResults.get(dieJson);
             let rollResultsDropped = this.storedResults.mDroppedRolls.get(dieJson);
             let rollResultsReRolled = this.storedResults.mReRolledRolls.get(dieJson);
@@ -56,21 +62,7 @@ export class RollDisplayHelper {
             let rollResultsStruckReRolled = this.storedResults.mStruckReRolledRolls.get(dieJson);
             let rollProperties = this.storedResults.mRollProperties.get(dieJson);
 
-            if(SortTypeManager.getInstance().sortAscending()) {
-                rollResults.sort(sortAscending);
-                rollResultsDropped.sort(sortAscending);
-                rollResultsReRolled.sort(sortAscending);
-                rollResultsStruck.sort(sortAscending);
-                rollResultsStruckDropped.sort(sortAscending);
-                rollResultsStruckReRolled.sort(sortAscending);
-            } else if(SortTypeManager.getInstance().sortDescending()) {
-                rollResults.sort(sortDescending);
-                rollResultsDropped.sort(sortDescending);
-                rollResultsReRolled.sort(sortDescending);
-                rollResultsStruck.sort(sortDescending);
-                rollResultsStruckDropped.sort(sortDescending);
-                rollResultsStruckReRolled.sort(sortDescending);
-            }
+            
 
             // Lambda method for turning the roll numbers into a displayable string.
             const processRollPair = (dieName: string, mainList: Array<number>, strikeList: Array<number>, properties : RollProperties, showPropInfo : boolean) : StruckStringPair =>
@@ -82,7 +74,8 @@ export class RollDisplayHelper {
                     {
                         if(isDouble(properties)) {subTotal *= 2;}
                         if(isHalve(properties)) {subTotal /= 2;}
-                        sumResult += Math.floor(subTotal);
+                        subTotal = Math.floor(subTotal)
+                        sumResult += subTotal;
                     }
 
                     let mainListString = mainList.reduce(concatter, '');

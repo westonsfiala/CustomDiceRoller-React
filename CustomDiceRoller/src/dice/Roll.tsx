@@ -316,7 +316,8 @@ export class Roll {
             if(keepList.length > (properties.mKeepHigh + properties.mKeepLow)) {
                 let numberToDrop = keepList.length - (properties.mKeepHigh + properties.mKeepLow)
                 let indexToDrop = properties.mKeepLow
-                let tempSorted = keepList.slice().sort()
+                let tempSorted = keepList.slice().sort((a,b) => a-b);
+                console.log({keepHigh:properties.mKeepHigh, keepLow:properties.mKeepLow, numberToDrop, indexToDrop, tempSorted})
                 for(let dropIndex = 0; dropIndex < numberToDrop; dropIndex++) {
                     let ejectedValue = tempSorted[indexToDrop + dropIndex]
                     let ejectedIndex = keepList.indexOf(ejectedValue);

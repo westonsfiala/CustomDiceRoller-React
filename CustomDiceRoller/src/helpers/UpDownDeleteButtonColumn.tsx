@@ -14,21 +14,21 @@ export function UpDownDeleteButtonColumn({upPressHandler, deletePressHandler, do
                 foreground={Touchable.Ripple('white')}
                 onPress={() => upPressHandler()}
             >
-                <Icon style={styles.ButtonBackground} iconStyle={styles.ButtonForeground} size={styles.IconConstants.width} name='arrow-up-bold' color={styles.IconConstants.color}/>
+                <Icon style={styles.ButtonBackground} size={styles.IconConstants.width} name='arrow-up-bold' color={styles.IconConstants.color}/>
             </Touchable>
             <Touchable 
                 style={styles.ButtonRadius}
                 foreground={Touchable.Ripple('white')}
                 onPress={() => deletePressHandler()}
             >
-                <Icon style={styles.ButtonBackground} iconStyle={styles.ButtonForeground} size={styles.IconConstants.width} name='close-circle-outline' color={styles.IconConstants.color}/>
+                <Icon style={styles.ButtonBackground} size={styles.IconConstants.width} name='close-circle-outline' color={styles.IconConstants.color}/>
             </Touchable>
             <Touchable 
                 style={styles.ButtonRadius}
                 foreground={Touchable.Ripple('white')}
                 onPress={() => downPressHandler()}
             >
-                <Icon style={styles.ButtonBackground} iconStyle={styles.ButtonForeground} size={styles.IconConstants.width} name='arrow-down-bold' color={styles.IconConstants.color}/>
+                <Icon style={styles.ButtonBackground} size={styles.IconConstants.width} name='arrow-down-bold' color={styles.IconConstants.color}/>
             </Touchable>
         </View>
     );

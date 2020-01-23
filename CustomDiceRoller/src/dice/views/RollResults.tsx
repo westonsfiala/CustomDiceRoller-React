@@ -78,7 +78,7 @@ export class RollResults {
     private sortMapList(rollMap : Map<string, Array<number>>) {
         for(let rollList of rollMap.values())
         {
-            rollList.sort()
+            rollList.sort((a,b) => a-b);
         }
     }
 
