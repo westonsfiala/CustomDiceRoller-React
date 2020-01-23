@@ -5,7 +5,6 @@ import {
     View, 
     Text,
     FlatList,
-    LayoutAnimation,
     ScaledSize,
 } from 'react-native';
 
