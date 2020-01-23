@@ -235,20 +235,6 @@ export class Roll {
             }
         }
 
-        // TODO: move this elsewhere & generalize it.
-        // Check for rolling critical success or critical failures
-        let d20SaveString = JSON.stringify(new SimpleDie("d20", 20));
-        if(returnResults.mRollResults.has(d20SaveString)) {
-            let results = returnResults.mRollResults.get(d20SaveString);
-            if(results.length == 1) {
-                if(results[0] == 20) {
-                    returnResults.mRollMaximumValue = true;
-                } else if(results[0] == 1) {
-                    returnResults.mRollMinimumValue = true;
-                }
-            }
-        }
-
         return returnResults
     }
 

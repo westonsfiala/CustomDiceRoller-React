@@ -14,6 +14,9 @@ export default class SoundManager {
     private mDiceRollQuiet3 : Sound;
     private mPlayDiceRollNoSilence = true;
 
+    private mAirhorn : Sound;
+    private mWilhelm : Sound;
+
     static getInstance() : SoundManager {
         if(SoundManager.mInstance === null) {
             SoundManager.mInstance = new SoundManager();
@@ -29,6 +32,9 @@ export default class SoundManager {
         this.mDiceRollQuiet1 = new Sound('diceroll_quiet.mp3', Sound.MAIN_BUNDLE);
         this.mDiceRollQuiet2 = new Sound('diceroll_quiet.mp3', Sound.MAIN_BUNDLE);
         this.mDiceRollQuiet3 = new Sound('diceroll_quiet.mp3', Sound.MAIN_BUNDLE);
+
+        this.mAirhorn = new Sound('triple_airhorn.mp3', Sound.MAIN_BUNDLE);
+        this.mWilhelm = new Sound('wilhelm_scream.mp3', Sound.MAIN_BUNDLE);
     }
 
     playDiceRoll(volume : number) {
@@ -62,5 +68,23 @@ export default class SoundManager {
         }
 
         this.mPlayDiceRollNoSilence = !this.mPlayDiceRollNoSilence;
+    }
+
+    playAirHorn() {
+        let playVolume = Math.min(ShakeVolumeManager.getInstance().volumeModifier, 1.0);
+
+        if(playVolume <= 0.01) { return; }
+
+        this.mAirhorn.setVolume(playVolume);
+        this.mAirhorn.play();
+    }
+
+    playWilhelm() {
+        let playVolume = Math.min(ShakeVolumeManager.getInstance().volumeModifier, 1.0);
+
+        if(playVolume <= 0.01) { return; }
+
+        this.mWilhelm.setVolume(playVolume);
+        this.mWilhelm.play();
     }
 }

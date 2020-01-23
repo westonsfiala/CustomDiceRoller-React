@@ -97,8 +97,8 @@ export function ShakeEnabledSetting() {
                 </View>
             </Touchable>
             <View style={[ styles.ButtonContainer, {height: shakeEnabled ? null : 0}]}>
-                <ShakeSensitivitySetting/>
                 <ShakeVolumeSetting/>
+                <ShakeSensitivitySetting/>
             </View>
         </View>
         

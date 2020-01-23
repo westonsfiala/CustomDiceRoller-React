@@ -15,9 +15,6 @@ export class RollResults {
 
     public mRollProperties : Map<string, RollProperties>;
 
-    public mRollMaximumValue : boolean;
-    public mRollMinimumValue : boolean;
-
     constructor() {
         this.mRollResults = new Map<string, Array<number>>();
         this.mDroppedRolls = new Map<string, Array<number>>();
@@ -28,9 +25,6 @@ export class RollResults {
         this.mStruckReRolledRolls = new Map<string, Array<number>>();
     
         this.mRollProperties = new Map<string, RollProperties>();
-    
-        this.mRollMaximumValue = false;
-        this.mRollMinimumValue = false;
     }
 
     getKeys() : Set<string> {

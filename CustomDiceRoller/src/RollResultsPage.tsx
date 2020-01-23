@@ -24,6 +24,7 @@ import AccelerometerManager from './hardware/AccelerometerManager';
 import ShakeEnabledManager from './sync/ShakeEnabledManager';
 import SoundManager from './hardware/SoundManager';
 import TabManager from './sync/TabManager';
+import { SimpleDie } from './dice/SimpleDie';
 
 const MAX_DICE_IN_ROLL = 25;
 const ANIMATION_RUNTIME = 50;
@@ -160,6 +161,8 @@ class ShakeDie {
 export function RollResultsPage(props : RollResultsInterface) {
 
     const [reload, setReload] = useState(false);
+    const [animationsState, setAnimationsState] = useState({animationsRunning:false, hasShook:false});
+
     HistoryManager.getInstance().setDisplayUpdater(() => setReload(!reload));
     ShakeEnabledManager.getInstance().setUpdater(() => setReload(!reload));
 
@@ -170,7 +173,6 @@ export function RollResultsPage(props : RollResultsInterface) {
     const hasShookRef = useRef(false);
     const hasHeldRef = useRef(false);
 
-    const [animationsState, setAnimationsState] = useState({animationsRunning:false, hasShook:false});
 
     let rollHelper = HistoryManager.getInstance().getLastRoll();
 
@@ -289,16 +291,27 @@ export function RollResultsPage(props : RollResultsInterface) {
                 return (() => {
                     clearInterval(updateIntervalRef.current)
                 })
+            } else {
+                // Check for rolling critical success or critical failures
+                // TODO: generalize this
+                if(rollHelper.storedResults.mRollResults.size == 1) {
+                    let d20SaveString = JSON.stringify(new SimpleDie("d20", 20));
+                    if(rollHelper.storedResults.mRollResults.has(d20SaveString)) {
+                        let results = rollHelper.storedResults.mRollResults.get(d20SaveString);
+                        if(results.length == 1) {
+                            if(results[0] == 20) {
+                                SoundManager.getInstance().playAirHorn();
+                            } else if(results[0] == 1) {
+                                SoundManager.getInstance().playWilhelm();
+                            }
+                        }
+                    }
+                }
+                
+                setAnimationsState({animationsRunning:false, hasShook:false});
             }
         }
     }, [rollHelper])
-
-    // TODO: Add sound
-    //if (rollValues.mRollMaximumValue) {
-    //    playTripleHorn()
-    //} else if (rollValues.mRollMinimumValue) {
-    //    playWilhelmScream()
-    //}
 
     if(animationsState.animationsRunning) {
         return (
@@ -322,6 +335,13 @@ export function RollResultsPage(props : RollResultsInterface) {
             </View>
         )
     }
+
+    // This section of code is only reached when the 
+    //if (rollValues.mRollMaximumValue) {
+    //    playTripleHorn()
+    //} else if (rollValues.mRollMinimumValue) {
+    //    playWilhelmScream()
+    //}
 
     return (
         <View style={styles.Container}>

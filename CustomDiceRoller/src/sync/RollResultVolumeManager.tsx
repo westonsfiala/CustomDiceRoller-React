@@ -1,37 +1,37 @@
 import AsyncStorage from "@react-native-community/async-storage";
 
-const ShakeVolumeKey = 'ShakeVolumeKey';
+const RollResultVolumeKey = 'RollResultVolumeKey';
 
-export default class ShakeVolumeManager {
+export default class RollResultVolumeManager {
 
-    private static mInstance = null as ShakeVolumeManager;
+    private static mInstance = null as RollResultVolumeManager;
 
-    readonly ShakeVolumeList = ['Off', 'Quiet', 'Loud'];
-    private mShakeVolume = this.ShakeVolumeList[1];
+    readonly RollResultVolumeList = ['Off', 'Quiet', 'Loud'];
+    private mRollResultVolume = this.RollResultVolumeList[0];
     private mSettingsUpdater = null;
     private mUpdater = null;
 
-    static getInstance() : ShakeVolumeManager {
-        if(ShakeVolumeManager.mInstance === null) {
-            ShakeVolumeManager.mInstance = new ShakeVolumeManager();
+    static getInstance() : RollResultVolumeManager {
+        if(RollResultVolumeManager.mInstance === null) {
+            RollResultVolumeManager.mInstance = new RollResultVolumeManager();
         }
 
         return this.mInstance;
     }
 
     private constructor() {
-        this.retrieveShakeVolume().then((shakeVolume) => {
-            this.mShakeVolume = shakeVolume;
+        this.retrieveRollResultVolume().then((rollResultVolume) => {
+            this.mRollResultVolume = rollResultVolume;
         });
     }
     
     get volumeModifier() : number {
         // 6 is an arbitrary number that works.
-        if(this.mShakeVolume == this.ShakeVolumeList[0]) return 0;
-        if(this.mShakeVolume == this.ShakeVolumeList[1]) return .5;
-        if(this.mShakeVolume == this.ShakeVolumeList[2]) return 1;
+        if(this.mRollResultVolume == this.RollResultVolumeList[0]) return 0;
+        if(this.mRollResultVolume == this.RollResultVolumeList[1]) return .5;
+        if(this.mRollResultVolume == this.RollResultVolumeList[2]) return 1;
 
-        this.setShakeVolume(this.ShakeVolumeList[1]);
+        this.setRollResultVolume(this.RollResultVolumeList[1]);
     }
 
     setSettingsUpdater(updater : () => void) {
@@ -47,34 +47,34 @@ export default class ShakeVolumeManager {
         if(this.mSettingsUpdater !== null) this.mSettingsUpdater();
     }
 
-    setShakeVolume(dieSize : string) {
-        this.saveShakeVolume(dieSize).then((value) => {
-            this.mShakeVolume = value;
+    setRollResultVolume(dieSize : string) {
+        this.saveRollResultVolume(dieSize).then((value) => {
+            this.mRollResultVolume = value;
             this.runUpdaters();
         });
     }
 
-    getShakeVolumeString() : string {
-        return this.mShakeVolume;
+    getRollResultVolumeString() : string {
+        return this.mRollResultVolume;
     }
 
     getShakeVolumeIcon() : string {
-        if(this.mShakeVolume == this.ShakeVolumeList[0]) return 'volume-low';
-        if(this.mShakeVolume == this.ShakeVolumeList[1]) return 'volume-medium';
-        if(this.mShakeVolume == this.ShakeVolumeList[2]) return 'volume-high';
+        if(this.mRollResultVolume == this.RollResultVolumeList[0]) return 'volume-low';
+        if(this.mRollResultVolume == this.RollResultVolumeList[1]) return 'volume-medium';
+        if(this.mRollResultVolume == this.RollResultVolumeList[2]) return 'volume-high';
 
         return 'volume-medium';
     }
 
-    private async saveShakeVolume(shakeVolume : string) : Promise<string> {
-        await AsyncStorage.setItem(ShakeVolumeKey, shakeVolume.toString());
-        return shakeVolume;
+    private async saveRollResultVolume(rollResultVolume : string) : Promise<string> {
+        await AsyncStorage.setItem(RollResultVolumeKey, rollResultVolume.toString());
+        return rollResultVolume;
     }
 
-    private async retrieveShakeVolume() : Promise<string> {
-        const shakeVolume = await AsyncStorage.getItem(ShakeVolumeKey);
-        if(shakeVolume === null) { return this.ShakeVolumeList[1]; }
-        return shakeVolume;
+    private async retrieveRollResultVolume() : Promise<string> {
+        const rollResultVolume = await AsyncStorage.getItem(RollResultVolumeKey);
+        if(rollResultVolume === null) { return this.RollResultVolumeList[1]; }
+        return rollResultVolume;
     }
 }
 
@@ -96,15 +96,15 @@ import {
     MenuOption,
 } from 'react-native-popup-menu';
 
-export function ShakeVolumeSetting() {
+export function RollResultVolumeSetting() {
 
     const [reload, setReload] = useState(false);
 
-    ShakeVolumeManager.getInstance().setSettingsUpdater(() => setReload(!reload));
+    RollResultVolumeManager.getInstance().setSettingsUpdater(() => setReload(!reload));
 
     const menuRef = useRef(null);
 
-    let iconName = ShakeVolumeManager.getInstance().getShakeVolumeIcon();
+    let iconName = RollResultVolumeManager.getInstance().getShakeVolumeIcon();
 
     return (
         <Touchable onPress={() => menuRef.current.open()} foreground={Touchable.Ripple('white')}>
@@ -113,16 +113,16 @@ export function ShakeVolumeSetting() {
                 <Menu ref={menuRef}>
                     <MenuTrigger/>
                     <MenuOptions>
-                    {ShakeVolumeManager.getInstance().ShakeVolumeList.map((value) => 
-                        <MenuOption key={value} style={styles.MenuBackground} onSelect={() => ShakeVolumeManager.getInstance().setShakeVolume(value)}>
+                    {RollResultVolumeManager.getInstance().RollResultVolumeList.map((value) => 
+                        <MenuOption key={value} style={styles.MenuBackground} onSelect={() => RollResultVolumeManager.getInstance().setRollResultVolume(value)}>
                             <Text style={styles.MenuText}>{value}</Text>
                         </MenuOption>
                     )}
                     </MenuOptions>
                 </Menu>
                 <View style={styles.TextContainer}>
-                    <Text style={styles.TitleText}>Shake Sounds</Text>
-                    <Text style={styles.ValueText}>{ShakeVolumeManager.getInstance().getShakeVolumeString()}</Text>
+                    <Text style={styles.TitleText}>Critical Sounds</Text>
+                    <Text style={styles.ValueText}>{RollResultVolumeManager.getInstance().getRollResultVolumeString()}</Text>
                 </View>
             </View>
         </Touchable>

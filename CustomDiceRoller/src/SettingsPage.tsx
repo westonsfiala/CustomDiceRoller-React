@@ -16,6 +16,7 @@ import Color from 'color';
 import { DieThemeSetting } from './sync/ThemeSetting';
 import { ExpectedResultSetting } from './sync/ExpectedResultManager';
 import { ShakeEnabledSetting } from './sync/ShakeEnabledManager';
+import { RollResultVolumeSetting } from './sync/RollResultVolumeManager';
 
 export function SettingsPage() {
 
@@ -30,6 +31,7 @@ export function SettingsPage() {
                 <View style={styles.Divider}/>
                 <Text style={styles.DividerText}>Roller</Text>
                 <ShakeEnabledSetting/>
+                <RollResultVolumeSetting/>
                 <View style={styles.Divider}/>
                 <Text style={styles.DividerText}>Results</Text>
                 <SortSetting/>

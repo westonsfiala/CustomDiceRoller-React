@@ -7,6 +7,7 @@ import {StruckStringPair} from "./StruckStringPair"
 import { RollProperties, isDouble, isHalve } from "../RollProperties";
 import SortTypeManager from "../../sync/SortTypeManager";
 import ExpectedResultManager from "../../sync/ExpectedResultManager";
+import { RollResults } from "./RollResults";
 
 // Class that performs a roll when constructed and turns that roll into displayable chunks of information.
 export class RollDisplayHelper {
@@ -14,6 +15,7 @@ export class RollDisplayHelper {
     public readonly timeString : string;
     public readonly dateString : string;
     public readonly storedRoll : Roll;
+    public readonly storedResults : RollResults;
     public readonly rollNameText : string;
     public readonly rollSumText : StruckStringPair;
     public readonly rollResultsText : Array<StruckStringPair>;
@@ -35,24 +37,24 @@ export class RollDisplayHelper {
         const sortAscending = (left: number, right: number) => left - right;
         const sortDescending = (left: number, right: number) => right - left;
 
-        let rollValues = roll.roll();
+        this.storedResults = roll.roll();
 
         this.rollNameText = roll.getDetailedRollName();
         
         let sumResult = 0;
 
         // Go through all of the dice in the roll and start making the roll detail lines
-        for(let dieJson of rollValues.getKeys()) {
+        for(let dieJson of this.storedResults.getKeys()) {
 
             let die = createUnknownDie(dieJson);
 
-            let rollResults = rollValues.mRollResults.get(dieJson);
-            let rollResultsDropped = rollValues.mDroppedRolls.get(dieJson);
-            let rollResultsReRolled = rollValues.mReRolledRolls.get(dieJson);
-            let rollResultsStruck = rollValues.mStruckRollResults.get(dieJson);
-            let rollResultsStruckDropped = rollValues.mStruckDroppedRolls.get(dieJson);
-            let rollResultsStruckReRolled = rollValues.mStruckReRolledRolls.get(dieJson);
-            let rollProperties = rollValues.mRollProperties.get(dieJson);
+            let rollResults = this.storedResults.mRollResults.get(dieJson);
+            let rollResultsDropped = this.storedResults.mDroppedRolls.get(dieJson);
+            let rollResultsReRolled = this.storedResults.mReRolledRolls.get(dieJson);
+            let rollResultsStruck = this.storedResults.mStruckRollResults.get(dieJson);
+            let rollResultsStruckDropped = this.storedResults.mStruckDroppedRolls.get(dieJson);
+            let rollResultsStruckReRolled = this.storedResults.mStruckReRolledRolls.get(dieJson);
+            let rollProperties = this.storedResults.mRollProperties.get(dieJson);
 
             if(SortTypeManager.getInstance().sortAscending()) {
                 rollResults.sort(sortAscending);
