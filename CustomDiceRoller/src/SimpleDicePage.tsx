@@ -18,8 +18,9 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import DiceManager from './sync/DiceManager';
 import { AddDiceButton } from './helpers/AddDiceButton';
 import { PropertiesButton } from './helpers/PropertiesButton';
-import DieSizeManager, { DieSizeSetting } from './sync/DieSizeManager';
+import DieSizeManager from './sync/DieSizeManager';
 import ThemeManager from './sync/ThemeManager';
+import SimpleRollPropertiesManager from './sync/SimpleRollPropertiesManager';
 
 interface SimpleDiePageInterface {
     displayRoll : (roll: Roll) => void;
@@ -27,24 +28,21 @@ interface SimpleDiePageInterface {
 }
 
 export function SimpleDicePage(props : SimpleDiePageInterface) {
-    const [rollProperties, setRollProperties] = useState(new RollProperties({}))
     const [reload, setReload] = useState(false);
-
-    function updateHandler() {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setReload(!reload)
-    }
     
-    DiceManager.getInstance().setUpdater(updateHandler);
-    DieSizeManager.getInstance().setUpdater(updateHandler);
-    ThemeManager.getInstance().setSimplePageUpdater(updateHandler);
+    DiceManager.getInstance().setUpdater(() => setReload(!reload));
+    DieSizeManager.getInstance().setUpdater(() => setReload(!reload));
+    ThemeManager.getInstance().setSimplePageUpdater(() => setReload(!reload));
+    SimpleRollPropertiesManager.getInstance().setUpdater(() => setReload(!reload));
 
     console.log('refresh simple page');
+
+    let properties = SimpleRollPropertiesManager.getInstance().getProperties();
 
     function createNewRollHelper(clickedDie: Die) {
         let tempRoll = new Roll("Simple Roll","");
 
-        tempRoll = tempRoll.addDieToRoll(clickedDie, rollProperties);
+        tempRoll = tempRoll.addDieToRoll(clickedDie, properties);
 
         props.displayRoll(tempRoll);
     }
@@ -79,23 +77,24 @@ export function SimpleDicePage(props : SimpleDiePageInterface) {
             />
             <View style={styles.ButtonsRow}>
                 <NumDiceUpDownButtons 
-                count={rollProperties.mNumDice} 
+                count={properties.mNumDice} 
                 setCount={(newNumDice: number) => 
                     {
-                        let newProps = rollProperties.clone({numDice: newNumDice})
-                        setRollProperties(newProps);
+                        let newProps = properties.clone({numDice: newNumDice})
+                        SimpleRollPropertiesManager.getInstance().setProperties(newProps);
                     }} 
                 />
                 <ModifierUpDownButtons 
-                count={rollProperties.mModifier} 
-                setCount={(newModifier: number) => {
-                    let newProps = rollProperties.clone({modifier: newModifier})
-                    setRollProperties(newProps);
-                }}
+                count={properties.mModifier} 
+                setCount={(newModifier: number) => 
+                    {
+                        let newProps = properties.clone({modifier: newModifier})
+                        SimpleRollPropertiesManager.getInstance().setProperties(newProps);
+                    }}
                 />
             </View>
             <View style={styles.ButtonsRow}>
-                <PropertiesButton properties={rollProperties} updateProperties={setRollProperties} />
+                <PropertiesButton properties={properties} updateProperties={(newProps : RollProperties) => SimpleRollPropertiesManager.getInstance().setProperties(newProps)} />
                 <AddDiceButton addDie={(die: Die) => DiceManager.getInstance().addDie(die)} resetDice={() => DiceManager.getInstance().resetDice()}/>
             </View>
         </View> 
