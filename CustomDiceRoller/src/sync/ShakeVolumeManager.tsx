@@ -1,39 +1,37 @@
 import AsyncStorage from "@react-native-community/async-storage";
 
-const DieSizeKey = 'DieSizeKey';
+const ShakeVolumeKey = 'ShakeVolumeKey';
 
-export default class DieSizeManager {
+export default class ShakeVolumeManager {
 
-    private static mInstance = null as DieSizeManager;
+    private static mInstance = null as ShakeVolumeManager;
 
-    readonly DieSizeList = ['Tiny', 'Small', 'Medium', 'Large', 'Huge'];
-    private mDieSize = this.DieSizeList[2];
+    readonly ShakeVolumeList = ['Off', 'Quiet', 'Loud'];
+    private mShakeVolume = this.ShakeVolumeList[1];
     private mSettingsUpdater = null;
     private mUpdater = null;
 
-    static getInstance() : DieSizeManager {
-        if(DieSizeManager.mInstance === null) {
-            DieSizeManager.mInstance = new DieSizeManager();
+    static getInstance() : ShakeVolumeManager {
+        if(ShakeVolumeManager.mInstance === null) {
+            ShakeVolumeManager.mInstance = new ShakeVolumeManager();
         }
 
         return this.mInstance;
     }
 
     private constructor() {
-        this.retrieveDieSize().then((dieSize) => {
-            this.mDieSize = dieSize;
+        this.retrieveShakeVolume().then((shakeVolume) => {
+            this.mShakeVolume = shakeVolume;
         });
     }
     
-    get itemsPerRow() : number {
+    get volumeModifier() : number {
         // 6 is an arbitrary number that works.
-        if(this.mDieSize == this.DieSizeList[0]) return 6;
-        if(this.mDieSize == this.DieSizeList[1]) return 5;
-        if(this.mDieSize == this.DieSizeList[2]) return 4;
-        if(this.mDieSize == this.DieSizeList[3]) return 3;
-        if(this.mDieSize == this.DieSizeList[4]) return 2;
+        if(this.mShakeVolume == this.ShakeVolumeList[0]) return 0;
+        if(this.mShakeVolume == this.ShakeVolumeList[1]) return .5;
+        if(this.mShakeVolume == this.ShakeVolumeList[2]) return 1;
 
-        this.setDieSize(this.DieSizeList[2]);
+        this.setShakeVolume(this.ShakeVolumeList[1]);
     }
 
     setSettingsUpdater(updater : () => void) {
@@ -49,26 +47,26 @@ export default class DieSizeManager {
         if(this.mSettingsUpdater !== null) this.mSettingsUpdater();
     }
 
-    setDieSize(dieSize : string) {
-        this.saveDieSize(dieSize).then((value) => {
-            this.mDieSize = value;
+    setShakeVolume(dieSize : string) {
+        this.saveShakeVolume(dieSize).then((value) => {
+            this.mShakeVolume = value;
             this.runUpdaters();
         });
     }
 
-    getDieSizeString() : string {
-        return this.mDieSize;
+    getShakeVolumeString() : string {
+        return this.mShakeVolume;
     }
 
-    private async saveDieSize(dieSize : string) : Promise<string> {
-        await AsyncStorage.setItem(DieSizeKey, dieSize.toString());
-        return dieSize;
+    private async saveShakeVolume(shakeVolume : string) : Promise<string> {
+        await AsyncStorage.setItem(ShakeVolumeKey, shakeVolume.toString());
+        return shakeVolume;
     }
 
-    private async retrieveDieSize() : Promise<string> {
-        const dieSize = await AsyncStorage.getItem(DieSizeKey);
-        if(dieSize === null) { return this.DieSizeList[2]; }
-        return dieSize;
+    private async retrieveShakeVolume() : Promise<string> {
+        const shakeVolume = await AsyncStorage.getItem(ShakeVolumeKey);
+        if(shakeVolume === null) { return this.ShakeVolumeList[1]; }
+        return shakeVolume;
     }
 }
 
@@ -90,31 +88,31 @@ import {
     MenuOption,
 } from 'react-native-popup-menu';
 
-export function DieSizeSetting() {
+export function ShakeVolumeSetting() {
 
     const [reload, setReload] = useState(false);
 
-    DieSizeManager.getInstance().setSettingsUpdater(() => setReload(!reload));
+    ShakeVolumeManager.getInstance().setSettingsUpdater(() => setReload(!reload));
 
     const menuRef = useRef(null);
 
     return (
         <Touchable onPress={() => menuRef.current.open()} foreground={Touchable.Ripple('white')}>
             <View style={styles.SettingContainer} >
-                <Icon size={styles.IconConstants.width} name='resize' color={styles.IconConstants.color}/>
+                <Icon size={styles.IconConstants.width} name='volume-high' color={styles.IconConstants.color}/>
                 <Menu ref={menuRef}>
                     <MenuTrigger/>
                     <MenuOptions>
-                    {DieSizeManager.getInstance().DieSizeList.map((value) => 
-                        <MenuOption key={value} style={styles.MenuBackground} onSelect={() => DieSizeManager.getInstance().setDieSize(value)}>
+                    {ShakeVolumeManager.getInstance().ShakeVolumeList.map((value) => 
+                        <MenuOption key={value} style={styles.MenuBackground} onSelect={() => ShakeVolumeManager.getInstance().setShakeVolume(value)}>
                             <Text style={styles.MenuText}>{value}</Text>
                         </MenuOption>
                     )}
                     </MenuOptions>
                 </Menu>
                 <View style={styles.TextContainer}>
-                    <Text style={styles.TitleText}>Die Size</Text>
-                    <Text style={styles.ValueText}>{DieSizeManager.getInstance().getDieSizeString()}</Text>
+                    <Text style={styles.TitleText}>Shake Volume</Text>
+                    <Text style={styles.ValueText}>{ShakeVolumeManager.getInstance().getShakeVolumeString()}</Text>
                 </View>
             </View>
         </Touchable>

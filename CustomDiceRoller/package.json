@@ -1,11 +1,10 @@
 {
   "name": "RPGDiceRoller",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
     "androidRelease": "react-native run-android --variant=release",
-    "androidBundle": "./gradlew bundleRelease",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest"

@@ -1,5 +1,6 @@
 
 import Sound from 'react-native-sound';
+import ShakeVolumeManager from '../sync/ShakeVolumeManager';
 
 export default class SoundManager {
 
@@ -31,7 +32,7 @@ export default class SoundManager {
     }
 
     playDiceRoll(volume : number) {
-        let playVolume = Math.min(volume, 1.0);
+        let playVolume = Math.min(volume * ShakeVolumeManager.getInstance().volumeModifier, 1.0);
 
         if(playVolume <= 0.01) { return; }
 

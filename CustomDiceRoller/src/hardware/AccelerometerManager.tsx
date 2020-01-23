@@ -13,7 +13,7 @@ export default class AccelerometerManager {
     private xAcceleration = 0;
     private yAcceleration = 0;
     private zAcceleration = 0;
-    private mAccelerationStable = false;
+    private mAccelerationStable = true;
 
     static getInstance() : AccelerometerManager {
         if(AccelerometerManager.mInstance === null) {

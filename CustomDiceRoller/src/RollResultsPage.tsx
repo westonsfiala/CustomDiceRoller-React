@@ -216,7 +216,7 @@ export function RollResultsPage(props : RollResultsInterface) {
     function softExitShake() {
         if(!killedAnimations.current){
             killedAnimations.current = true;
-            setTimeout(() => exitShake(), HOLD_TIME);
+            setTimeout(() => exitShake(), HOLD_TIME*2);
         }
     }
 
@@ -241,7 +241,7 @@ export function RollResultsPage(props : RollResultsInterface) {
     function animateDice() {
         elapsedTimeRef.current = Date.now() - startTimeRef.current;
         if(elapsedTimeRef.current > MAX_SHAKE_TIME) {
-            softExitShake();
+            exitShake();
         }
 
         let isStable = AccelerometerManager.getInstance().accelStable;

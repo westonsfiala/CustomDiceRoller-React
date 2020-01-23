@@ -72,6 +72,7 @@ import Touchable from 'react-native-platform-touchable';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { ShakeSensitivitySetting } from "./ShakeSensitivityManager";
+import { ShakeVolumeSetting } from "./ShakeVolumeManager";
 
 export function ShakeEnabledSetting() {
 
@@ -97,6 +98,7 @@ export function ShakeEnabledSetting() {
             </Touchable>
             <View style={[ styles.ButtonContainer, {height: shakeEnabled ? null : 0}]}>
                 <ShakeSensitivitySetting/>
+                <ShakeVolumeSetting/>
             </View>
         </View>
         
@@ -126,7 +128,7 @@ const styles = EStyleSheet.create({
         color:'$textColor'
     },
     ButtonContainer:{
-        flexDirection:'row',
+        flexDirection:'column',
         overflow:'hidden',
     },
 })
