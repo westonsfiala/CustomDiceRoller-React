@@ -28,7 +28,10 @@ import { SimpleDie } from './dice/SimpleDie';
 
 const MAX_DICE_IN_ROLL = 25;
 const ANIMATION_RUNTIME = 50;
-const HOLD_TIME = 750;
+const SHAKE_TIME = 500;
+const HOLD_TIME = 500;
+const SLOW_TIME = 1000;
+const STILL_TIME = 500;
 const MAX_SHAKE_TIME = 10000;
 
 interface RollResultsInterface {
@@ -77,12 +80,12 @@ class ShakeDie {
         return this.collisionVelocity;
     }
 
-    updatePosition(killSpeed : boolean) : Animated.CompositeAnimation {
+    updatePosition(speedKillMod : number) : Animated.CompositeAnimation {
 
         this.collisionVelocity = 0;
 
         let hitXBound = false;
-        this.xPosition += this.xVelocity;
+        this.xPosition += this.xVelocity * speedKillMod;
         if(this.xPosition < 0) {
             this.xPosition = 0;
             hitXBound = true;
@@ -98,7 +101,7 @@ class ShakeDie {
         }
 
         let hitYBound = false;
-        this.yPosition += this.yVelocity;
+        this.yPosition += this.yVelocity * speedKillMod;
         if(this.yPosition < 0) {
             this.yPosition = 0;
             hitYBound = true;
@@ -127,13 +130,7 @@ class ShakeDie {
             this.yVelocity -= AccelerometerManager.getInstance().xAccel * 2;
         }
 
-        this.rotation += this.rotationVelocity;
-
-        if(killSpeed) {
-            this.xVelocity *= .80;
-            this.yVelocity *= .80;
-            this.rotationVelocity *= .80;
-        }
+        this.rotation += this.rotationVelocity * speedKillMod;
 
         return Animated.parallel([
             Animated.timing(this.xPositionAnimated, {
@@ -158,21 +155,44 @@ class ShakeDie {
     }
 }
 
+enum shakeEnums {
+    shaking,
+    holding,
+    slowing,
+    transitioning
+}
+
+function renderShakeDie(shakeDie: ShakeDie) {
+    return(
+        <Animated.Image key={shakeDie.key} source={getRequiredImage(shakeDie.dieImageID)} style={[{transform:[
+            { translateX: shakeDie.xPositionAnimated },
+            { translateY: shakeDie.yPositionAnimated },
+            { rotate: shakeDie.rotationAnimated.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['0deg', '360deg'],
+              }) },
+        ]}, styles.DisplayDice]}/>
+    )
+}
+
 export function RollResultsPage(props : RollResultsInterface) {
 
     const [reload, setReload] = useState(false);
-    const [animationsState, setAnimationsState] = useState({animationsRunning:false, hasShook:false});
+    const [animationsRunning, setAnimationsRunning] = useState(false);
 
     HistoryManager.getInstance().setDisplayUpdater(() => setReload(!reload));
     ShakeEnabledManager.getInstance().setUpdater(() => setReload(!reload));
 
-    const killedAnimations = useRef(false);
+    // Used to clean up the repeating animations
     const updateIntervalRef = useRef(0);
+    // Time that we started the animations
     const startTimeRef = useRef(0);
-    const elapsedTimeRef = useRef(0);
-    const hasShookRef = useRef(false);
-    const hasHeldRef = useRef(false);
-
+    // Time that the last animation started
+    const lastAnimationTimeRef = useRef(0);
+    // How long has the user been either shaking, holding, or killing animations
+    const stateDurationRef = useRef(0);
+    // What state are we in
+    const stateRef = useRef(shakeEnums.shaking);
 
     let rollHelper = HistoryManager.getInstance().getLastRoll();
 
@@ -212,49 +232,72 @@ export function RollResultsPage(props : RollResultsInterface) {
     function exitShake() {
         clearInterval(updateIntervalRef.current)
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setAnimationsState({animationsRunning:false, hasShook:false});
-    }
-
-    function softExitShake() {
-        if(!killedAnimations.current){
-            killedAnimations.current = true;
-            setTimeout(() => exitShake(), HOLD_TIME*2);
-        }
+        setAnimationsRunning(false);
     }
 
     function exitDialog() {
-        setAnimationsState({animationsRunning:false, hasShook:false});
+        exitShake();
         props.dismissPage();
     }
 
-    function renderShakeDie(shakeDie: ShakeDie) {
-        return(
-            <Animated.Image key={shakeDie.key} source={getRequiredImage(shakeDie.dieImageID)} style={[{transform:[
-                { translateX: shakeDie.xPositionAnimated },
-                { translateY: shakeDie.yPositionAnimated },
-                { rotate: shakeDie.rotationAnimated.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ['0deg', '360deg'],
-                  }) },
-            ]}, styles.DisplayDice]}/>
-        )
-    }
-
     function animateDice() {
-        elapsedTimeRef.current = Date.now() - startTimeRef.current;
-        if(elapsedTimeRef.current > MAX_SHAKE_TIME) {
+        let rightNow = Date.now();
+        let totalElapsedTime = rightNow - startTimeRef.current;
+        let animationDuration = rightNow - lastAnimationTimeRef.current;
+        lastAnimationTimeRef.current = rightNow;
+
+        if(totalElapsedTime > MAX_SHAKE_TIME) {
             exitShake();
+            return;
         }
 
+        let speedKillMod = 1;
         let isStable = AccelerometerManager.getInstance().accelStable;
-        if(!hasShookRef.current && !isStable) {
-            hasShookRef.current = true;
-            setTimeout(() => setAnimationsState({animationsRunning:true, hasShook:true}), HOLD_TIME);
-        }
 
-        if(hasShookRef.current && !hasHeldRef.current && isStable) {
-            hasHeldRef.current = true;
-            setTimeout(() => softExitShake(), HOLD_TIME);
+        if(stateRef.current == shakeEnums.shaking) {
+            
+            if(!isStable) { stateDurationRef.current += animationDuration; }
+                
+            if(stateDurationRef.current > SHAKE_TIME) {
+                stateDurationRef.current = 0;
+                stateRef.current = shakeEnums.holding;
+                setReload(!reload);
+            }
+
+        } else if(stateRef.current == shakeEnums.holding) {
+
+            if(isStable) { stateDurationRef.current += animationDuration; } 
+
+            if(stateDurationRef.current > HOLD_TIME) {
+                stateDurationRef.current = 0;
+                stateRef.current = shakeEnums.slowing;
+                setReload(!reload);
+            }
+
+        } else if(stateRef.current == shakeEnums.slowing) {
+
+            stateDurationRef.current += animationDuration;
+
+            speedKillMod = Math.max(0, 1 - stateDurationRef.current / SLOW_TIME);
+
+            if(stateDurationRef.current > SLOW_TIME) {
+                stateDurationRef.current = 0;
+                stateRef.current = shakeEnums.transitioning;
+                setReload(!reload);
+            }
+
+        } else if(stateRef.current == shakeEnums.transitioning) {
+
+            stateDurationRef.current += animationDuration;
+
+            speedKillMod = 0;
+
+            if(stateDurationRef.current > STILL_TIME) {
+                stateDurationRef.current = 0;
+                exitShake();
+                return;
+            }
+
         }
 
         let newAnimations = Array<Animated.CompositeAnimation>();
@@ -263,7 +306,7 @@ export function RollResultsPage(props : RollResultsInterface) {
 
         for(let shakeDie of shakeDieArray) {
 
-            let updateAnimation = shakeDie.updatePosition(killedAnimations.current);
+            let updateAnimation = shakeDie.updatePosition(speedKillMod);
             newAnimations.push(updateAnimation);
 
             maxCollisionVelocity = Math.max(maxCollisionVelocity, shakeDie.collisionVelocity);
@@ -279,18 +322,15 @@ export function RollResultsPage(props : RollResultsInterface) {
             let startAnimations = ShakeEnabledManager.getInstance().getShakeEnabled();
             
             if(startAnimations) {
-                hasHeldRef.current = false;
-                hasShookRef.current = false;
+            
+                lastAnimationTimeRef.current = Date.now();
+            
+                stateDurationRef.current = 0;
 
                 startTimeRef.current = Date.now();
-                killedAnimations.current = false;
-                updateIntervalRef.current = setInterval(animateDice, ANIMATION_RUNTIME);
                 
-                setAnimationsState({animationsRunning:true, hasShook:false});
-
-                return (() => {
-                    clearInterval(updateIntervalRef.current)
-                })
+                stateRef.current = shakeEnums.shaking;
+                setAnimationsRunning(true);
             } else {
                 // Check for rolling critical success or critical failures
                 // TODO: generalize this
@@ -308,18 +348,43 @@ export function RollResultsPage(props : RollResultsInterface) {
                     }
                 }
                 
-                setAnimationsState({animationsRunning:false, hasShook:false});
+                setAnimationsRunning(false);
             }
         }
-    }, [rollHelper])
+    }, [rollHelper]);
 
-    if(animationsState.animationsRunning) {
+    useEffect(() => {
+        if(animationsRunning){
+            updateIntervalRef.current = setInterval(animateDice, ANIMATION_RUNTIME);
+    
+            return (() => {
+                clearInterval(updateIntervalRef.current)
+            })
+        } else {
+            clearInterval(updateIntervalRef.current)
+        }
+    }, [animationsRunning])
+
+    if(animationsRunning) {
+
+        let displayText = "";
+
+        if(stateRef.current == shakeEnums.shaking) {
+            displayText = "Shake!";
+        } else if(stateRef.current == shakeEnums.holding) {
+            displayText = "Hold Still";
+        } else if (stateRef.current == shakeEnums.slowing) {
+            displayText = "Calculating...";
+        } else {
+            displayText = "Done!"
+        }
+
         return (
             <View style={styles.Container}>
-                {animationsState.animationsRunning ? shakeDieArray.map(renderShakeDie) : null}
+                {animationsRunning ? shakeDieArray.map(renderShakeDie) : null}
                 <View style={styles.ShakeContainer}>
                     <Text style={styles.ShakeText}>
-                        {animationsState.hasShook ? "Hold Still" : "Shake!"}
+                        {displayText}
                     </Text>
                 </View>
                 <View style={styles.ButtonContainer}>
@@ -336,16 +401,9 @@ export function RollResultsPage(props : RollResultsInterface) {
         )
     }
 
-    // This section of code is only reached when the 
-    //if (rollValues.mRollMaximumValue) {
-    //    playTripleHorn()
-    //} else if (rollValues.mRollMinimumValue) {
-    //    playWilhelmScream()
-    //}
-
     return (
         <View style={styles.Container}>
-            {animationsState.animationsRunning ? shakeDieArray.map(renderShakeDie) : null}
+            {animationsRunning ? shakeDieArray.map(renderShakeDie) : null}
             <Text style={styles.DateTimeText}>{rollHelper.dateString} - {rollHelper.timeString}</Text>
             <View style={styles.Container}>
                 <ScrollView contentContainerStyle={{justifyContent:'center'}} style={{}}>
