@@ -6,7 +6,7 @@ export default class ShakeVolumeManager {
 
     private static mInstance = null as ShakeVolumeManager;
 
-    readonly ShakeVolumeList = ['Off', 'Quiet', 'Loud'];
+    readonly ShakeVolumeList = ['Off', 'Normal', 'Loud'];
     private mShakeVolume = this.ShakeVolumeList[1];
     private mSettingsUpdater = null;
     private mUpdater = null;

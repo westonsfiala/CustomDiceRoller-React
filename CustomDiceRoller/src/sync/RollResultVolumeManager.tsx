@@ -6,8 +6,8 @@ export default class RollResultVolumeManager {
 
     private static mInstance = null as RollResultVolumeManager;
 
-    readonly RollResultVolumeList = ['Off', 'Quiet', 'Loud'];
-    private mRollResultVolume = this.RollResultVolumeList[0];
+    readonly RollResultVolumeList = ['Off', 'Normal', 'Loud'];
+    private mRollResultVolume = this.RollResultVolumeList[1];
     private mSettingsUpdater = null;
     private mUpdater = null;
 

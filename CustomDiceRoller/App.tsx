@@ -11,14 +11,15 @@
 // For searchable Icons go to https://oblador.github.io/react-native-vector-icons/
 // For description of how to use icons go to https://github.com/oblador/react-native-vector-icons 
 
-import React from 'react'
-import { Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react'
+import { Dimensions, View, Text } from 'react-native';
 
 import { MenuProvider } from 'react-native-popup-menu';
 import EStyleSheet from 'react-native-extended-stylesheet'; 
 import Color from 'color';
 
-import {MainEntry} from './src/MainEntry'
+import { MainEntry } from './src/MainEntry'
+import { OpenAllSingletons } from './src/sync/SyncMaster';
 
 let {height, width} = Dimensions.get('window');
 EStyleSheet.build({
@@ -34,6 +35,32 @@ EStyleSheet.build({
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 const App = () => {
+
+    const [firstLoad, setFirstLoad] = useState(true);
+
+    // Give the app time to sync all of its settings.
+    useEffect(() => {
+        if(firstLoad) {
+            OpenAllSingletons();
+            let clear = setTimeout(() => setFirstLoad(false), 100);
+            return(() => clearTimeout(clear));
+        }
+    });
+
+    if(firstLoad) {
+        
+        const appPkg = require("./app.json");
+        const versionPkg = require('./package.json');
+
+        return(
+            <View style={styles.AppBackground}>
+                <Text style={styles.LoadText}>Loading...</Text>
+                <Text style={styles.LoadText}>{appPkg.displayName}</Text>
+                <Text style={styles.LoadText}>Version {versionPkg.version}</Text>
+            </View>
+        );
+    }
+
     return (
         <MenuProvider skipInstanceCheck={true}>
             <MainEntry/>
@@ -42,3 +69,16 @@ const App = () => {
 };
 
 export default App;
+
+const styles = EStyleSheet.create({
+    AppBackground: {
+        flex:1,
+        justifyContent:'center',
+        backgroundColor:'$primaryColor'
+    },
+    LoadText: {
+        fontSize:'40rem',
+        color:'$textColorDarkened',
+        textAlign:'center',
+    },
+})

@@ -30,7 +30,6 @@ import TabManager from './sync/TabManager';
 import CustomRollManager from './sync/CustomRollManager';
 import { AboutPage } from './AboutPage';
 import { SettingsPage } from './SettingsPage';
-import { RollResultsPageManual } from './RollResultsPageManual';
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 export function MainEntry() {
@@ -122,9 +121,6 @@ export function MainEntry() {
                     </ViewPager>
                 </View>
                 <View key="3">
-                    <AboutPage dismissPage={returnToMainPage}/>
-                </View>
-                <View key="4">
                     <AboutPage dismissPage={returnToMainPage}/>
                 </View>
             </ViewPager>
