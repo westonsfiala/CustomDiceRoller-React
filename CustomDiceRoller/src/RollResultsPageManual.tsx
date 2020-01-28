@@ -6,7 +6,6 @@ import {
     View, 
     Text,
     ScrollView,
-    Animated,
     ScaledSize,
     LayoutAnimation,
 } from 'react-native';
@@ -17,13 +16,12 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { RollDisplayHelper } from './dice/views/RollDisplayHelper';
 import { StruckStringPairView } from './dice/views/StruckStringPair';
 import HistoryManager from './sync/HistoryManager';
-import { getRequiredImage } from './dice/dieImages/DieImageGetter';
-import { randomIntFromInterval } from './helpers/NumberHelper';
 import AccelerometerManager from './hardware/AccelerometerManager';
 import ShakeEnabledManager from './sync/ShakeEnabledManager';
 import SoundManager from './hardware/SoundManager';
 import TabManager from './sync/TabManager';
 import { SimpleDie } from './dice/SimpleDie';
+import { ShakeDie, renderShakeDie } from './helpers/ShakeDie';
 
 const MAX_DICE_IN_ROLL = 25;
 const ANIMATION_RUNTIME = 10;
@@ -36,111 +34,12 @@ interface RollResultsInterface {
     window : ScaledSize;
 }
 
-class ShakeDie {
-    dieImageID : number;
-    maxX : number;
-    maxY : number;
-
-    xPosition : number;
-    yPosition : number;
-    xVelocity : number;
-    yVelocity : number;
-    rotation : number;
-    rotationVelocity : number;
-
-    collisionVelocity : number;
-
-    key : string;
-
-    constructor(imageID : number, maxX : number, maxY: number) {
-        this.dieImageID = imageID;
-        this.maxX = maxX;
-        this.maxY = maxY;
-
-        this.xPosition = randomIntFromInterval(0, maxX);
-        this.yPosition = randomIntFromInterval(0, maxY);
-        this.xVelocity = randomIntFromInterval(-50, 50);
-        this.yVelocity = randomIntFromInterval(-50, 50);
-        this.rotation = randomIntFromInterval(0, 360);
-        this.rotationVelocity = randomIntFromInterval(0, 30);
-
-        this.collisionVelocity = 0;
-    }
-
-    getCollisionVelocity() : number {
-        return this.collisionVelocity;
-    }
-
-    updatePosition(speedKillMod : number) {
-
-        this.collisionVelocity = 0;
-
-        let hitXBound = false;
-        this.xPosition += this.xVelocity * speedKillMod;
-        if(this.xPosition < 0) {
-            this.xPosition = 0;
-            hitXBound = true;
-        } else if (this.xPosition > this.maxX) {
-            this.xPosition = this.maxX;
-            hitXBound = true;
-        }
-
-        if(hitXBound) {
-            this.collisionVelocity = Math.abs(this.xVelocity);
-            this.xVelocity *= -0.95;
-            this.xVelocity += Math.random() - 0.5;
-        }
-
-        let hitYBound = false;
-        this.yPosition += this.yVelocity * speedKillMod;
-        if(this.yPosition < 0) {
-            this.yPosition = 0;
-            hitYBound = true;
-        } else if (this.yPosition > this.maxY) {
-            this.yPosition = this.maxY;
-            hitYBound = true;
-        }
-
-        if(hitYBound) {
-            this.collisionVelocity = Math.abs(this.yVelocity);
-            this.yVelocity *= -0.95;
-            this.yVelocity += Math.random() - 0.5;
-        }
-
-        if(hitXBound || hitYBound) {
-            this.rotationVelocity += randomIntFromInterval(-5, 5);
-        }
-
-        if(this.maxX < this.maxY) {
-            // Portrait
-            this.xVelocity -= AccelerometerManager.getInstance().xAccel;
-            this.yVelocity += AccelerometerManager.getInstance().yAccel;
-        } else {
-            // Landscape
-            this.xVelocity -= AccelerometerManager.getInstance().yAccel;
-            this.yVelocity -= AccelerometerManager.getInstance().xAccel;
-        }
-
-        this.rotation += this.rotationVelocity * speedKillMod;
-    }
-}
-
 enum shakeEnums {
     shaking,
     holding,
     slowing,
     transitioning,
     done,
-}
-
-function renderShakeDie(shakeDie: ShakeDie) {
-    return(
-        <Animated.Image key={shakeDie.key} source={getRequiredImage(shakeDie.dieImageID)} style={[{transform:[
-            { translateX: shakeDie.xPosition },
-            { translateY: shakeDie.yPosition },
-            { rotate: shakeDie.rotation.toString() + 'deg' },
-        ]}, styles.DisplayDice]}/>
-    )
 }
 
 export function RollResultsPageManual(props : RollResultsInterface) {
@@ -156,6 +55,8 @@ export function RollResultsPageManual(props : RollResultsInterface) {
     const startTimeRef = useRef(0);
     // Time that the last animation started
     const lastAnimationTimeRef = useRef(0);
+
+    const playCritSoundsRef = useRef(false);
 
     let rollHelper = HistoryManager.getInstance().getLastRoll();
 
@@ -175,8 +76,8 @@ export function RollResultsPageManual(props : RollResultsInterface) {
             for(let i = 0; i < maxDice; i += 1) {
                 let newShakeDie = new ShakeDie(
                     dieProp.mDie.imageID, 
-                    props.window.width - styles.DisplayDice.width, 
-                    props.window.height - styles.DisplayDice.height);
+                    props.window.width, 
+                    props.window.height);
 
                 newShakeDie.key = newShakeDie.dieImageID.toString() + i.toString();
 
@@ -279,7 +180,7 @@ export function RollResultsPageManual(props : RollResultsInterface) {
 
     useEffect(() => {
         if(animationsRunning) { 
-            let clear = setTimeout(() => animateDice(),ANIMATION_RUNTIME); 
+            let clear = setTimeout(() => animateDice(), ANIMATION_RUNTIME); 
             return (() => clearTimeout(clear));
         }
     });
@@ -287,28 +188,14 @@ export function RollResultsPageManual(props : RollResultsInterface) {
     useEffect(() => {
         if(rollHelper.storedRoll.getTotalDiceInRoll() !== 0 && TabManager.getInstance().isOnDiceRollTab()) {
             let startAnimations = ShakeEnabledManager.getInstance().getShakeEnabled();
+
+            playCritSoundsRef.current = true;
             
             if(startAnimations) {
                 lastAnimationTimeRef.current = Date.now();
                 startTimeRef.current = Date.now();
                 goToNextState(0, shakeEnums.shaking);
             } else {
-                // Check for rolling critical success or critical failures
-                // TODO: generalize this
-                if(rollHelper.storedResults.mRollResults.size == 1) {
-                    let d20SaveString = JSON.stringify(new SimpleDie("d20", 20));
-                    if(rollHelper.storedResults.mRollResults.has(d20SaveString)) {
-                        let results = rollHelper.storedResults.mRollResults.get(d20SaveString);
-                        if(results.length == 1) {
-                            if(results[0] == 20) {
-                                SoundManager.getInstance().playAirHorn();
-                            } else if(results[0] == 1) {
-                                SoundManager.getInstance().playWilhelm();
-                            }
-                        }
-                    }
-                }
-                
                 goToNextState(0, shakeEnums.done);
             }
         }
@@ -348,6 +235,27 @@ export function RollResultsPageManual(props : RollResultsInterface) {
                 </View>
             </View>
         )
+    }
+
+    if(playCritSoundsRef.current)
+    {
+        playCritSoundsRef.current = false;
+
+        // Check for rolling critical success or critical failures
+        // TODO: generalize this
+        if(rollHelper.storedResults.mRollResults.size == 1) {
+            let d20SaveString = JSON.stringify(new SimpleDie("d20", 20));
+            if(rollHelper.storedResults.mRollResults.has(d20SaveString)) {
+                let results = rollHelper.storedResults.mRollResults.get(d20SaveString);
+                if(results.length == 1) {
+                    if(results[0] == 20) {
+                        SoundManager.getInstance().playAirHorn();
+                    } else if(results[0] == 1) {
+                        SoundManager.getInstance().playWilhelm();
+                    }
+                }
+            }
+        }
     }
 
     return (
@@ -456,9 +364,4 @@ const styles = EStyleSheet.create({
         right:'10rem',
         left:'10rem'
     },
-    DisplayDice: {
-        width:'30rem',
-        height:'30rem',
-        position:'absolute'
-    }
 })
