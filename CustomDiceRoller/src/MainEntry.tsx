@@ -30,6 +30,7 @@ import TabManager from './sync/TabManager';
 import CustomRollManager from './sync/CustomRollManager';
 import { AboutPage } from './AboutPage';
 import { SettingsPage } from './SettingsPage';
+import { RollResultsPageManual } from './RollResultsPageManual';
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 export function MainEntry() {

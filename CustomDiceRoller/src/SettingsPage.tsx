@@ -47,8 +47,8 @@ const styles = EStyleSheet.create({
         flex:1,
     },
     ScrollPadding: {
-        marginLeft:'10rem',
-        marginRight:'10rem',
+        paddingLeft:'10rem',
+        paddingRight:'10rem',
     },
     DividerText: {
         color:'$textColorHighlight',
