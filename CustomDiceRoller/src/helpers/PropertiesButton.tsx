@@ -17,7 +17,7 @@ import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { RollProperties, isAdvantage, isDisadvantage, isDouble, isHalve } from '../dice/RollProperties';
+import { RollProperties, isAdvantage, isDisadvantage, isDouble, isHalve, hasDropHigh, hasDropLow, hasKeepHigh, hasKeepLow, hasReRoll, hasMinimumRoll, hasExplode } from '../dice/RollProperties';
 import { 
     getDropHighString, 
     getDropLowString, 
@@ -33,6 +33,19 @@ import {
     getMinimumTitle
 } from './StringHelper';
 import { SetValueDialog } from '../dialogs/SetValueDialog';
+
+interface helperInterface {
+    turnOn : boolean;
+}
+
+function ActiveItemHelper(props: helperInterface) {
+    if(props.turnOn) {
+        return (
+            <Text style={styles.MenuText}>*</Text>
+        )
+    }
+    return null
+}
 
 interface PropertiesInterface {
     properties: RollProperties;
@@ -105,6 +118,7 @@ export function PropertiesButton(props: PropertiesInterface) {
                         <View style={styles.MenuLineContainer}>
                             <Icon name={advantageIcon} size={styles.Icons.fontSize} color={styles.Icons.color}></Icon>
                             <Text style={styles.MenuText}>Advantage</Text>
+                            <ActiveItemHelper turnOn={isAdvantage(props.properties)}/>
                         </View>
                     </MenuOption>
                     <MenuOption style={styles.Menu} onSelect={() => props.updateProperties(props.properties.clone(
@@ -113,6 +127,7 @@ export function PropertiesButton(props: PropertiesInterface) {
                         <View style={styles.MenuLineContainer}>
                             <Icon name={disadvantageIcon} size={styles.Icons.fontSize} color={styles.Icons.color}></Icon>
                             <Text style={styles.MenuText}>Disadvantage</Text>
+                            <ActiveItemHelper turnOn={isDisadvantage(props.properties)}/>
                         </View>
                     </MenuOption>
                     <View style={styles.MenuDivider}/>
@@ -122,6 +137,7 @@ export function PropertiesButton(props: PropertiesInterface) {
                         <View style={styles.MenuLineContainer}>
                             <Icon name={doubleIcon} size={styles.Icons.fontSize} color={styles.Icons.color}></Icon>
                             <Text style={styles.MenuText}>Double</Text>
+                            <ActiveItemHelper turnOn={isDouble(props.properties)}/>
                         </View>
                     </MenuOption>
                     <MenuOption style={styles.Menu} onSelect={() => props.updateProperties(props.properties.clone(
@@ -130,35 +146,43 @@ export function PropertiesButton(props: PropertiesInterface) {
                         <View style={styles.MenuLineContainer}>
                             <Icon name={halveIcon} size={styles.Icons.fontSize} color={styles.Icons.color}></Icon>
                             <Text style={styles.MenuText}>Halve</Text>
+                            <ActiveItemHelper turnOn={isHalve(props.properties)}/>
                         </View>
                     </MenuOption>
                     <View style={styles.MenuDivider}/>
                     <MenuOption style={styles.Menu} onSelect={() => setShowDropHighModal(true)} >
                         <Text style={styles.MenuText}>{getDropHighString(props.properties.mDropHigh)}</Text>
+                        <ActiveItemHelper turnOn={hasDropHigh(props.properties)}/>
                     </MenuOption>
                     <MenuOption style={styles.Menu} onSelect={() => setShowDropLowModal(true)} >
                         <Text style={styles.MenuText}>{getDropLowString(props.properties.mDropLow)}</Text>
+                        <ActiveItemHelper turnOn={hasDropLow(props.properties)}/>
                     </MenuOption>
                     <View style={styles.MenuDivider}/>
                     <MenuOption style={styles.Menu} onSelect={() => setShowKeepHighModal(true)} >
                         <Text style={styles.MenuText}>{getKeepHighString(props.properties.mKeepHigh)}</Text>
+                        <ActiveItemHelper turnOn={hasKeepHigh(props.properties)}/>
                     </MenuOption>
                     <MenuOption style={styles.Menu} onSelect={() => setShowKeepLowModal(true)} >
                         <Text style={styles.MenuText}>{getKeepLowString(props.properties.mKeepLow)}</Text>
+                        <ActiveItemHelper turnOn={hasKeepLow(props.properties)}/>
                     </MenuOption>
                     <View style={styles.MenuDivider}/>
                     <MenuOption style={styles.Menu} onSelect={() => setShowReRollModal(true)} >
                         <Text style={styles.MenuText}>{getReRollString(props.properties.mReRoll)}</Text>
+                        <ActiveItemHelper turnOn={hasReRoll(props.properties)}/>
                     </MenuOption>
                     <View style={styles.MenuDivider}/>
                     <MenuOption style={styles.Menu} onSelect={() => setShowMinimumModal(true)} >
                         <Text style={styles.MenuText}>{getMinimumString(props.properties.mMinimumRoll)}</Text>
+                        <ActiveItemHelper turnOn={hasMinimumRoll(props.properties)}/>
                     </MenuOption>
                     <View style={styles.MenuDivider}/>
                     <MenuOption style={styles.Menu} onSelect={() => props.updateProperties(props.properties.clone({explode: !props.properties.mExplode})) } >
                         <View style={styles.MenuLineContainer}>
                             <Icon name={explodeIcon} size={styles.Icons.fontSize} color={styles.Icons.color}></Icon>
                             <Text style={styles.MenuText}>Explode</Text>
+                            <ActiveItemHelper turnOn={hasExplode(props.properties)}/>
                         </View>
                     </MenuOption>
                 </MenuOptions>
@@ -257,6 +281,7 @@ const styles = EStyleSheet.create({
         overflow:'hidden'
     },
     Menu:{
+        flexDirection:'row',
         backgroundColor:'$primaryColor',
     },
     MenuDivider:{

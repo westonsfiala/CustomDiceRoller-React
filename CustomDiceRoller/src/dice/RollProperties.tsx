@@ -123,3 +123,31 @@ export function isDouble(props : RollProperties) : boolean {
 export function isHalve(props : RollProperties) : boolean {
     return props.mDoubleHalve === RollProperties.rollHalveValue;
 }
+
+export function hasDropHigh(props: RollProperties) : boolean {
+    return props.mDropHigh !== new RollProperties({}).mDropHigh
+}
+
+export function hasDropLow(props: RollProperties) : boolean {
+    return props.mDropLow !== new RollProperties({}).mDropLow
+}
+
+export function hasKeepHigh(props: RollProperties) : boolean {
+    return props.mKeepHigh !== new RollProperties({}).mKeepHigh
+}
+
+export function hasKeepLow(props: RollProperties) : boolean {
+    return props.mKeepLow !== new RollProperties({}).mKeepLow
+}
+
+export function hasReRoll(props: RollProperties) : boolean {
+    return props.mReRoll !== new RollProperties({}).mReRoll
+}
+
+export function hasMinimumRoll(props: RollProperties) : boolean {
+    return props.mMinimumRoll !== new RollProperties({}).mMinimumRoll
+}
+
+export function hasExplode(props: RollProperties) : boolean {
+    return props.mExplode !== new RollProperties({}).mExplode
+}
