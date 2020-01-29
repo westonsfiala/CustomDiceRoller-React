@@ -1,6 +1,6 @@
 
 
-import React, { useState, useEffect, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 
 import {
     View, 
@@ -49,14 +49,10 @@ export function RollResultsPage(props : RollResultsInterface) {
     HistoryManager.getInstance().setDisplayUpdater(() => setReload(!reload));
     ShakeEnabledManager.getInstance().setUpdater(() => setReload(!reload));
 
-    // How long has the user been either shaking, holding, or killing animations
-    const [animationState, setAnimationState] = useState({duration:0, state:shakeEnums.shaking, frames:0});
-    // Time that we started the animations
-    const startTimeRef = useRef(0);
-    // Time that the last animation started
-    const lastAnimationTimeRef = useRef(0);
+    // Whats going on with the animation.
+    const [animationState, setAnimationState] = useState({startTime:0, lastAnimationTime:0, duration:0, state:shakeEnums.shaking, frames:0});
 
-    const playCritSoundsRef = useRef(false);
+    const [playCritSounds, setPlayCritSounds] = useState(false);
 
     let rollHelper = HistoryManager.getInstance().getLastRoll();
 
@@ -94,7 +90,7 @@ export function RollResultsPage(props : RollResultsInterface) {
     }
 
     function exitShake() {
-        setAnimationState({duration:0, state:shakeEnums.done, frames:0})
+        setAnimationState({startTime:0, lastAnimationTime:0, duration:0, state:shakeEnums.done, frames:0})
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     }
 
@@ -103,23 +99,22 @@ export function RollResultsPage(props : RollResultsInterface) {
         props.dismissPage();
     }
     
-    function goToNextState(duration: number, state: shakeEnums) {
+    function goToNextState(currentTime: number, duration: number, state: shakeEnums) {
         if(state == shakeEnums.done) {
             exitShake();
         } else {
             let nextFrame = animationState.frames+1;
-            setAnimationState({duration:duration, state:state, frames:nextFrame});
+            setAnimationState({startTime:animationState.startTime, lastAnimationTime:currentTime, duration:duration, state:state, frames:nextFrame});
         }
     }
 
     function animateDice() {
         let rightNow = Date.now();
-        let totalElapsedTime = rightNow - startTimeRef.current;
-        let animationDuration = rightNow - lastAnimationTimeRef.current;
-        lastAnimationTimeRef.current = rightNow;
+        let totalElapsedTime = rightNow - animationState.startTime;
+        let animationDuration = rightNow - animationState.lastAnimationTime;
 
         if(totalElapsedTime > MAX_SHAKE_TIME) {
-            goToNextState(0, shakeEnums.done);
+            goToNextState(0, 0, shakeEnums.done);
             return;
         }
 
@@ -173,7 +168,7 @@ export function RollResultsPage(props : RollResultsInterface) {
 
         SoundManager.getInstance().playDiceRoll(maxCollisionVelocity/300);
 
-        goToNextState(newTime, newState);
+        goToNextState(rightNow, newTime, newState);
     }
     
     let animationsRunning = animationState.state != shakeEnums.done;
@@ -189,14 +184,13 @@ export function RollResultsPage(props : RollResultsInterface) {
         if(rollHelper.storedRoll.getTotalDiceInRoll() !== 0 && TabManager.getInstance().isOnDiceRollTab()) {
             let startAnimations = ShakeEnabledManager.getInstance().getShakeEnabled();
 
-            playCritSoundsRef.current = true;
+            setPlayCritSounds(true);
             
             if(startAnimations) {
-                lastAnimationTimeRef.current = Date.now();
-                startTimeRef.current = Date.now();
-                goToNextState(0, shakeEnums.shaking);
+                let rightNow = Date.now();
+                setAnimationState({startTime:rightNow, lastAnimationTime:rightNow, duration:0, state:shakeEnums.shaking, frames:0});
             } else {
-                goToNextState(0, shakeEnums.done);
+                goToNextState(0, 0, shakeEnums.done);
             }
         }
     }, [rollHelper]);
@@ -219,9 +213,7 @@ export function RollResultsPage(props : RollResultsInterface) {
             <View style={styles.Container}>
                 {animationsRunning ? shakeDieArray.map(renderShakeDie) : null}
                 <View style={styles.ShakeContainer}>
-                    <Text style={styles.ShakeText}>
-                        {displayText}
-                    </Text>
+                    <Text style={styles.ShakeText}>{displayText}</Text>
                 </View>
                 <View style={styles.ButtonContainer}>
                     <Touchable 
@@ -237,10 +229,8 @@ export function RollResultsPage(props : RollResultsInterface) {
         )
     }
 
-    if(playCritSoundsRef.current)
+    if(playCritSounds)
     {
-        playCritSoundsRef.current = false;
-
         // Check for rolling critical success or critical failures
         // TODO: generalize this
         if(rollHelper.storedResults.mRollResults.size == 1) {
@@ -256,6 +246,8 @@ export function RollResultsPage(props : RollResultsInterface) {
                 }
             }
         }
+        
+        setPlayCritSounds(false);
     }
 
     return (
