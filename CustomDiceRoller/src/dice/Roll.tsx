@@ -2,7 +2,7 @@
 import { Die } from './Die'
 import { SimpleDie } from './SimpleDie';
 import { cloneDie } from './DieFactory'
-import { RollProperties } from './RollProperties'
+import { RollProperties, isDouble, isHalve, isAdvantage, isDisadvantage } from './RollProperties'
 import { RollResults } from './views/RollResults'
 
 import {
@@ -317,7 +317,6 @@ export class Roll {
                 let numberToDrop = keepList.length - (properties.mKeepHigh + properties.mKeepLow)
                 let indexToDrop = properties.mKeepLow
                 let tempSorted = keepList.slice().sort((a,b) => a-b);
-                console.log({keepHigh:properties.mKeepHigh, keepLow:properties.mKeepLow, numberToDrop, indexToDrop, tempSorted})
                 for(let dropIndex = 0; dropIndex < numberToDrop; dropIndex++) {
                     let ejectedValue = tempSorted[indexToDrop + dropIndex]
                     let ejectedIndex = keepList.indexOf(ejectedValue);
@@ -335,16 +334,45 @@ export class Roll {
         let dieAverage = 0
         for(let props of this.mDiePropArray)
         {
-            dieAverage += props.mDie.average * props.mProperties.mNumDice + props.mProperties.mModifier
+            let individualAverage = props.mDie.expectedResult(props.mProperties.mMinimumRoll, props.mProperties.mReRoll, props.mProperties.mExplode);
+
+            // How many dice do we actually have.
+            let numActualDice = props.mProperties.mNumDice;
+            numActualDice -= props.mProperties.mDropHigh + props.mProperties.mDropLow;
+            let keepNum = props.mProperties.mKeepHigh + props.mProperties.mKeepLow;
+            if(keepNum != 0) {
+                numActualDice = Math.min(numActualDice, keepNum);
+            }
+            numActualDice = Math.max(0, numActualDice);
+
+            // Are the drop / keep dice skewing the min/max
+            let moveTowardsHigh = Math.max(1,props.mProperties.mKeepHigh + props.mProperties.mDropLow + 1);
+            let moveTowardsLow = Math.max(1,props.mProperties.mKeepLow + props.mProperties.mDropHigh + 1);
+            if(moveTowardsHigh > moveTowardsLow) {
+                individualAverage = (individualAverage + (individualAverage * moveTowardsLow + props.mDie.max * moveTowardsHigh) / (moveTowardsHigh + moveTowardsLow))/2
+            } else if(moveTowardsHigh < moveTowardsLow) {
+                individualAverage = (individualAverage + (individualAverage * moveTowardsHigh + props.mDie.min * moveTowardsLow) / (moveTowardsHigh + moveTowardsLow))/2
+            }
+            
+            let expectedResult = individualAverage * numActualDice;
+
+            if(isAdvantage(props.mProperties)) { expectedResult = (expectedResult*2 + props.mDie.max) / 3; }
+            if(isDisadvantage(props.mProperties)) { expectedResult = (expectedResult*2 + props.mDie.min) / 3; }
+
+            expectedResult += props.mProperties.mModifier;
+            console.log({moveTowardsHigh, moveTowardsLow, individualAverage, expectedResult});
+
+            if(isDouble(props.mProperties)) { expectedResult *= 2; }
+            if(isHalve(props.mProperties)) { expectedResult /= 2; }
+
+            dieAverage += expectedResult;
         }
         return dieAverage
     }
 
     displayInHex(): boolean {
         // Only display hex when you start with "0x" and have more characters after that.
-        return this.mRollName.length > (Die.dieDisplayInHexID.length) && this.mRollName.startsWith(
-            Die.dieDisplayInHexID
-        )
+        return this.mRollName.length > (Die.dieDisplayInHexID.length) && this.mRollName.startsWith(Die.dieDisplayInHexID)
     }
 
     get displayName() : string

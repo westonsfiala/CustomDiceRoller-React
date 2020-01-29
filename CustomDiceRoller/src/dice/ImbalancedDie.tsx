@@ -73,6 +73,23 @@ export class ImbalancedDie extends Die
         this.mFaces.forEach((value) => average += value);
         return average / this.mFaces.length;
     }
+    
+
+    expectedResult(minimum: number, rerollUnder:number, explode:boolean) : number
+    {
+        let advAverage = 0;
+        const normalAverage = this.average;
+
+        this.mFaces.forEach((face) => {
+            let value = face;
+            if(minimum > value) { value = Math.min(this.max, minimum); }
+            if(rerollUnder >= value) { value = normalAverage; }
+            if(explode && value == this.max) { value = value + normalAverage; }
+            advAverage += value;
+        });
+
+        return advAverage;
+    }
 
     get info() : string
     {

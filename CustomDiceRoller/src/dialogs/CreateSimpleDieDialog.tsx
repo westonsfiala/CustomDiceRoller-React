@@ -39,11 +39,10 @@ export function CreateSimpleDieDialog(props : CreateSimpleDieInterface) {
 
     function acceptHandler() {
         let possibleNumber = Number.parseInt(dieNumberString)
-        if(Number.isSafeInteger(possibleNumber) && possibleNumber >= 0)
+        if(Number.isSafeInteger(possibleNumber) && possibleNumber > 0)
         {
             props.createDie(new SimpleDie(dieName, possibleNumber));
         }
-
         props.dismissModal();
     }
 

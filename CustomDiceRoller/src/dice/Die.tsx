@@ -1,3 +1,4 @@
+import { RollProperties } from "./RollProperties";
 
 export class DieLoadError extends Error {
     constructor() {
@@ -24,6 +25,8 @@ export abstract class Die {
     abstract get min() : number;
 
     abstract get average() : number;
+
+    abstract expectedResult(minimum: number, rerollUnder:number, explode:boolean) : number;
 
     get displayInHex() : boolean {
         // Only display hex when you start with "0x" and have more characters after that.

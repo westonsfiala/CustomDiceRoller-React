@@ -13,6 +13,7 @@ import {
     DIE_100
 } from "./dieImages/DieImageGetter"
 import { randomIntFromInterval } from "../helpers/NumberHelper";
+import { RollProperties } from "./RollProperties";
 
 export class SimpleDie extends Die
 {
@@ -57,6 +58,24 @@ export class SimpleDie extends Die
     get average() : number
     {
         return (this.mDie + 1) / 2;
+    }
+
+    expectedResult(minimum: number, rerollUnder:number, explode:boolean) : number
+    {
+        let advAverage = 0;
+        const normalAverage = this.average;
+
+        for(let i = 0; i < Math.abs(this.mDie); i += 1) {
+            let value = i+1;
+            if(minimum > value) { value = Math.min(this.max, minimum); }
+            if(rerollUnder >= value) { value = normalAverage; }
+            if(explode && value == this.max) { value = value + normalAverage; }
+            advAverage += value;
+        }
+
+        advAverage /= this.mDie;
+
+        return advAverage;
     }
 
     get info() : string

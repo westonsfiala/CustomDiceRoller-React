@@ -60,6 +60,22 @@ export class MinMaxDie extends Die
         return (this.mMinimum + this.mMaximum) / 2;
     }
 
+    expectedResult(minimum: number, rerollUnder:number, explode:boolean) : number
+    {
+        let advAverage = 0;
+        const normalAverage = this.average;
+
+        for(let i = this.min; i < this.max; i += 1) {
+            let value = i;
+            if(minimum > value) { value = Math.min(this.max, minimum); }
+            if(rerollUnder >= value) { value = normalAverage; }
+            if(explode && value == this.max) { value = value + normalAverage; }
+            advAverage += value;
+        }
+
+        return advAverage;
+    }
+
     get info() : string
     {
         return 'Rolls a number between ' + this.mMinimum + ' and ' + this.mMaximum + '\nAverage of ' + this.average;
