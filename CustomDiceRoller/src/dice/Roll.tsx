@@ -266,7 +266,7 @@ export class Roll {
             if(properties.mMinimumRoll !== 0 && Math.abs(dieRoll) < properties.mMinimumRoll)
             {
                 rerollList.push(dieRoll);
-                dieRoll = properties.mMinimumRoll;
+                dieRoll = Math.min(properties.mMinimumRoll, die.max);
             }
 
             // If we use reRolls, reRoll under the threshold.
@@ -348,19 +348,23 @@ export class Roll {
             // Are the drop / keep dice skewing the min/max
             let moveTowardsHigh = Math.max(1,props.mProperties.mKeepHigh + props.mProperties.mDropLow + 1);
             let moveTowardsLow = Math.max(1,props.mProperties.mKeepLow + props.mProperties.mDropHigh + 1);
+            let moveTotal = Math.abs(moveTowardsHigh - moveTowardsLow);
+
+            // This will asymptotically approach either max/min as you move furthur towards high/low
+            // This is not the true average shift, but it is pretty close. 
             if(moveTowardsHigh > moveTowardsLow) {
-                individualAverage = (individualAverage + (individualAverage * moveTowardsLow + props.mDie.max * moveTowardsHigh) / (moveTowardsHigh + moveTowardsLow))/2
+                individualAverage = (props.mDie.max * moveTotal + 2*individualAverage) / (2 + moveTotal)
             } else if(moveTowardsHigh < moveTowardsLow) {
-                individualAverage = (individualAverage + (individualAverage * moveTowardsHigh + props.mDie.min * moveTowardsLow) / (moveTowardsHigh + moveTowardsLow))/2
+                individualAverage = (props.mDie.min * moveTotal + 2*individualAverage) / (2 + moveTotal)
             }
             
             let expectedResult = individualAverage * numActualDice;
 
-            if(isAdvantage(props.mProperties)) { expectedResult = (expectedResult*2 + props.mDie.max) / 3; }
-            if(isDisadvantage(props.mProperties)) { expectedResult = (expectedResult*2 + props.mDie.min) / 3; }
+            // Same math as above, but the moveTotal is always 1.
+            if(isAdvantage(props.mProperties)) { expectedResult = (props.mDie.max + expectedResult*2) / 3; }
+            if(isDisadvantage(props.mProperties)) { expectedResult = (props.mDie.min + expectedResult*2) / 3; }
 
             expectedResult += props.mProperties.mModifier;
-            console.log({moveTowardsHigh, moveTowardsLow, individualAverage, expectedResult});
 
             if(isDouble(props.mProperties)) { expectedResult *= 2; }
             if(isHalve(props.mProperties)) { expectedResult /= 2; }
