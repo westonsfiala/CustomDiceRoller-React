@@ -339,15 +339,27 @@ export class Roll {
             // How many dice do we actually have.
             let numActualDice = props.mProperties.mNumDice;
             numActualDice -= props.mProperties.mDropHigh + props.mProperties.mDropLow;
+            
+            let moveTowardsHigh = props.mProperties.mDropLow;
+            let moveTowardsLow = props.mProperties.mDropHigh;
+
             let keepNum = props.mProperties.mKeepHigh + props.mProperties.mKeepLow;
-            if(keepNum != 0) {
-                numActualDice = Math.min(numActualDice, keepNum);
+            if(keepNum !== 0 && keepNum < numActualDice) {
+                if(props.mProperties.mKeepHigh === 0) {
+                    moveTowardsLow += numActualDice - keepNum;
+                } else if(props.mProperties.mKeepLow === 0) {
+                    moveTowardsHigh += numActualDice - keepNum;
+                } else if(props.mProperties.mKeepHigh > props.mProperties.mKeepLow) {
+                    moveTowardsHigh += props.mProperties.mKeepHigh - props.mProperties.mKeepLow;
+                } else {
+                    moveTowardsLow += props.mProperties.mKeepLow - props.mProperties.mKeepHigh;
+                }
+
+                numActualDice = keepNum;
             }
             numActualDice = Math.max(0, numActualDice);
 
             // Are the drop / keep dice skewing the min/max
-            let moveTowardsHigh = Math.max(1,props.mProperties.mKeepHigh + props.mProperties.mDropLow + 1);
-            let moveTowardsLow = Math.max(1,props.mProperties.mKeepLow + props.mProperties.mDropHigh + 1);
             let moveTotal = Math.abs(moveTowardsHigh - moveTowardsLow);
 
             // This will asymptotically approach either max/min as you move furthur towards high/low
