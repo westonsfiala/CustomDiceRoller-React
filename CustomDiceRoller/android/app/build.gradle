@@ -136,6 +136,12 @@ def enableHermes = project.ext.react.get("enableHermes", true);
 def userVer = getNpmVersion()
 def googleVer = getGitVersion()
 
+configurations.all {
+    resolutionStrategy {
+    force "com.facebook.soloader:soloader:0.8.0"
+    }
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
