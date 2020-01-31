@@ -7,7 +7,6 @@ import {
     Text,
     ScrollView,
     ScaledSize,
-    LayoutAnimation,
 } from 'react-native';
 
 import Touchable from 'react-native-platform-touchable';
@@ -91,7 +90,6 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     function exitShake() {
         setAnimationState({startTime:0, lastAnimationTime:0, duration:0, state:shakeEnums.done, frames:0})
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     }
 
     function exitDialog() {
