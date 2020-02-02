@@ -209,7 +209,9 @@ export function RollResultsPage(props : RollResultsInterface) {
 
         return (
             <View style={styles.Container}>
-                {animationsRunning ? shakeDieArray.map(renderShakeDie) : null}
+                <View>
+                    {shakeDieArray.map(renderShakeDie)}
+                </View>
                 <View style={styles.ShakeContainer}>
                     <Text style={styles.ShakeText}>{displayText}</Text>
                 </View>
@@ -250,7 +252,6 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     return (
         <View style={styles.Container}>
-            {animationsRunning ? shakeDieArray.map(renderShakeDie) : null}
             <Text style={styles.DateTimeText}>{rollHelper.dateString} - {rollHelper.timeString}</Text>
             <View style={styles.Container}>
                 <ScrollView contentContainerStyle={{justifyContent:'center'}} style={{}}>

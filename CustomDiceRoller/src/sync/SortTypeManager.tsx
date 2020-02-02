@@ -47,7 +47,10 @@ export default class SortTypeManager {
     }
 
     setSortTypeIndex(sortTypeIndex : number) {
-        this.saveSortType(sortTypeIndex).then((value) => {
+        let safeIndex = sortTypeIndex;
+        if(safeIndex < 0) safeIndex = 0;
+        if(safeIndex > 2) safeIndex = 2;
+        this.saveSortType(safeIndex).then((value) => {
             this.mSortTypeIndex = value;
             this.runUpdaters();
         });
