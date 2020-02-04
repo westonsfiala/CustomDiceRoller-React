@@ -15,37 +15,58 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { SetValueDialog } from '../dialogs/SetValueDialog';
 
 import { enforceGoodValue, snapToNextIncrement } from './NumberHelper';
+import { RollProperties } from '../dice/RollProperties';
 
-export function NumDiceUpDownButtons({count, setCount}) {
-    return UpDownButtons({postFix:'d', forcePlusMinus:false, disallowZero:true, count, setCount})
+interface SpecificUpDownButtonsInterface {
+    getCount : () => number;
+    setCount : (value: number) => Promise<RollProperties>;
 }
 
-export function ModifierUpDownButtons({count, setCount}) {
-    return UpDownButtons({postFix:'', forcePlusMinus:true, disallowZero:false, count, setCount})
+export function NumDiceUpDownButtons(props : SpecificUpDownButtonsInterface) {
+    return (
+        <UpDownButtons postFix='d' forcePlusMinus={false} disallowZero={true} getCount={props.getCount} setCount={props.setCount}/>
+    );
 }
 
-function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = false, count, setCount}) {
+export function ModifierUpDownButtons(props : SpecificUpDownButtonsInterface) {
+    return (
+        <UpDownButtons postFix='' forcePlusMinus={true} disallowZero={false} getCount={props.getCount} setCount={props.setCount}/>
+    );
+}
+
+interface UpDownButtonsInterface {
+    postFix : string;
+    forcePlusMinus : boolean;
+    disallowZero : boolean;
+    getCount : () => number;
+    setCount : (value: number) => Promise<RollProperties>;
+}
+
+function UpDownButtons(props : UpDownButtonsInterface) {
 
     const [modalShown, setModalShown] = useState(false);
+    const [reload, setReload] = useState(false);
+
+    let count = props.getCount();
 
     // Force good values
-    let checkVal = enforceGoodValue(count, 0, disallowZero);
+    let checkVal = enforceGoodValue(count, 0, props.disallowZero);
     if(checkVal !== count) {
-        setCount(checkVal)
+        props.setCount(checkVal)
     }
 
     let countText = String(count);
-    if(forcePlusMinus) {
+    if(props.forcePlusMinus) {
         countText = getModifierString(count, false);
     }
 
     function updateNumber(value: number) {
-        setCount(value);
+        props.setCount(value).then(() => setReload(!reload));
     }
 
     function handleChange(change: number) {
         let snappedChange = snapToNextIncrement(count, change)
-        let newCount = enforceGoodValue(count, snappedChange, disallowZero)
+        let newCount = enforceGoodValue(count, snappedChange, props.disallowZero)
 
         updateNumber(newCount)
     }
@@ -65,7 +86,7 @@ function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = fal
                 style={styles.TextTouchable}
                 onPress={() => setModalShown(true)}
             >
-                <Text style={styles.Text}>{countText}{postFix}</Text>
+                <Text style={styles.Text}>{countText}{props.postFix}</Text>
             </Touchable>
             <Touchable 
                 style={styles.ButtonRadius}
@@ -78,7 +99,7 @@ function UpDownButtons({postFix = '', forcePlusMinus = false, disallowZero = fal
             </Touchable>
             <SetValueDialog 
                 modalShown={modalShown} 
-                valueEnforcer={(num : number) => {return enforceGoodValue(num, 0, disallowZero)}}
+                valueEnforcer={(num : number) => {return enforceGoodValue(num, 0, props.disallowZero)}}
                 titleText={"Set Value Exact"}
                 defaultValue={count} 
                 dismissModal={() => setModalShown(false)} 

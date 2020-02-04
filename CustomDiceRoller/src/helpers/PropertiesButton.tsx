@@ -48,11 +48,13 @@ function ActiveItemHelper(props: helperInterface) {
 }
 
 interface PropertiesInterface {
-    properties: RollProperties;
-    updateProperties: (props: RollProperties) => void;
+    getProperties: () => RollProperties;
+    updateProperties: (props: RollProperties) => Promise<RollProperties>;
 }
 
 export function PropertiesButton(props: PropertiesInterface) {
+
+    const [reload, setReload] = useState(false);
 
     const menuRef = useRef(null);
     const resetMenuRef = useRef(null);
@@ -63,9 +65,15 @@ export function PropertiesButton(props: PropertiesInterface) {
     const [showReRollModal, setShowReRollModal] = useState(false);
     const [showMinimumModal, setShowMinimumModal] = useState(false);
 
+    function internalUpdateProperties(updateProps : RollProperties) {
+        props.updateProperties(updateProps).then(() => setReload(!reload));
+    }
+
     let propertyText = "";
 
-    let numNonDefault = props.properties.numNonDefaultProperties();
+    let properties = props.getProperties();
+
+    let numNonDefault = properties.numNonDefaultProperties();
 
     if(numNonDefault === 0)
     {
@@ -82,28 +90,28 @@ export function PropertiesButton(props: PropertiesInterface) {
     let advantageIcon = "checkbox-blank-outline";
     let disadvantageIcon = "checkbox-blank-outline";
 
-    if(isAdvantage(props.properties)) {
+    if(isAdvantage(properties)) {
         advantageIcon = "checkbox-marked-outline";
     }
 
-    if(isDisadvantage(props.properties)) {
+    if(isDisadvantage(properties)) {
         disadvantageIcon = "checkbox-marked-outline";
     }
     
     let doubleIcon = "checkbox-blank-outline";
     let halveIcon = "checkbox-blank-outline";
 
-    if(isDouble(props.properties)) {
+    if(isDouble(properties)) {
         doubleIcon = "checkbox-marked-outline";
     }
 
-    if(isHalve(props.properties)) {
+    if(isHalve(properties)) {
         halveIcon = "checkbox-marked-outline";
     }
 
     let explodeIcon = "checkbox-blank-outline";
 
-    if(props.properties.mExplode) {
+    if(properties.mExplode) {
         explodeIcon = "checkbox-marked-outline";
     }
 
@@ -112,77 +120,77 @@ export function PropertiesButton(props: PropertiesInterface) {
             <Menu ref={menuRef}>
                 <MenuTrigger/>
                 <MenuOptions>
-                    <MenuOption style={styles.Menu} onSelect={() => props.updateProperties(props.properties.clone(
-                        {advantageDisadvantage: isAdvantage(props.properties) ? RollProperties.rollNaturalValue : RollProperties.rollAdvantageValue}
+                    <MenuOption style={styles.Menu} onSelect={() => internalUpdateProperties(properties.clone(
+                        {advantageDisadvantage: isAdvantage(properties) ? RollProperties.rollNaturalValue : RollProperties.rollAdvantageValue}
                         )) } >
                         <View style={styles.MenuLineContainer}>
                             <Icon name={advantageIcon} size={styles.Icons.fontSize} color={styles.Icons.color}></Icon>
                             <Text style={styles.MenuText}>Advantage</Text>
-                            <ActiveItemHelper turnOn={isAdvantage(props.properties)}/>
+                            <ActiveItemHelper turnOn={isAdvantage(properties)}/>
                         </View>
                     </MenuOption>
-                    <MenuOption style={styles.Menu} onSelect={() => props.updateProperties(props.properties.clone(
-                        {advantageDisadvantage: isDisadvantage(props.properties) ? RollProperties.rollNaturalValue : RollProperties.rollDisadvantageValue}
+                    <MenuOption style={styles.Menu} onSelect={() => internalUpdateProperties(properties.clone(
+                        {advantageDisadvantage: isDisadvantage(properties) ? RollProperties.rollNaturalValue : RollProperties.rollDisadvantageValue}
                         )) } >
                         <View style={styles.MenuLineContainer}>
                             <Icon name={disadvantageIcon} size={styles.Icons.fontSize} color={styles.Icons.color}></Icon>
                             <Text style={styles.MenuText}>Disadvantage</Text>
-                            <ActiveItemHelper turnOn={isDisadvantage(props.properties)}/>
+                            <ActiveItemHelper turnOn={isDisadvantage(properties)}/>
                         </View>
                     </MenuOption>
                     <View style={styles.MenuDivider}/>
-                    <MenuOption style={styles.Menu} onSelect={() => props.updateProperties(props.properties.clone(
-                        {doubleHalve: isDouble(props.properties) ? RollProperties.rollNaturalValue : RollProperties.rollDoubleValue}
+                    <MenuOption style={styles.Menu} onSelect={() => internalUpdateProperties(properties.clone(
+                        {doubleHalve: isDouble(properties) ? RollProperties.rollNaturalValue : RollProperties.rollDoubleValue}
                         )) } >
                         <View style={styles.MenuLineContainer}>
                             <Icon name={doubleIcon} size={styles.Icons.fontSize} color={styles.Icons.color}></Icon>
                             <Text style={styles.MenuText}>Double</Text>
-                            <ActiveItemHelper turnOn={isDouble(props.properties)}/>
+                            <ActiveItemHelper turnOn={isDouble(properties)}/>
                         </View>
                     </MenuOption>
-                    <MenuOption style={styles.Menu} onSelect={() => props.updateProperties(props.properties.clone(
-                        {doubleHalve: isHalve(props.properties) ? RollProperties.rollNaturalValue : RollProperties.rollHalveValue}
+                    <MenuOption style={styles.Menu} onSelect={() => internalUpdateProperties(properties.clone(
+                        {doubleHalve: isHalve(properties) ? RollProperties.rollNaturalValue : RollProperties.rollHalveValue}
                         )) } >
                         <View style={styles.MenuLineContainer}>
                             <Icon name={halveIcon} size={styles.Icons.fontSize} color={styles.Icons.color}></Icon>
                             <Text style={styles.MenuText}>Halve</Text>
-                            <ActiveItemHelper turnOn={isHalve(props.properties)}/>
+                            <ActiveItemHelper turnOn={isHalve(properties)}/>
                         </View>
                     </MenuOption>
                     <View style={styles.MenuDivider}/>
                     <MenuOption style={styles.Menu} onSelect={() => setShowDropHighModal(true)} >
-                        <Text style={styles.MenuText}>{getDropHighString(props.properties.mDropHigh)}</Text>
-                        <ActiveItemHelper turnOn={hasDropHigh(props.properties)}/>
+                        <Text style={styles.MenuText}>{getDropHighString(properties.mDropHigh)}</Text>
+                        <ActiveItemHelper turnOn={hasDropHigh(properties)}/>
                     </MenuOption>
                     <MenuOption style={styles.Menu} onSelect={() => setShowDropLowModal(true)} >
-                        <Text style={styles.MenuText}>{getDropLowString(props.properties.mDropLow)}</Text>
-                        <ActiveItemHelper turnOn={hasDropLow(props.properties)}/>
+                        <Text style={styles.MenuText}>{getDropLowString(properties.mDropLow)}</Text>
+                        <ActiveItemHelper turnOn={hasDropLow(properties)}/>
                     </MenuOption>
                     <View style={styles.MenuDivider}/>
                     <MenuOption style={styles.Menu} onSelect={() => setShowKeepHighModal(true)} >
-                        <Text style={styles.MenuText}>{getKeepHighString(props.properties.mKeepHigh)}</Text>
-                        <ActiveItemHelper turnOn={hasKeepHigh(props.properties)}/>
+                        <Text style={styles.MenuText}>{getKeepHighString(properties.mKeepHigh)}</Text>
+                        <ActiveItemHelper turnOn={hasKeepHigh(properties)}/>
                     </MenuOption>
                     <MenuOption style={styles.Menu} onSelect={() => setShowKeepLowModal(true)} >
-                        <Text style={styles.MenuText}>{getKeepLowString(props.properties.mKeepLow)}</Text>
-                        <ActiveItemHelper turnOn={hasKeepLow(props.properties)}/>
+                        <Text style={styles.MenuText}>{getKeepLowString(properties.mKeepLow)}</Text>
+                        <ActiveItemHelper turnOn={hasKeepLow(properties)}/>
                     </MenuOption>
                     <View style={styles.MenuDivider}/>
                     <MenuOption style={styles.Menu} onSelect={() => setShowReRollModal(true)} >
-                        <Text style={styles.MenuText}>{getReRollString(props.properties.mReRoll)}</Text>
-                        <ActiveItemHelper turnOn={hasReRoll(props.properties)}/>
+                        <Text style={styles.MenuText}>{getReRollString(properties.mReRoll)}</Text>
+                        <ActiveItemHelper turnOn={hasReRoll(properties)}/>
                     </MenuOption>
                     <View style={styles.MenuDivider}/>
                     <MenuOption style={styles.Menu} onSelect={() => setShowMinimumModal(true)} >
-                        <Text style={styles.MenuText}>{getMinimumString(props.properties.mMinimumRoll)}</Text>
-                        <ActiveItemHelper turnOn={hasMinimumRoll(props.properties)}/>
+                        <Text style={styles.MenuText}>{getMinimumString(properties.mMinimumRoll)}</Text>
+                        <ActiveItemHelper turnOn={hasMinimumRoll(properties)}/>
                     </MenuOption>
                     <View style={styles.MenuDivider}/>
-                    <MenuOption style={styles.Menu} onSelect={() => props.updateProperties(props.properties.clone({explode: !props.properties.mExplode})) } >
+                    <MenuOption style={styles.Menu} onSelect={() => internalUpdateProperties(properties.clone({explode: !properties.mExplode})) } >
                         <View style={styles.MenuLineContainer}>
                             <Icon name={explodeIcon} size={styles.Icons.fontSize} color={styles.Icons.color}></Icon>
                             <Text style={styles.MenuText}>Explode</Text>
-                            <ActiveItemHelper turnOn={hasExplode(props.properties)}/>
+                            <ActiveItemHelper turnOn={hasExplode(properties)}/>
                         </View>
                     </MenuOption>
                 </MenuOptions>
@@ -190,7 +198,7 @@ export function PropertiesButton(props: PropertiesInterface) {
             <Menu ref={resetMenuRef}>
                 <MenuTrigger/>
                 <MenuOptions>
-                    <MenuOption style={styles.Menu} onSelect={() => props.updateProperties(new RollProperties({numDice: props.properties.mNumDice, modifier: props.properties.mModifier}))}>
+                    <MenuOption style={styles.Menu} onSelect={() => internalUpdateProperties(new RollProperties({numDice: properties.mNumDice, modifier: properties.mModifier}))}>
                         <Text style={styles.MenuText}>
                             Reset Properties
                         </Text>
@@ -210,49 +218,49 @@ export function PropertiesButton(props: PropertiesInterface) {
                 modalShown={showDropHighModal} 
                 titleText={getDropHighTitle()}
                 valueEnforcer={(num: number) => {return Math.max(num, 0)}}
-                defaultValue={props.properties.mDropHigh} 
+                defaultValue={properties.mDropHigh} 
                 dismissModal={() => setShowDropHighModal(false)} 
-                acceptValue={(newVal: number) => props.updateProperties(props.properties.clone({dropHigh:newVal})) }
+                acceptValue={(newVal: number) => internalUpdateProperties(properties.clone({dropHigh:newVal})) }
             />
             <SetValueDialog
                 modalShown={showDropLowModal} 
                 titleText={getDropLowTitle()}
                 valueEnforcer={(num: number) => {return Math.max(num, 0)}}
-                defaultValue={props.properties.mDropLow} 
+                defaultValue={properties.mDropLow} 
                 dismissModal={() => setShowDropLowModal(false)} 
-                acceptValue={(newVal: number) => props.updateProperties(props.properties.clone({dropLow:newVal})) }
+                acceptValue={(newVal: number) => internalUpdateProperties(properties.clone({dropLow:newVal})) }
             />
             <SetValueDialog
                 modalShown={showKeepHighModal} 
                 titleText={getKeepHighTitle()}
                 valueEnforcer={(num: number) => {return Math.max(num, 0)}}
-                defaultValue={props.properties.mKeepHigh} 
+                defaultValue={properties.mKeepHigh} 
                 dismissModal={() => setShowKeepHighModal(false)} 
-                acceptValue={(newVal: number) => props.updateProperties(props.properties.clone({keepHigh:newVal})) }
+                acceptValue={(newVal: number) => internalUpdateProperties(properties.clone({keepHigh:newVal})) }
             />
             <SetValueDialog
                 modalShown={showKeepLowModal} 
                 titleText={getKeepLowTitle()}
                 valueEnforcer={(num: number) => {return Math.max(num, 0)}}
-                defaultValue={props.properties.mKeepLow} 
+                defaultValue={properties.mKeepLow} 
                 dismissModal={() => setShowKeepLowModal(false)} 
-                acceptValue={(newVal: number) => props.updateProperties(props.properties.clone({keepLow:newVal})) }
+                acceptValue={(newVal: number) => internalUpdateProperties(properties.clone({keepLow:newVal})) }
             />
             <SetValueDialog
                 modalShown={showReRollModal} 
                 titleText={getReRollTitle()}
                 valueEnforcer={(num: number) => {return Math.max(num, 0)}}
-                defaultValue={props.properties.mReRoll} 
+                defaultValue={properties.mReRoll} 
                 dismissModal={() => setShowReRollModal(false)} 
-                acceptValue={(newVal: number) => props.updateProperties(props.properties.clone({reRoll:newVal})) }
+                acceptValue={(newVal: number) => internalUpdateProperties(properties.clone({reRoll:newVal})) }
             /> 
             <SetValueDialog
                 modalShown={showMinimumModal} 
                 titleText={getMinimumTitle()}
                 valueEnforcer={(num: number) => {return Math.max(num, 0)}}
-                defaultValue={props.properties.mMinimumRoll} 
+                defaultValue={properties.mMinimumRoll} 
                 dismissModal={() => setShowMinimumModal(false)} 
-                acceptValue={(newVal: number) => props.updateProperties(props.properties.clone({minimumRoll:newVal})) }
+                acceptValue={(newVal: number) => internalUpdateProperties(properties.clone({minimumRoll:newVal})) }
             />
         </View>
     )

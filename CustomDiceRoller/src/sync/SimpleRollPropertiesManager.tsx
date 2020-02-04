@@ -9,7 +9,6 @@ export default class SimpleRollPropertiesManager {
     private static mInstance = null as SimpleRollPropertiesManager;
 
     private mProperties = new RollProperties({});
-    private mUpdater = null
 
     static getInstance() : SimpleRollPropertiesManager {
         if(SimpleRollPropertiesManager.mInstance === null) {
@@ -23,19 +22,15 @@ export default class SimpleRollPropertiesManager {
         this.retrieveRollProperties().then((properties) => this.setProperties(properties));
     }
 
-    setUpdater(updater : () => void) {
-        this.mUpdater = updater;
-    }
-
     getProperties() : RollProperties {
         return this.mProperties;
     }
 
-    setProperties(properties : RollProperties) {
-        this.saveRollProperties(properties).then((properties) => {
-            this.mProperties = properties;
-            if(this.mUpdater !== null) this.mUpdater();
-        });
+    async setProperties(properties : RollProperties) : Promise<RollProperties> {
+
+        this.mProperties = await this.saveRollProperties(properties);
+
+        return this.mProperties;
     }
 
     private async saveRollProperties(properties: RollProperties) : Promise<RollProperties> {
