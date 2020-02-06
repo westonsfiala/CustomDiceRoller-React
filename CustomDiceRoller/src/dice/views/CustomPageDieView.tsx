@@ -20,7 +20,7 @@ import { CreateDieDialog } from '../../dialogs/CreateDieDialog';
 interface CustomDieViewProps {
     diePropPair: DiePropertyPair;
     updateDie: (oldDie: Die, newDie : Die) => void;
-    updateProperties: (props : RollProperties) => void;
+    updateProperties: (props : RollProperties) => Promise<any>;
     moveUpHandler: () => void;
     deleteHandler: () => void;
     moveDownHandler: () => void;
@@ -64,14 +64,18 @@ export function CustomPageDieView(props : CustomDieViewProps) {
             </Touchable>
             <View style={styles.diceColumn}>
                 <NumDiceUpDownButtons 
-                    count={props.diePropPair.mProperties.mNumDice} 
+                    getCount={() => {
+                        return props.diePropPair.mProperties.mNumDice;
+                    }}
                     setCount={(newNumDice: number) => props.updateProperties(props.diePropPair.mProperties.clone({numDice: newNumDice}))} 
                 />
                 <ModifierUpDownButtons 
-                    count={props.diePropPair.mProperties.mModifier} 
+                    getCount={() => {
+                        return props.diePropPair.mProperties.mModifier;
+                    }}
                     setCount={(newModifier: number) => props.updateProperties(props.diePropPair.mProperties.clone({modifier: newModifier}))} 
                 />
-                <PropertiesButton properties={props.diePropPair.mProperties} updateProperties={(newProps : RollProperties) => props.updateProperties(newProps)} />
+                <PropertiesButton getProperties={() => props.diePropPair.mProperties} updateProperties={(newProps : RollProperties) => { return props.updateProperties(newProps)}} />
             </View>
             <CreateDieDialog modalShown={editModalShown} die={props.diePropPair.mDie} dismissModal={() => setEditModalShown(false)} createDie={handleEndEdit}/>
         </View> 

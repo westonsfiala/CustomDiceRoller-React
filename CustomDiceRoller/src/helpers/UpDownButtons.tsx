@@ -19,7 +19,7 @@ import { RollProperties } from '../dice/RollProperties';
 
 interface SpecificUpDownButtonsInterface {
     getCount : () => number;
-    setCount : (value: number) => Promise<RollProperties>;
+    setCount : (value: number) => Promise<any>;
 }
 
 export function NumDiceUpDownButtons(props : SpecificUpDownButtonsInterface) {

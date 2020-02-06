@@ -63,7 +63,11 @@ export function CustomDicePage(props: CustomRollPageInterface) {
                     <CustomPageDieView 
                         diePropPair={item} 
                         updateDie={(oldDie : Die, newDie : Die) => CustomRollManager.getInstance().updateDie(oldDie, newDie)}
-                        updateProperties={(newProperties : RollProperties) => CustomRollManager.getInstance().setRoll(CustomRollManager.getInstance().getRoll().addDieToRoll(item.mDie, newProperties))}
+                        updateProperties={(newProperties : RollProperties) => {
+                            CustomRollManager.getInstance().setRoll(CustomRollManager.getInstance().getRoll().addDieToRoll(item.mDie, newProperties))
+                            // TODO: improve this so that we don't need to do this.
+                            return new Promise<void>(() => null);
+                        }}
                         moveUpHandler={() => CustomRollManager.getInstance().setRoll(CustomRollManager.getInstance().getRoll().moveDieUp(index))}
                         deleteHandler={() => CustomRollManager.getInstance().setRoll(CustomRollManager.getInstance().getRoll().removeDieFromRoll(item.mDie))}
                         moveDownHandler={() => CustomRollManager.getInstance().setRoll(CustomRollManager.getInstance().getRoll().moveDieDown(index))}
