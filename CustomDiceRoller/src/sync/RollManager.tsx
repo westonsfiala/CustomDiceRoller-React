@@ -19,6 +19,8 @@ export default class RollManager {
     private static mInstance = null as RollManager;
 
     private mRolls = [] as Array<Roll>;
+    private mHasLoaded = false;
+    private mMigratedRolls = null as Array<Roll>;
     private mUpdater = null;
 
     static getInstance() : RollManager {
@@ -30,7 +32,10 @@ export default class RollManager {
     }
 
     private constructor() {
-        this.getRollStorage().then((rolls) => this.setRolls(rolls));
+        this.getRollStorage().then((rolls) => {
+            this.setRolls(rolls);
+            this.mHasLoaded = true;
+        });
     }
 
     private rollSorter(rollA: Roll, rollB: Roll) {
@@ -89,6 +94,14 @@ export default class RollManager {
             this.mRolls = rolls;
             if(this.mUpdater !== null) this.mUpdater();
         });
+
+        if(this.mMigratedRolls !== null) {
+            for(let roll of this.mMigratedRolls) {
+                this.addRollInternal(roll,true,true);
+            }
+            this.mMigratedRolls = null;
+            this.setRolls(this.mRolls);
+        }
     }
     
     hasRollByNameCategory(possibleRoll: Roll) : boolean {
@@ -105,10 +118,22 @@ export default class RollManager {
 
     resetRolls() {
         this.setRolls([]);
+        this.mMigratedRolls = null;
     }
 
     addRoll(newRoll: Roll, force: boolean = false) {
         return this.addRollInternal(newRoll, force, false);
+    }
+
+    addMigratedRolls(rolls: Array<Roll>) {
+        if(this.mHasLoaded) {
+            for(let roll of rolls) {
+                this.addRollInternal(roll,true,true);
+            }
+            this.setRolls(this.mRolls);
+        } else {
+            this.mMigratedRolls = rolls;
+        }
     }
 
     private addRollInternal(newRoll: Roll, force: boolean, supressUpdate : boolean) : boolean {

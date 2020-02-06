@@ -13,6 +13,7 @@ import SimpleRollPropertiesManager from "./SimpleRollPropertiesManager";
 import SortTypeManager from "./SortTypeManager";
 import TabManager from "./TabManager";
 import ThemeManager from "./ThemeManager";
+import LegacyMigrationManager from "./LegacyMigrationManager";
 
 export function OpenAllSingletons() {
     CustomRollManager.getInstance();
@@ -20,6 +21,7 @@ export function OpenAllSingletons() {
     DieSizeManager.getInstance();
     ExpandedCategoryManager.getInstance();
     ExpectedResultManager.getInstance();
+    LegacyMigrationManager.getInstance();
     HistoryManager.getInstance();
     RollManager.getInstance();
     RollResultVolumeManager.getInstance();

@@ -17,6 +17,7 @@ import { DieThemeSetting } from './sync/ThemeSetting';
 import { ExpectedResultSetting } from './sync/ExpectedResultManager';
 import { ShakeEnabledSetting } from './sync/ShakeEnabledManager';
 import { RollResultVolumeSetting } from './sync/RollResultVolumeManager';
+import { LegacyMigrationSetting } from './sync/LegacyMigrationSetting';
 
 export function SettingsPage() {
 
@@ -37,6 +38,8 @@ export function SettingsPage() {
                 <SortSetting/>
                 <ExpectedResultSetting/>
                 <View style={styles.Divider}/>
+                <Text style={styles.DividerText}>Advanced</Text>
+                <LegacyMigrationSetting/>
             </ScrollView>
         </View>
     );
