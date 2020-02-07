@@ -1,6 +1,6 @@
 import { ModalDialogBase } from "./ModalDialogBase";
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 import {
     View,
@@ -25,6 +25,9 @@ export function CreateSimpleDieDialog(props : CreateSimpleDieInterface) {
 
     const [dieName, setDieName] = useState('')
     const [dieNumberString, setDieNumberString] = useState('')
+
+    const firstLineRef = useRef(null);
+    const secondLineRef = useRef(null);
 
     useEffect(() => {
         // If the name is the default, let the placeholder text show.
@@ -51,24 +54,32 @@ export function CreateSimpleDieDialog(props : CreateSimpleDieInterface) {
             <View>
                 <Text style={styles.ModalTitle}>Create Simple Die</Text>
                 <View style={styles.ModalTextInputLine}>
-                    <Text style={styles.ModalText}>Name</Text>
-                    <TextInput 
-                    style={styles.ModalInputText}
-                    defaultValue={dieName}
-                    placeholder={SimpleDie.tempName(dieNumberString)}
-                    placeholderTextColor={styles.PlaceholderText.color}
-                    onChangeText={(text) => setDieName(text)}
-                    />
-                </View>
-                <View style={styles.ModalTextInputLine}>
                     <Text style={styles.ModalText}>Die</Text>
                     <TextInput 
                     style={styles.ModalInputText}
+                    ref={firstLineRef}
                     autoFocus={true}
                     selectTextOnFocus={true}
                     defaultValue={dieNumberString}
                     keyboardType={'number-pad'}
                     onChangeText={(text) => setDieNumberString(text)}
+                    returnKeyType = { "next" }
+                    onSubmitEditing={() => { secondLineRef.current.focus(); }}
+                    blurOnSubmit={false}
+                    />
+                </View>
+                <View style={styles.ModalTextInputLine}>
+                    <Text style={styles.ModalText}>Name</Text>
+                    <TextInput 
+                    style={styles.ModalInputText}
+                    ref={secondLineRef}
+                    defaultValue={dieName}
+                    placeholder={SimpleDie.tempName(dieNumberString)}
+                    placeholderTextColor={styles.PlaceholderText.color}
+                    onChangeText={(text) => setDieName(text)}
+                    returnKeyType = { "done" }
+                    onSubmitEditing={() => { acceptHandler(); }}
+                    blurOnSubmit={false}
                     />
                 </View>
                 <OkCancelButtons accept={acceptHandler} dismiss={props.dismissModal}/>

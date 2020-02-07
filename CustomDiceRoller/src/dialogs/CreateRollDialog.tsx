@@ -1,6 +1,6 @@
 import { ModalDialogBase } from "./ModalDialogBase";
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 import {
     View,
@@ -24,6 +24,9 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
 
     const [rollName, setRollName] = useState('')
     const [rollCategory, setRollCategory] = useState('')
+
+    const firstLineRef = useRef(null);
+    const secondLineRef = useRef(null);
 
     function acceptHandler() {
         let newName = rollName;
@@ -49,23 +52,31 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
                 <Text style={styles.ModalText}>Name</Text>
                 <TextInput 
                     style={styles.ModalInputText}
+                    ref={firstLineRef}
                     autoFocus={true}
                     selectTextOnFocus={true}
                     defaultValue={rollName}
                     placeholder={props.roll.mRollName}
                     placeholderTextColor={styles.PlaceholderText.color}
                     onChangeText={(text) => setRollName(text)}
+                    returnKeyType = { "next" }
+                    onSubmitEditing={() => { secondLineRef.current.focus(); }}
+                    blurOnSubmit={false}
                 />
             </View>
             <View style={styles.ModalTextInputLine}>
                 <Text style={styles.ModalText}>Category</Text>
                 <TextInput 
                     style={styles.ModalInputText}
+                    ref={secondLineRef}
                     selectTextOnFocus={true}
                     defaultValue={rollCategory}
                     placeholder={props.roll.mRollCategory}
                     placeholderTextColor={styles.PlaceholderText.color}
                     onChangeText={(text) => setRollCategory(text)}
+                    returnKeyType = { "done" }
+                    onSubmitEditing={() => { acceptHandler(); }}
+                    blurOnSubmit={false}
                 />
             </View>
             <OkCancelButtons accept={acceptHandler} dismiss={props.dismissModal}/>

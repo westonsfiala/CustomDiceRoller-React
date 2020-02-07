@@ -1,6 +1,6 @@
 import { ModalDialogBase } from "./ModalDialogBase";
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import {
     View,
@@ -25,6 +25,9 @@ export function CreateImbalancedDieDialog(props : ImbalancedInterface) {
 
     const [dieName, setDieName] = useState('');
     const [facesString, setFacesString] = useState('');
+
+    const firstLineRef = useRef(null);
+    const secondLineRef = useRef(null);
 
     useEffect(() => {
         // If the name is the default, let the placeholder text show.
@@ -62,24 +65,33 @@ export function CreateImbalancedDieDialog(props : ImbalancedInterface) {
                 <Text style={styles.ModalTitle}>Create Imbalanced Die</Text>
                 <Text style={styles.ModalSubTitle}>Use a comma separated list</Text>
                 <View style={styles.ModalTextInputLine}>
-                    <Text style={styles.ModalText}>Name</Text>
-                    <TextInput 
-                    style={styles.ModalInputText}
-                    defaultValue={dieName}
-                    placeholder={ImbalancedDie.tempName(facesString)}
-                    placeholderTextColor={styles.PlaceholderText.color}
-                    onChangeText={(text) => setDieName(text)}
-                    />
-                </View>
-                <View style={styles.ModalTextInputLine}>
                     <Text style={styles.ModalText}>Faces</Text>
                     <TextInput 
                     style={styles.ModalInputText}
+                    ref={firstLineRef}
                     autoFocus={true}
                     selectTextOnFocus={true}
                     defaultValue={facesString}
                     keyboardType={'number-pad'}
                     onChangeText={(text) => setFacesString(text)}
+                    returnKeyType = { "next" }
+                    onSubmitEditing={() => { secondLineRef.current.focus(); }}
+                    blurOnSubmit={false}
+                    />
+                </View>
+                <View style={styles.ModalTextInputLine}>
+                    <Text style={styles.ModalText}>Name</Text>
+                    <TextInput 
+                    style={styles.ModalInputText}
+                    ref={secondLineRef}
+                    selectTextOnFocus={true}
+                    defaultValue={dieName}
+                    placeholder={ImbalancedDie.tempName(facesString)}
+                    placeholderTextColor={styles.PlaceholderText.color}
+                    onChangeText={(text) => setDieName(text)}
+                    returnKeyType = { "done" }
+                    onSubmitEditing={() => { acceptHandler(); }}
+                    blurOnSubmit={false}
                     />
                 </View>
                 <OkCancelButtons accept={acceptHandler} dismiss={props.dismissModal}/>

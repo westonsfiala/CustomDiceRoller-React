@@ -41,6 +41,9 @@ export function SetValueDialog({modalShown, valueEnforcer, titleText, defaultVal
                     defaultValue={defaultValue.toString()}
                     keyboardType={'number-pad'}
                     onChangeText={(text) => setCurrentText(text)}
+                    returnKeyType = { "done" }
+                    onSubmitEditing={() => { handleAccept(); }}
+                    blurOnSubmit={false}
                     />
                 </View>
                 <OkCancelButtons accept={handleAccept} dismiss={dismissModal}/>

@@ -1,6 +1,6 @@
 import { ModalDialogBase } from "./ModalDialogBase";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import {
     View,
@@ -25,6 +25,10 @@ export function CreateMinMaxDieDialog(props : MinMaxInterface) {
     const [dieName, setDieName] = useState('');
     const [minString, setMinString] = useState('');
     const [maxString, setMaxString] = useState('');
+
+    const firstLineRef = useRef(null);
+    const secondLineRef = useRef(null);
+    const thirdLineRef = useRef(null);
     
     useEffect(() => {
         // If the name is the default, let the placeholder text show.
@@ -56,34 +60,47 @@ export function CreateMinMaxDieDialog(props : MinMaxInterface) {
             <View>
                 <Text style={styles.ModalTitle}>Create Min Max Die</Text>
                 <View style={styles.ModalTextInputLine}>
-                    <Text style={styles.ModalText}>Name</Text>
-                    <TextInput 
-                    style={styles.ModalInputText}
-                    defaultValue={dieName}
-                    placeholder={MinMaxDie.tempName(minString, maxString)}
-                    placeholderTextColor={styles.PlaceholderText.color}
-                    onChangeText={(text) => setDieName(text)}
-                    />
-                </View>
-                <View style={styles.ModalTextInputLine}>
                     <Text style={styles.ModalText}>Min</Text>
                     <TextInput 
                     style={styles.ModalInputText}
+                    ref={firstLineRef}
                     autoFocus={true}
                     selectTextOnFocus={true}
                     defaultValue={minString}
                     keyboardType={'number-pad'}
                     onChangeText={(text) => setMinString(text)}
+                    returnKeyType = { "next" }
+                    onSubmitEditing={() => { secondLineRef.current.focus(); }}
+                    blurOnSubmit={false}
                     />
                 </View>
                 <View style={styles.ModalTextInputLine}>
                     <Text style={styles.ModalText}>Max</Text>
                     <TextInput 
                     style={styles.ModalInputText}
+                    ref={secondLineRef}
                     selectTextOnFocus={true}
                     defaultValue={maxString}
                     keyboardType={'number-pad'}
                     onChangeText={(text) => setMaxString(text)}
+                    returnKeyType = { "next" }
+                    onSubmitEditing={() => { thirdLineRef.current.focus(); }}
+                    blurOnSubmit={false}
+                    />
+                </View>
+                <View style={styles.ModalTextInputLine}>
+                    <Text style={styles.ModalText}>Name</Text>
+                    <TextInput 
+                    style={styles.ModalInputText}
+                    ref={thirdLineRef}
+                    selectTextOnFocus={true}
+                    defaultValue={dieName}
+                    placeholder={MinMaxDie.tempName(minString, maxString)}
+                    placeholderTextColor={styles.PlaceholderText.color}
+                    onChangeText={(text) => setDieName(text)}
+                    returnKeyType = { "done" }
+                    onSubmitEditing={() => { acceptHandler(); }}
+                    blurOnSubmit={false}
                     />
                 </View>
                 <OkCancelButtons accept={acceptHandler} dismiss={props.dismissModal}/>

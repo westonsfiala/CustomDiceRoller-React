@@ -45,7 +45,8 @@ export function OkCancelButtons(props : OkCancelInterface) {
 const styles = EStyleSheet.create({
     ModalButtonLine:{
         flexDirection:'row',
-        justifyContent:'flex-end'
+        justifyContent:'flex-end',
+        paddingTop:'10rem'
     },
     ModalButtonContainer:{
         paddingTop:'10rem',

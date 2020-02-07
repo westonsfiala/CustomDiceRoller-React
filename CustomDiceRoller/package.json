@@ -17,6 +17,7 @@
     "react": "16.9.0",
     "react-native": "0.61.5",
     "react-native-extended-stylesheet": "^0.12.0",
+    "react-native-modal": "^11.5.3",
     "react-native-modals": "^0.19.8",
     "react-native-platform-touchable": "^1.1.1",
     "react-native-popup-menu": "^0.15.6",
