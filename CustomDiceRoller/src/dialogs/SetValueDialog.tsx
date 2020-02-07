@@ -29,7 +29,7 @@ export function SetValueDialog({modalShown, valueEnforcer, titleText, defaultVal
     }
 
     return(
-        <ModalDialogBase modalShown={modalShown} dismissModal={dismissModal} width={.75}>
+        <ModalDialogBase modalShown={modalShown} dismissModal={dismissModal}>
             <View>
                 <Text style={styles.ModalTitle}>{titleText}</Text>
                 <View style={styles.ModalTextInputLine}>

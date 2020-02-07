@@ -27,7 +27,7 @@ export function ChangeCategoryDialog(props : ChangeCategoryDialogInterface) {
     let menuHeight = displayItems * styles.MenuConstants.height;
 
     return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.75}>
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal}>
             <View>
                 <Text style={styles.ModalName}>
                     Select Catagory

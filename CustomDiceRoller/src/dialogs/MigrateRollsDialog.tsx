@@ -20,7 +20,7 @@ interface MigrateRollsInterface {
 export function MigrateRollsDialog(props : MigrateRollsInterface) {
 
     return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.75}>
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal}>
             <View>
                 <Text style={styles.ModalName}>
                     Legacy Roll Migration

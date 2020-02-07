@@ -20,7 +20,7 @@ interface ConfirmOverrideDialogInterface {
 export function ConfirmOverrideDialog(props : ConfirmOverrideDialogInterface) {
 
     return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.85}>
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal}>
             <View>
                 <Text style={styles.ModalName}>
                     Override Item - {props.itemName}

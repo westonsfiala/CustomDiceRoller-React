@@ -22,7 +22,7 @@ interface DieInfoDialogInterface {
 export function DieInfoDialog(props : DieInfoDialogInterface) {
 
     return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.75}>
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal}>
             <View>
                 <Text style={styles.ModalName}>
                     Die info - {props.die.mDieName}

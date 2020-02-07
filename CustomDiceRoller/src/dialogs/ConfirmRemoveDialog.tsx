@@ -20,7 +20,7 @@ interface ConfirmRemoveDialogInterface {
 export function ConfirmRemoveDialog(props : ConfirmRemoveDialogInterface) {
 
     return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.85}>
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal}>
             <View>
                 <Text style={styles.ModalName}>
                     Remove - {props.removeName}

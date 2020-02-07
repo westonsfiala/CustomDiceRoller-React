@@ -50,7 +50,7 @@ export function CreateSimpleDieDialog(props : CreateSimpleDieInterface) {
     }
 
     return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.75}>
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal}>
             <View>
                 <Text style={styles.ModalTitle}>Create Simple Die</Text>
                 <View style={styles.ModalTextInputLine}>

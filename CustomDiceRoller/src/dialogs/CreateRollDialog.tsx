@@ -46,7 +46,7 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
     }
 
     return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal} width={.75}>
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal}>
             <Text style={styles.ModalTitle}>Create Roll</Text>
             <View style={styles.ModalTextInputLine}>
                 <Text style={styles.ModalText}>Name</Text>
