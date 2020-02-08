@@ -1,6 +1,6 @@
 {
   "name": "RPGDiceRoller",
-  "version": "2.0.19",
+  "version": "2.0.21",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
