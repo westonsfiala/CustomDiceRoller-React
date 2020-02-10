@@ -61,6 +61,11 @@ export function AddDiceButton(props: AddDiceInterface) {
             <Menu ref={menuRef}>
                 <MenuTrigger/>
                 <MenuOptions>
+                    <MenuOption style={styles.Menu} onSelect={() => props.resetDice()}>
+                        <Text style={styles.MenuText}>
+                            Reset Dice
+                        </Text>
+                    </MenuOption>
                     <MenuOption style={styles.Menu} onSelect={() => setSimpleModalShown(true)}>
                         <Text style={styles.MenuText}>Simple Die</Text>
                     </MenuOption>

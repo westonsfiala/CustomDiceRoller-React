@@ -3,7 +3,9 @@ import React, { useRef, useState } from 'react'
 
 import {
     View,
-    Text
+    Text,
+    ScrollView,
+    Dimensions
 } from 'react-native'
 
 import {
@@ -115,11 +117,20 @@ export function PropertiesButton(props: PropertiesInterface) {
         explodeIcon = "checkbox-marked-outline";
     }
 
+    let scrollViewHeight = Math.min(Dimensions.get('window').height,500);
+
     return(
         <View style={styles.Container}>
             <Menu ref={menuRef}>
                 <MenuTrigger/>
                 <MenuOptions>
+                <ScrollView style={{height:scrollViewHeight}}>
+                    <MenuOption style={styles.Menu} onSelect={() => internalUpdateProperties(new RollProperties({numDice: properties.mNumDice, modifier: properties.mModifier}))}>
+                        <Text style={styles.MenuText}>
+                            Reset Properties
+                        </Text>
+                    </MenuOption>
+                    <View style={styles.MenuDivider}/>
                     <MenuOption style={styles.Menu} onSelect={() => internalUpdateProperties(properties.clone(
                         {advantageDisadvantage: isAdvantage(properties) ? RollProperties.rollNaturalValue : RollProperties.rollAdvantageValue}
                         )) } >
@@ -193,6 +204,7 @@ export function PropertiesButton(props: PropertiesInterface) {
                             <ActiveItemHelper turnOn={hasExplode(properties)}/>
                         </View>
                     </MenuOption>
+                </ScrollView>
                 </MenuOptions>
             </Menu>
             <Menu ref={resetMenuRef}>
