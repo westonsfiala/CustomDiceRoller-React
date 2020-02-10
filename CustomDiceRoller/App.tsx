@@ -42,7 +42,7 @@ const App = () => {
     useEffect(() => {
         if(firstLoad) {
             OpenAllSingletons();
-            let clear = setTimeout(() => setFirstLoad(false), 100);
+            let clear = setTimeout(() => setFirstLoad(false), 500);
             return(() => clearTimeout(clear));
         }
     });
