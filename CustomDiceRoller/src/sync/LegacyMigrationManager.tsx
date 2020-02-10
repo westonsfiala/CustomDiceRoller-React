@@ -125,11 +125,17 @@ export default class LegacyMigrationManager {
 
     private parseLegacyRolls(rollsString: string) : Array<Roll> {
         let migratedRolls = Array<Roll>();
-        
-        // Strip away the "[" & "]"
-        let strippedRollString = rollsString.substr(1,rollsString.length-1);
+        let rollStrings = Array<string>();
 
-        let rollStrings = strippedRollString.split(',');
+        try{
+            // Strip away the "[" & "]"
+            let strippedRollString = rollsString.substr(1,rollsString.length-1);
+    
+            rollStrings = strippedRollString.split(',');
+        } catch ( error ) {
+            return migratedRolls;
+        }
+        
 
         for(let saveString of rollStrings) {
             try {
@@ -180,6 +186,8 @@ export default class LegacyMigrationManager {
         let clipString = await Clipboard.getString()
         this.mLastMigrationErrors = Array<string>();
         this.mLastMigratedRolls = Array<Roll>();
+
+        if(clipString == undefined) return false;
         
         try{
             this.mLastMigratedRolls = this.parseLegacyRolls(clipString)
@@ -208,8 +216,8 @@ export default class LegacyMigrationManager {
     }
 
     private async retrieveHasMigrated() : Promise<boolean> {
-        const shakeEnabledKey = await AsyncStorage.getItem(HasMigratedKey);
-        if(shakeEnabledKey === null) { return false; }
-        return shakeEnabledKey == 'true';
+        const hasMigrated = await AsyncStorage.getItem(HasMigratedKey);
+        if(hasMigrated === null) { return false; }
+        return hasMigrated == 'true';
     }
 }
