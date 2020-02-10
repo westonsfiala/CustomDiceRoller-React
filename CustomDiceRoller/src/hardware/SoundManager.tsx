@@ -1,6 +1,7 @@
 
 import Sound from 'react-native-sound';
 import ShakeVolumeManager from '../sync/ShakeVolumeManager';
+import RollResultVolumeManager from '../sync/RollResultVolumeManager';
 
 export default class SoundManager {
 
@@ -71,7 +72,7 @@ export default class SoundManager {
     }
 
     playAirHorn() {
-        let playVolume = Math.min(ShakeVolumeManager.getInstance().volumeModifier, 1.0);
+        let playVolume = Math.min(RollResultVolumeManager.getInstance().volumeModifier, 1.0);
 
         if(playVolume <= 0.01) { return; }
 
@@ -80,7 +81,7 @@ export default class SoundManager {
     }
 
     playWilhelm() {
-        let playVolume = Math.min(ShakeVolumeManager.getInstance().volumeModifier, 1.0);
+        let playVolume = Math.min(RollResultVolumeManager.getInstance().volumeModifier, 1.0);
 
         if(playVolume <= 0.01) { return; }
 

@@ -6,8 +6,8 @@ export default class ShakeVolumeManager {
 
     private static mInstance = null as ShakeVolumeManager;
 
-    readonly ShakeVolumeList = ['Off', 'Normal', 'Loud'];
-    private mShakeVolume = this.ShakeVolumeList[1];
+    readonly ShakeVolumeList = ['Off', 'Quiet', 'Normal', 'Loud'];
+    private mShakeVolume = this.ShakeVolumeList[2];
     private mSettingsUpdater = null;
     private mUpdater = null;
 
@@ -26,12 +26,12 @@ export default class ShakeVolumeManager {
     }
     
     get volumeModifier() : number {
-        // 6 is an arbitrary number that works.
         if(this.mShakeVolume == this.ShakeVolumeList[0]) return 0;
-        if(this.mShakeVolume == this.ShakeVolumeList[1]) return .5;
-        if(this.mShakeVolume == this.ShakeVolumeList[2]) return 1;
+        if(this.mShakeVolume == this.ShakeVolumeList[1]) return .25;
+        if(this.mShakeVolume == this.ShakeVolumeList[2]) return .5;
+        if(this.mShakeVolume == this.ShakeVolumeList[3]) return 1;
 
-        this.setShakeVolume(this.ShakeVolumeList[1]);
+        this.setShakeVolume(this.ShakeVolumeList[2]);
     }
 
     setSettingsUpdater(updater : () => void) {
@@ -59,9 +59,10 @@ export default class ShakeVolumeManager {
     }
 
     getShakeVolumeIcon() : string {
-        if(this.mShakeVolume == this.ShakeVolumeList[0]) return 'volume-low';
-        if(this.mShakeVolume == this.ShakeVolumeList[1]) return 'volume-medium';
-        if(this.mShakeVolume == this.ShakeVolumeList[2]) return 'volume-high';
+        if(this.mShakeVolume == this.ShakeVolumeList[0]) return 'volume-off';
+        if(this.mShakeVolume == this.ShakeVolumeList[1]) return 'volume-low';
+        if(this.mShakeVolume == this.ShakeVolumeList[2]) return 'volume-medium';
+        if(this.mShakeVolume == this.ShakeVolumeList[3]) return 'volume-high';
 
         return 'volume-medium';
     }
@@ -73,7 +74,7 @@ export default class ShakeVolumeManager {
 
     private async retrieveShakeVolume() : Promise<string> {
         const shakeVolume = await AsyncStorage.getItem(ShakeVolumeKey);
-        if(shakeVolume === null) { return this.ShakeVolumeList[1]; }
+        if(shakeVolume === null) { return this.ShakeVolumeList[2]; }
         return shakeVolume;
     }
 }

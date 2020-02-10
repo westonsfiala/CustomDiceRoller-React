@@ -6,8 +6,8 @@ export default class RollResultVolumeManager {
 
     private static mInstance = null as RollResultVolumeManager;
 
-    readonly RollResultVolumeList = ['Off', 'Normal', 'Loud'];
-    private mRollResultVolume = this.RollResultVolumeList[1];
+    readonly RollResultVolumeList = ['Off', 'Quiet', 'Normal', 'Loud'];
+    private mRollResultVolume = this.RollResultVolumeList[2];
     private mSettingsUpdater = null;
     private mUpdater = null;
 
@@ -28,10 +28,11 @@ export default class RollResultVolumeManager {
     get volumeModifier() : number {
         // 6 is an arbitrary number that works.
         if(this.mRollResultVolume == this.RollResultVolumeList[0]) return 0;
-        if(this.mRollResultVolume == this.RollResultVolumeList[1]) return .5;
-        if(this.mRollResultVolume == this.RollResultVolumeList[2]) return 1;
+        if(this.mRollResultVolume == this.RollResultVolumeList[1]) return .25;
+        if(this.mRollResultVolume == this.RollResultVolumeList[2]) return .5;
+        if(this.mRollResultVolume == this.RollResultVolumeList[3]) return 1;
 
-        this.setRollResultVolume(this.RollResultVolumeList[1]);
+        this.setRollResultVolume(this.RollResultVolumeList[2]);
     }
 
     setSettingsUpdater(updater : () => void) {
@@ -59,9 +60,10 @@ export default class RollResultVolumeManager {
     }
 
     getShakeVolumeIcon() : string {
-        if(this.mRollResultVolume == this.RollResultVolumeList[0]) return 'volume-low';
-        if(this.mRollResultVolume == this.RollResultVolumeList[1]) return 'volume-medium';
-        if(this.mRollResultVolume == this.RollResultVolumeList[2]) return 'volume-high';
+        if(this.mRollResultVolume == this.RollResultVolumeList[0]) return 'volume-off';
+        if(this.mRollResultVolume == this.RollResultVolumeList[1]) return 'volume-low';
+        if(this.mRollResultVolume == this.RollResultVolumeList[2]) return 'volume-medium';
+        if(this.mRollResultVolume == this.RollResultVolumeList[3]) return 'volume-high';
 
         return 'volume-medium';
     }
@@ -73,7 +75,7 @@ export default class RollResultVolumeManager {
 
     private async retrieveRollResultVolume() : Promise<string> {
         const rollResultVolume = await AsyncStorage.getItem(RollResultVolumeKey);
-        if(rollResultVolume === null) { return this.RollResultVolumeList[1]; }
+        if(rollResultVolume === null) { return this.RollResultVolumeList[2]; }
         return rollResultVolume;
     }
 }
