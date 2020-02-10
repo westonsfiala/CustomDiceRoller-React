@@ -26,7 +26,9 @@ export default class DiceManager {
     private static mInstance = null as DiceManager;
 
     private mDice = [] as Array<Die>;
-    private mUpdater = null
+    private mSimpleUpdater = null
+    private mCustomUpdater = null
+
 
     static getInstance() : DiceManager {
         if(DiceManager.mInstance === null) {
@@ -40,8 +42,17 @@ export default class DiceManager {
         this.getDiceStorage().then((dice) => this.setDice(dice))
     }
 
-    setUpdater(updater : () => void) {
-        this.mUpdater = updater;
+    setSimpleUpdater(updater : () => void) {
+        this.mSimpleUpdater = updater;
+    }
+
+    setCustomUpdater(updater : () => void) {
+        this.mCustomUpdater = updater;
+    }
+
+    runUpdaters() {
+        if(this.mSimpleUpdater !== null) this.mSimpleUpdater();
+        if(this.mCustomUpdater !== null) this.mCustomUpdater();
     }
 
     getDice() : Array<Die> {
@@ -52,7 +63,7 @@ export default class DiceManager {
         dice.sort((dieA, dieB) => dieA.average - dieB.average)
         this.setDiceStorage(dice).then((dice) => {
             this.mDice = dice
-            if(this.mUpdater !== null) this.mUpdater();
+            this.runUpdaters();
         });
     }
     

@@ -29,7 +29,7 @@ interface SimpleDiePageInterface {
 export function SimpleDicePage(props : SimpleDiePageInterface) {
     const [reload, setReload] = useState(false);
     
-    DiceManager.getInstance().setUpdater(() => setReload(!reload));
+    DiceManager.getInstance().setSimpleUpdater(() => setReload(!reload));
     DieSizeManager.getInstance().setUpdater(() => setReload(!reload));
     ThemeManager.getInstance().setSimplePageUpdater(() => setReload(!reload));
 
