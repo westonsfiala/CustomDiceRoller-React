@@ -17,15 +17,15 @@ import { StruckStringPairView } from './dice/views/StruckStringPair';
 import HistoryManager from './sync/HistoryManager';
 import AccelerometerManager from './hardware/AccelerometerManager';
 import ShakeEnabledManager from './sync/ShakeEnabledManager';
+import AnimationsEnabledManager from './sync/AnimationsEnabledManager';
 import SoundManager from './hardware/SoundManager';
 import TabManager from './sync/TabManager';
 import { SimpleDie } from './dice/SimpleDie';
 import { ShakeDie, renderShakeDie } from './helpers/ShakeDie';
+import ShakeLengthManager from './sync/ShakeLengthManager';
 
 const MAX_DICE_IN_ROLL = 25;
 const ANIMATION_RUNTIME = 10;
-const STATE_TIME = 1000;
-const LONG_STATE_TIME = STATE_TIME*2;
 const MAX_SHAKE_TIME = 20000;
 
 interface RollResultsInterface {
@@ -46,6 +46,7 @@ export function RollResultsPage(props : RollResultsInterface) {
     const [reload, setReload] = useState(false);
 
     HistoryManager.getInstance().setDisplayUpdater(() => setReload(!reload));
+    AnimationsEnabledManager.getInstance().setUpdater(() => setReload(!reload));
     ShakeEnabledManager.getInstance().setUpdater(() => setReload(!reload));
 
     // Whats going on with the animation.
@@ -116,6 +117,9 @@ export function RollResultsPage(props : RollResultsInterface) {
             return;
         }
 
+        let shakeLength = ShakeLengthManager.getInstance().shakeLength;
+        let longShakeLength = shakeLength * 2;
+
         let speedKillMod = 1;
         let newTime = animationState.duration;
         let newState = animationState.state;
@@ -124,23 +128,23 @@ export function RollResultsPage(props : RollResultsInterface) {
         if(animationState.state == shakeEnums.shaking) {
             if(!isStable) { newTime += animationDuration; }
             
-            if(newTime > STATE_TIME) {
+            if(newTime > shakeLength) {
                 newTime = 0;
                 newState = shakeEnums.holding;
             }
         } else if(animationState.state == shakeEnums.holding) {
             if(isStable) { newTime += animationDuration; } 
 
-            if(newTime > STATE_TIME) {
+            if(newTime > shakeLength) {
                 newTime = 0;
                 newState = shakeEnums.slowing;
             }
         } else if(animationState.state == shakeEnums.slowing) {
             newTime += animationDuration;
 
-            speedKillMod = Math.max(0, 1 - newTime / LONG_STATE_TIME);
+            speedKillMod = Math.max(0, 1 - newTime / longShakeLength);
 
-            if(newTime > LONG_STATE_TIME) {
+            if(newTime > longShakeLength) {
                 newTime = 0;
                 newState = shakeEnums.transitioning;
             }
@@ -149,7 +153,7 @@ export function RollResultsPage(props : RollResultsInterface) {
 
             speedKillMod = 0;
 
-            if(newTime > STATE_TIME) {
+            if(newTime > shakeLength) {
                 newTime = 0;
                 newState = shakeEnums.done;
             }
@@ -180,13 +184,19 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     useEffect(() => {
         if(rollHelper.storedRoll.getTotalDiceInRoll() !== 0 && TabManager.getInstance().isOnDiceRollTab()) {
-            let startAnimations = ShakeEnabledManager.getInstance().getShakeEnabled();
+            let startAnimations = AnimationsEnabledManager.getInstance().getAnimationsEnabled();
 
             setPlayCritSounds(true);
             
             if(startAnimations) {
                 let rightNow = Date.now();
-                setAnimationState({startTime:rightNow, lastAnimationTime:rightNow, duration:0, state:shakeEnums.shaking, frames:0});
+                let shakeEnabled = ShakeEnabledManager.getInstance().getShakeEnabled();
+                if(shakeEnabled) {
+                    setAnimationState({startTime:rightNow, lastAnimationTime:rightNow, duration:0, state:shakeEnums.shaking, frames:0});
+                }
+                else {
+                    setAnimationState({startTime:rightNow, lastAnimationTime:rightNow, duration:0, state:shakeEnums.slowing, frames:0});
+                }
             } else {
                 goToNextState(0, 0, shakeEnums.done);
             }
@@ -209,7 +219,7 @@ export function RollResultsPage(props : RollResultsInterface) {
 
         return (
             <View style={styles.Container}>
-                <View>
+                <View style={{position:"absolute"}}>
                     {shakeDieArray.map(renderShakeDie)}
                 </View>
                 <View style={styles.ShakeContainer}>

@@ -14,8 +14,12 @@ import SortTypeManager from "./SortTypeManager";
 import TabManager from "./TabManager";
 import ThemeManager from "./ThemeManager";
 import LegacyMigrationManager from "./LegacyMigrationManager";
+import ShakeLengthManager from "./ShakeLengthManager";
+import ShakeDieSizeManager from "./ShakeDieSizeManager";
+import AnimationsEnabledManager from "./AnimationsEnabledManager";
 
 export function OpenAllSingletons() {
+    AnimationsEnabledManager.getInstance();
     CustomRollManager.getInstance();
     DiceManager.getInstance();
     DieSizeManager.getInstance();
@@ -25,7 +29,9 @@ export function OpenAllSingletons() {
     HistoryManager.getInstance();
     RollManager.getInstance();
     RollResultVolumeManager.getInstance();
+    ShakeDieSizeManager.getInstance();
     ShakeEnabledManager.getInstance();
+    ShakeLengthManager.getInstance();
     ShakeSensitivityManager.getInstance();
     ShakeVolumeManager.getInstance();
     SimpleRollPropertiesManager.getInstance();

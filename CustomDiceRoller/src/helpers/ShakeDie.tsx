@@ -6,9 +6,12 @@ import AccelerometerManager from '../hardware/AccelerometerManager';
 import { Animated } from 'react-native';
 import { getRequiredImage } from '../dice/dieImages/DieImageGetter';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import ShakeDieSizeManager from '../sync/ShakeDieSizeManager';
 
 export class ShakeDie {
     dieImageID : number;
+    size : number;
+
     maxX : number;
     maxY : number;
 
@@ -25,8 +28,9 @@ export class ShakeDie {
 
     constructor(imageID : number, maxX : number, maxY: number) {
         this.dieImageID = imageID;
-        this.maxX = maxX - styles.DisplayDice.width;
-        this.maxY = maxY - styles.DisplayDice.height;
+        this.size = Math.min(maxX, maxY) / ShakeDieSizeManager.getInstance().shakeDieSizeDivider;
+        this.maxX = maxX - this.size;
+        this.maxY = maxY - this.size;
 
         this.xPosition = randomIntFromInterval(0, maxX);
         this.yPosition = randomIntFromInterval(0, maxY);
@@ -102,14 +106,13 @@ export function renderShakeDie(shakeDie: ShakeDie) {
             { translateX: shakeDie.xPosition },
             { translateY: shakeDie.yPosition },
             { rotate: shakeDie.rotation.toString() + 'deg' },
-        ]}, styles.DisplayDice]}/>
+        ]}, {width: shakeDie.size, height: shakeDie.size}]}/>
     )
 }
 
 const styles = EStyleSheet.create({
     DisplayDice: {
         width:'30rem',
-        height:'30rem',
         position:'absolute'
     }
 })
