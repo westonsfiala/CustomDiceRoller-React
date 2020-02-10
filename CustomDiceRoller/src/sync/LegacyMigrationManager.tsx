@@ -61,6 +61,7 @@ export default class LegacyMigrationManager {
     private createSimpleDie(saveString: String) : SimpleDie
     {
         try {
+            if(saveString == undefined || saveString == null || saveString.length == 0) throw new DieLoadError();
             let simpleStrings = saveString.split(saveSplitStrings[dieSplitStringIndex]);
 
             if(simpleStrings.length !== 3) throw new DieLoadError;
@@ -80,6 +81,7 @@ export default class LegacyMigrationManager {
     private createMinMaxDie(saveString: String) : MinMaxDie
     {
         try {
+            if(saveString == undefined || saveString == null || saveString.length == 0) throw new DieLoadError();
             let minMaxStrings = saveString.split(saveSplitStrings[dieSplitStringIndex]);
             
             if(minMaxStrings.length != 4) throw new DieLoadError();
@@ -100,6 +102,7 @@ export default class LegacyMigrationManager {
     private createImbalancedDie(saveString: String) : ImbalancedDie
     {
         try {
+            if(saveString == undefined || saveString == null || saveString.length == 0) throw new DieLoadError();
             let imbalancedStrings = saveString.split(saveSplitStrings[dieSplitStringIndex]);
             
             if(imbalancedStrings.length != 3) throw new DieLoadError();
@@ -127,21 +130,25 @@ export default class LegacyMigrationManager {
         let migratedRolls = Array<Roll>();
         let rollStrings = Array<string>();
 
-        try{
-            // Strip away the "[" & "]"
-            let strippedRollString = rollsString.substr(1,rollsString.length-1);
-    
-            rollStrings = strippedRollString.split(',');
-        } catch ( error ) {
+        // Strip away the "[" & "]"
+        let strippedRollString = rollsString.substr(1,rollsString.length-1);
+
+        if(strippedRollString == undefined || strippedRollString == null || strippedRollString.length == 0) {
+            this.mLastMigrationErrors.push("Unable to parse rolls.");
             return migratedRolls;
         }
-        
+
+        rollStrings = strippedRollString.split(',');
 
         for(let saveString of rollStrings) {
             try {
+                if(saveString == undefined || saveString == null || saveString.length == 0) continue;
                 let splitSaveString = saveString.split(saveSplitStrings[rollSplitStringIndex]);
+
+                if(splitSaveString.length <= 5) throw new DieLoadError();
     
                 // Aggregate;Name;Category;Die;DieProperties(repeat)
+                if(splitSaveString[1] == undefined || splitSaveString[1] == null || splitSaveString[1].length == 0) continue;
                 let nameCategorySplit = splitSaveString[1].split(saveSplitStrings[rollCategorySplitStringIndex]);
                 let rollName = nameCategorySplit[0];
                 let rollCategory = nameCategorySplit[1];
@@ -150,6 +157,7 @@ export default class LegacyMigrationManager {
     
                 for(let index = 2; index < splitSaveString.length; index += 2) {
                     let savedInnerDie = this.createUnknownDie(splitSaveString[index])
+                    if(splitSaveString[index + 1] == undefined || splitSaveString[index + 1] == null || splitSaveString[index + 1].length == 0) continue;
                     let savedDieProperties = splitSaveString[index + 1].split(saveSplitStrings[rollPropertiesSplitStringIndex])
     
                     let properties = new RollProperties({
@@ -187,7 +195,10 @@ export default class LegacyMigrationManager {
         this.mLastMigrationErrors = Array<string>();
         this.mLastMigratedRolls = Array<Roll>();
 
-        if(clipString == undefined) return false;
+        if(clipString == undefined || clipString == null || clipString.length == 0) {
+            this.mLastMigrationErrors.push("Unable to parse rolls. Ensure the copy/paste clipboard has correct information.");
+            return false;
+        }
         
         try{
             this.mLastMigratedRolls = this.parseLegacyRolls(clipString)
