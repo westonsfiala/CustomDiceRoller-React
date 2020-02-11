@@ -47,6 +47,18 @@ function UpDownButtons(props : UpDownButtonsInterface) {
     const [modalShown, setModalShown] = useState(false);
     const [reload, setReload] = useState(false);
 
+    function updateNumber(value: number) {
+        props.setCount(value).then(() => setReload(!reload));
+    }
+
+    function handleChange(change: number) {
+        let currentCount = props.getCount();
+        let snappedChange = snapToNextIncrement(currentCount, change)
+        let newCount = enforceGoodValue(currentCount, snappedChange, props.disallowZero)
+
+        updateNumber(newCount)
+    }
+
     let count = props.getCount();
 
     // Force good values
@@ -58,17 +70,6 @@ function UpDownButtons(props : UpDownButtonsInterface) {
     let countText = String(count);
     if(props.forcePlusMinus) {
         countText = getModifierString(count, false);
-    }
-
-    function updateNumber(value: number) {
-        props.setCount(value).then(() => setReload(!reload));
-    }
-
-    function handleChange(change: number) {
-        let snappedChange = snapToNextIncrement(count, change)
-        let newCount = enforceGoodValue(count, snappedChange, props.disallowZero)
-
-        updateNumber(newCount)
     }
     
     return(
