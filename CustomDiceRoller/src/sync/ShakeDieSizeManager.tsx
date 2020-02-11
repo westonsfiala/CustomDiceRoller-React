@@ -27,10 +27,10 @@ export default class ShakeDieSizeManager {
     
     get shakeDieSizeDivider() : number {
         if(this.mShakeDieSize == this.ShakeDieSizeList[0]) return 10;
-        if(this.mShakeDieSize == this.ShakeDieSizeList[1]) return 9;
-        if(this.mShakeDieSize == this.ShakeDieSizeList[2]) return 8;
-        if(this.mShakeDieSize == this.ShakeDieSizeList[3]) return 7;
-        if(this.mShakeDieSize == this.ShakeDieSizeList[4]) return 6;
+        if(this.mShakeDieSize == this.ShakeDieSizeList[1]) return 8.5;
+        if(this.mShakeDieSize == this.ShakeDieSizeList[2]) return 7;
+        if(this.mShakeDieSize == this.ShakeDieSizeList[3]) return 5.5;
+        if(this.mShakeDieSize == this.ShakeDieSizeList[4]) return 4;
 
         this.setShakeDieSize(this.ShakeDieSizeList[2]);
     }
