@@ -106,13 +106,12 @@ export function renderShakeDie(shakeDie: ShakeDie) {
             { translateX: shakeDie.xPosition },
             { translateY: shakeDie.yPosition },
             { rotate: shakeDie.rotation.toString() + 'deg' },
-        ]}, {width: shakeDie.size, height: shakeDie.size}]}/>
+        ]}, styles.DisplayDice, {width: shakeDie.size, height: shakeDie.size}]}/>
     )
 }
 
 const styles = EStyleSheet.create({
     DisplayDice: {
-        width:'30rem',
         position:'absolute'
     }
 })
