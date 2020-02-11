@@ -12,6 +12,7 @@ export function createRollProperties(rollPropertiesString: string) : RollPropert
     newRollProperties.mModifier = propertiesJson.mModifier || newRollProperties.mModifier;
     newRollProperties.mAdvantageDisadvantage = propertiesJson.mAdvantageDisadvantage || newRollProperties.mAdvantageDisadvantage;
     newRollProperties.mDoubleHalve = propertiesJson.mDoubleHalve || newRollProperties.mDoubleHalve;
+    newRollProperties.mRepeatRoll = propertiesJson.mRepeatRoll || newRollProperties.mRepeatRoll;
     newRollProperties.mDropHigh = propertiesJson.mDropHigh || newRollProperties.mDropHigh;
     newRollProperties.mDropLow = propertiesJson.mDropLow || newRollProperties.mDropLow;
     newRollProperties.mKeepHigh = propertiesJson.mKeepHigh || newRollProperties.mKeepHigh;

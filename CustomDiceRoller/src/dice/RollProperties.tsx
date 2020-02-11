@@ -25,6 +25,7 @@ export class RollProperties {
     mModifier: number;
     mAdvantageDisadvantage: number;
     mDoubleHalve: number;
+    mRepeatRoll: number;
     mDropHigh: number;
     mDropLow: number;
     mKeepHigh: number;
@@ -38,6 +39,7 @@ export class RollProperties {
         modifier = 0,
         advantageDisadvantage = RollProperties.rollNaturalValue,
         doubleHalve = RollProperties.rollNaturalValue,
+        repeatRoll = 0,
         dropHigh = 0,
         dropLow = 0,
         keepHigh = 0,
@@ -51,6 +53,7 @@ export class RollProperties {
         this.mModifier = modifier;
         this.mAdvantageDisadvantage = advantageDisadvantage;
         this.mDoubleHalve = doubleHalve;
+        this.mRepeatRoll = repeatRoll;
         this.mDropHigh = dropHigh;
         this.mDropLow = dropLow;
         this.mKeepHigh = keepHigh;
@@ -65,6 +68,7 @@ export class RollProperties {
         modifier = null,
         advantageDisadvantage = null,
         doubleHalve = null,
+        repeatRoll = null,
         dropHigh = null,
         dropLow = null,
         keepHigh = null,
@@ -79,6 +83,7 @@ export class RollProperties {
             modifier : modifier === null ? this.mModifier : modifier,
             advantageDisadvantage : advantageDisadvantage === null ? this.mAdvantageDisadvantage : advantageDisadvantage,
             doubleHalve : doubleHalve === null ? this.mDoubleHalve : doubleHalve,
+            repeatRoll : repeatRoll === null ? this.mRepeatRoll : repeatRoll,
             dropHigh : dropHigh === null ? this.mDropHigh : dropHigh,
             dropLow : dropLow === null ? this.mDropLow : dropLow,
             keepHigh : keepHigh === null ? this.mKeepHigh : keepHigh,
@@ -96,6 +101,7 @@ export class RollProperties {
         //if(this.mModifier !== 0) {numNonDefault++}
         if(this.mAdvantageDisadvantage !== RollProperties.rollNaturalValue) {numNonDefault++}
         if(this.mDoubleHalve !== RollProperties.rollNaturalValue) {numNonDefault++}
+        if(this.mRepeatRoll !== 0) {numNonDefault++}
         if(this.mDropHigh !== 0) {numNonDefault++}
         if(this.mDropLow !== 0) {numNonDefault++}
         if(this.mKeepHigh !== 0) {numNonDefault++}
@@ -122,6 +128,10 @@ export function isDouble(props : RollProperties) : boolean {
 
 export function isHalve(props : RollProperties) : boolean {
     return props.mDoubleHalve === RollProperties.rollHalveValue;
+}
+
+export function hasRepeatRoll(props : RollProperties) : boolean {
+    return props.mRepeatRoll !== new RollProperties({}).mRepeatRoll
 }
 
 export function hasDropHigh(props: RollProperties) : boolean {
