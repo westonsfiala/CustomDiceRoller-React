@@ -93,6 +93,7 @@ export function SimpleDicePage(props : SimpleDiePageInterface) {
             </View>
             <View style={styles.ButtonsRow}>
                 <PropertiesButton 
+                    window={props.window}
                     getProperties={() => {
                         return SimpleRollPropertiesManager.getInstance().getProperties()
                     }} 

@@ -5,6 +5,7 @@ import {
     View, 
     Text,
     FlatList,
+    ScaledSize,
 } from 'react-native';
 
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -13,14 +14,17 @@ import { RollDisplayHelper } from '../dice/views/RollDisplayHelper';
 import { StruckStringPairView } from '../dice/views/StruckStringPair';
 
 interface HistoryItemInterface {
-    rollHelper : RollDisplayHelper
+    window : ScaledSize;
+    rollHelper : RollDisplayHelper;
 }
 
 export function HistoryItemView(props : HistoryItemInterface) {
     return (
         <View style={styles.HistoryItemContainer}>
             <View style={styles.TopTextLine}>
-                <StruckStringPairView pair={props.rollHelper.rollSumText} style={styles.SumText}/>
+                <View style={{maxWidth: props.window.width/3}}>
+                    <StruckStringPairView pair={props.rollHelper.rollSumText} style={styles.SumText}/>
+                </View>
                 <View style={styles.NameTimeContainterOuter}>
                     <View style={styles.NameTimeContainterInner}>
                         <View style={styles.NameContainter}>

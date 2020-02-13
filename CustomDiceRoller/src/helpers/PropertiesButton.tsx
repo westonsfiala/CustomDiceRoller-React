@@ -5,7 +5,7 @@ import {
     View,
     Text,
     ScrollView,
-    Dimensions
+    ScaledSize,
 } from 'react-native'
 
 import {
@@ -52,6 +52,7 @@ function ActiveItemHelper(props: helperInterface) {
 }
 
 interface PropertiesInterface {
+    window: ScaledSize;
     getProperties: () => RollProperties;
     updateProperties: (props: RollProperties) => Promise<RollProperties>;
 }
@@ -120,7 +121,7 @@ export function PropertiesButton(props: PropertiesInterface) {
         explodeIcon = "checkbox-marked-outline";
     }
 
-    let scrollViewHeight = Dimensions.get('window').height*2/3;
+    let scrollViewHeight = props.window.height*2/3;
 
     return(
         <View style={styles.Container}>

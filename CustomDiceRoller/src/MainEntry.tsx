@@ -104,19 +104,19 @@ export function MainEntry() {
                     />
                     <ViewPager style={styles.Pager} ref={viewPager} initialPage={2} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
                         <View key="a" >
-                            <SettingsPage/>
+                            <SettingsPage window={window}/>
                         </View>
                         <View key="b" >
-                            <HistoryPage/>
+                            <HistoryPage window={window}/>
                         </View>
                         <View key="c" >
                             <SimpleDicePage displayRoll={addRoll} window={window}/>
                         </View>
                         <View key="d" >
-                            <CustomDicePage displayRoll={addRoll}/>
+                            <CustomDicePage displayRoll={addRoll} window={window}/>
                         </View>
                         <View key="e" >
-                            <SavedRollPage displayRoll={addRoll} editRoll={editRoll}/>
+                            <SavedRollPage displayRoll={addRoll} editRoll={editRoll} window={window}/>
                         </View>
                     </ViewPager>
                 </View>

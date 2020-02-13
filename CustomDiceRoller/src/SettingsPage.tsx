@@ -6,6 +6,7 @@ import {
     View, 
     Text,
     ScrollView,
+    ScaledSize,
 } from 'react-native';
 
 import { SortSetting } from './sync/SortTypeManager';
@@ -19,7 +20,11 @@ import { RollResultVolumeSetting } from './sync/RollResultVolumeManager';
 import { LegacyMigrationSetting } from './sync/LegacyMigrationSetting';
 import { AnimationsEnabledSetting } from './sync/AnimationsEnabledManager';
 
-export function SettingsPage() {
+interface SettingsInterface{
+    window : ScaledSize
+}
+
+export function SettingsPage(props : SettingsInterface) {
 
     console.log('refresh settings page');
 
@@ -28,7 +33,7 @@ export function SettingsPage() {
             <ScrollView style={styles.ScrollPadding}>
                 <Text style={styles.DividerText}>Dice</Text>
                 <DieSizeSetting/>
-                <DieThemeSetting/>
+                <DieThemeSetting window={props.window}/>
                 <View style={styles.Divider}/>
                 <Text style={styles.DividerText}>Roller</Text>
                 <AnimationsEnabledSetting/>

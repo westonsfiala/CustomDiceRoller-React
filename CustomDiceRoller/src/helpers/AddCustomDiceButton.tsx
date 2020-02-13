@@ -6,7 +6,7 @@ import {
     Text,
     FlatList,
     Image,
-    Dimensions,
+    ScaledSize,
 } from 'react-native'
 
 import {
@@ -23,6 +23,7 @@ import DiceManager from '../sync/DiceManager';
 import { getRequiredImage } from '../dice/dieImages/DieImageGetter';
 
 interface AddCustomDiceInterface {
+    window: ScaledSize;
     addDie: (die: Die) => void;
     resetDice: () => void;
 }
@@ -40,7 +41,7 @@ export function AddCustomDiceButton(props : AddCustomDiceInterface) {
     // If you don't give a height to the menu, the scroll feature doesn't work. 
     // There is a small gap between each item, so the 1.2 is for making it fit a bit better
     let displayItems = Math.min(10, dice.length)
-    let menuHeight = Math.min(Dimensions.get('window').height, displayItems * styles.MenuImage.height * 1.2);
+    let menuHeight = Math.min(props.window.height*2/3, displayItems * styles.MenuImage.height * 1.2);
 
     return(
         <View style={styles.Container}>

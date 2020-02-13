@@ -4,7 +4,7 @@ import {
     View, 
     Text,
     LayoutAnimation,
-    Dimensions,
+    ScaledSize,
 } from 'react-native';
 
 import Touchable from 'react-native-platform-touchable';
@@ -55,7 +55,12 @@ function ThemeButton (props : ThemeButtonInterface) {
     );
 }
 
-export function DieThemeSetting() {
+interface DieThemeInterface
+{
+    window : ScaledSize
+}
+
+export function DieThemeSetting(props : DieThemeInterface) {
 
     const [reload, setReload] = useState(false);
     ThemeManager.getInstance().setSettingsUpdater(() => setReload(!reload));
@@ -90,7 +95,7 @@ export function DieThemeSetting() {
                     <ThemeButton menuRef={iceCreamMenuRef} icon={'ice-cream'} themeName={'Ice Cream'} themeList={ThemeManager.getInstance().IceCreamDieThemeList} />
                 </View>
                 <View style={{justifyContent:'center'}}>
-                    <DieView die={new SimpleDie('Theme', 20)} size={Dimensions.get('window').width/3} />
+                    <DieView die={new SimpleDie('Theme', 20)} size={props.window.width/3} />
                 </View>
             </View>
         </View>

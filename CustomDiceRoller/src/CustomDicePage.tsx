@@ -6,6 +6,7 @@ import {
     Text,
     FlatList,
     LayoutAnimation,
+    ScaledSize,
 } from 'react-native';
 
 import Touchable from 'react-native-platform-touchable';
@@ -25,6 +26,7 @@ import ThemeManager from './sync/ThemeManager';
 
 interface CustomRollPageInterface {
     displayRoll: (roll: Roll) => void;
+    window : ScaledSize;
 }
 
 export function CustomDicePage(props: CustomRollPageInterface) {
@@ -61,6 +63,7 @@ export function CustomDicePage(props: CustomRollPageInterface) {
                 }
                 renderItem={({ item, index }) =>  (
                     <CustomPageDieView 
+                        window={props.window}
                         diePropPair={item} 
                         updateDie={(oldDie : Die, newDie : Die) => CustomRollManager.getInstance().updateDie(oldDie, newDie)}
                         updateProperties={(newProperties : RollProperties) => {
@@ -78,6 +81,7 @@ export function CustomDicePage(props: CustomRollPageInterface) {
             />
             <View style={styles.BottomButtonsRow}>
                 <AddCustomDiceButton 
+                    window={props.window}
                     addDie={(die: Die) => CustomRollManager.getInstance().addDieToRoll(die)} 
                     resetDice={() => CustomRollManager.getInstance().resetRoll()}
                 />

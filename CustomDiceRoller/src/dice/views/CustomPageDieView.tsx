@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import {
     View,
-    Dimensions,
+    ScaledSize,
 } from 'react-native';
 
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -19,6 +19,7 @@ import { CreateDieDialog } from '../../dialogs/CreateDieDialog';
 
 interface CustomDieViewProps {
     diePropPair: DiePropertyPair;
+    window : ScaledSize;
     updateDie: (oldDie: Die, newDie : Die) => void;
     updateProperties: (props : RollProperties) => Promise<any>;
     moveUpHandler: () => void;
@@ -29,24 +30,13 @@ interface CustomDieViewProps {
 export function CustomPageDieView(props : CustomDieViewProps) {
     
     const [editModalShown, setEditModalShown] = useState(false);
-    const [minWidthHeight, setMinWidthHeight] = useState(Math.min(Dimensions.get("window").width, Dimensions.get("window").height));
 
-    function handleScreenChange({window}) {
-        setMinWidthHeight(Math.min(window.width, window.height));
-    }
+    let minWidthHeight = Math.min(props.window.width, props.window.height)
 
     function handleEndEdit(editDie : Die) {
         props.updateDie(props.diePropPair.mDie, editDie);
         setEditModalShown(false);
     }
-
-    useEffect(() => {
-        Dimensions.addEventListener("change", handleScreenChange);
-        
-        return () => {
-            Dimensions.removeEventListener("change", handleScreenChange);
-        }
-    });
 
     return (
         <View style={styles.background}>
@@ -75,7 +65,7 @@ export function CustomPageDieView(props : CustomDieViewProps) {
                     }}
                     setCount={(newModifier: number) => props.updateProperties(props.diePropPair.mProperties.clone({modifier: newModifier}))} 
                 />
-                <PropertiesButton getProperties={() => props.diePropPair.mProperties} updateProperties={(newProps : RollProperties) => { return props.updateProperties(newProps)}} />
+                <PropertiesButton window={props.window} getProperties={() => props.diePropPair.mProperties} updateProperties={(newProps : RollProperties) => { return props.updateProperties(newProps)}} />
             </View>
             <CreateDieDialog modalShown={editModalShown} die={props.diePropPair.mDie} dismissModal={() => setEditModalShown(false)} createDie={handleEndEdit}/>
         </View> 

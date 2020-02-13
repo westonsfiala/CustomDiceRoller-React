@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import {
     View, 
     Text,
+    ScaledSize,
 } from 'react-native';
 
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -14,6 +15,7 @@ import { Roll } from './dice/Roll';
 interface SavedRollPageInterface {
     displayRoll : (roll: Roll) => void;
     editRoll : (roll: Roll) => void;
+    window : ScaledSize;
 }
 
 export function SavedRollPage(props : SavedRollPageInterface) {

@@ -5,6 +5,7 @@ import {
     View, 
     Text,
     FlatList,
+    ScaledSize,
 } from 'react-native';
 
 import { RollDisplayHelper } from './dice/views/RollDisplayHelper';
@@ -14,7 +15,11 @@ import { RestoreHistoryButton } from './helpers/RestoreHistoryButton';
 import { HistoryItemView } from './helpers/HistoryItemView';
 import HistoryManager from './sync/HistoryManager';
 
-export function HistoryPage() {
+interface HistoryInterface{
+    window : ScaledSize
+}
+
+export function HistoryPage(props : HistoryInterface) {
 
     const flatList = useRef(null as FlatList<RollDisplayHelper>);
     const lastNumItemsRef = useRef(HistoryManager.getInstance().getHistory().length);
@@ -31,7 +36,7 @@ export function HistoryPage() {
         return(<View style={styles.ListDivider}/>);
     }
 
-    function renderItem({item}) { return <HistoryItemView rollHelper={item}/> }
+    function renderItem({item}) { return <HistoryItemView window={props.window} rollHelper={item}/> }
 
     return (
         <View>
