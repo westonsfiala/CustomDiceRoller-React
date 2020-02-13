@@ -19,6 +19,11 @@ export function getNumDiceString(numDice : number) : string
     return numDice + 'd';
 }
 
+export function getRepeatRollString(repeat : number) : string
+{
+    return 'Repeat ' + repeat + ' Times';
+}
+
 export function getDropHighString(drop : number) : string
 {
     return 'Drop ' + drop + ' Highest';
@@ -47,6 +52,11 @@ export function getReRollString(reroll : number) : string
 export function getMinimumString(minimum : number) : string
 {
     return 'Minimum Value = |' + minimum + '|'
+}
+
+export function getRepeatRollTitle() : string
+{
+    return 'Repeat X Times';
 }
 
 export function getDropHighTitle() : string

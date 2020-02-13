@@ -19,7 +19,7 @@ import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { RollProperties, isAdvantage, isDisadvantage, isDouble, isHalve, hasDropHigh, hasDropLow, hasKeepHigh, hasKeepLow, hasReRoll, hasMinimumRoll, hasExplode } from '../dice/RollProperties';
+import { RollProperties, isAdvantage, isDisadvantage, isDouble, isHalve, hasDropHigh, hasDropLow, hasKeepHigh, hasKeepLow, hasReRoll, hasMinimumRoll, hasExplode, hasRepeatRoll } from '../dice/RollProperties';
 import { 
     getDropHighString, 
     getDropLowString, 
@@ -32,7 +32,9 @@ import {
     getKeepHighTitle,
     getKeepLowTitle,
     getReRollTitle,
-    getMinimumTitle
+    getMinimumTitle,
+    getRepeatRollString,
+    getRepeatRollTitle
 } from './StringHelper';
 import { SetValueDialog } from '../dialogs/SetValueDialog';
 
@@ -60,6 +62,7 @@ export function PropertiesButton(props: PropertiesInterface) {
 
     const menuRef = useRef(null);
     const resetMenuRef = useRef(null);
+    const [showRepeatRollModal, setShowRepeatRollModal] = useState(false);
     const [showDropHighModal, setShowDropHighModal] = useState(false);
     const [showDropLowModal, setShowDropLowModal] = useState(false);
     const [showKeepHighModal, setShowKeepHighModal] = useState(false);
@@ -117,7 +120,7 @@ export function PropertiesButton(props: PropertiesInterface) {
         explodeIcon = "checkbox-marked-outline";
     }
 
-    let scrollViewHeight = Math.min(Dimensions.get('window').height,500);
+    let scrollViewHeight = Dimensions.get('window').height*2/3;
 
     return(
         <View style={styles.Container}>
@@ -167,6 +170,11 @@ export function PropertiesButton(props: PropertiesInterface) {
                             <Text style={styles.MenuText}>Halve</Text>
                             <ActiveItemHelper turnOn={isHalve(staleProperties)}/>
                         </View>
+                    </MenuOption>
+                    <View style={styles.MenuDivider}/>
+                    <MenuOption style={styles.Menu} onSelect={() => setShowRepeatRollModal(true)} >
+                        <Text style={styles.MenuText}>{getRepeatRollString(staleProperties.mRepeatRoll)}</Text>
+                        <ActiveItemHelper turnOn={hasRepeatRoll(staleProperties)}/>
                     </MenuOption>
                     <View style={styles.MenuDivider}/>
                     <MenuOption style={styles.Menu} onSelect={() => setShowDropHighModal(true)} >
@@ -226,6 +234,14 @@ export function PropertiesButton(props: PropertiesInterface) {
             >
                 <Text style={styles.Text}>{propertyText}</Text>
             </Touchable>
+            <SetValueDialog
+                modalShown={showRepeatRollModal}
+                titleText={getRepeatRollTitle()}
+                valueEnforcer={(num: number) => {return Math.max(num, 0)}}
+                defaultValue={staleProperties.mRepeatRoll}
+                dismissModal={() => setShowRepeatRollModal(false)}
+                acceptValue={(newVal: number) => internalUpdateProperties(props.getProperties().clone({repeatRoll:newVal})) }
+            />
             <SetValueDialog
                 modalShown={showDropHighModal} 
                 titleText={getDropHighTitle()}

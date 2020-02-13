@@ -2,7 +2,7 @@
 import { Die } from './Die'
 import { SimpleDie } from './SimpleDie';
 import { cloneDie } from './DieFactory'
-import { RollProperties, isDouble, isHalve, isAdvantage, isDisadvantage } from './RollProperties'
+import { RollProperties, isDouble, isHalve, isAdvantage, isDisadvantage, hasDropHigh, hasDropLow, hasKeepHigh, hasKeepLow, hasReRoll, hasMinimumRoll, hasExplode, hasRepeatRoll } from './RollProperties'
 import { RollResults } from './views/RollResults'
 
 import {
@@ -12,7 +12,8 @@ import {
     getKeepHighString,
     getKeepLowString,
     getMinimumString,
-    getReRollString
+    getReRollString,
+    getRepeatRollString
  } from '../helpers/StringHelper'
 import { DiePropertyPair } from './views/DiePropertyPair';
 
@@ -175,63 +176,75 @@ export class Roll {
 
         for(let props of this.mDiePropArray) {
 
-            let die = props.mDie;
-            let dieJson = JSON.stringify(die);
             let properties = props.mProperties;
+            let originalDie = props.mDie;
 
-            let rollPair = this.produceRollLists(die, properties);
-            let secondRollPair = this.produceRollLists(die, properties);
+            let numRepeats = Math.max(1, properties.mRepeatRoll)
 
-            const summer = (accumulator: number, current: number) => accumulator + current;
+            for(let repeatedRoll = 0; repeatedRoll < numRepeats; repeatedRoll += 1) {
 
-            returnResults.mRollProperties.set(dieJson, properties);
+                let die = originalDie;
 
-            switch(properties.mAdvantageDisadvantage)
-            {
-                case RollProperties.rollDisadvantageValue :
-                    if(rollPair.keep.reduce(summer, 0) < secondRollPair.keep.reduce(summer, 0)) {
+                if(repeatedRoll !== 0) {
+                    die = cloneDie(originalDie, originalDie.mDieName + "_" + repeatedRoll.toString())
+                }
+
+                let dieJson = JSON.stringify(die);
+    
+                let rollPair = this.produceRollLists(die, properties);
+                let secondRollPair = this.produceRollLists(die, properties);
+    
+                const summer = (accumulator: number, current: number) => accumulator + current;
+    
+                returnResults.mRollProperties.set(dieJson, properties);
+    
+                switch(properties.mAdvantageDisadvantage)
+                {
+                    case RollProperties.rollDisadvantageValue :
+                        if(rollPair.keep.reduce(summer, 0) < secondRollPair.keep.reduce(summer, 0)) {
+                            returnResults.mRollResults.set(dieJson, rollPair.keep);
+                            returnResults.mDroppedRolls.set(dieJson, rollPair.drop);
+                            returnResults.mReRolledRolls.set(dieJson, rollPair.reroll);
+                            returnResults.mStruckRollResults.set(dieJson, secondRollPair.keep);
+                            returnResults.mStruckDroppedRolls.set(dieJson, secondRollPair.drop);
+                            returnResults.mStruckReRolledRolls.set(dieJson, secondRollPair.reroll);
+                        } else {
+                            returnResults.mRollResults.set(dieJson, secondRollPair.keep);
+                            returnResults.mDroppedRolls.set(dieJson, secondRollPair.drop);
+                            returnResults.mReRolledRolls.set(dieJson, secondRollPair.reroll);
+                            returnResults.mStruckRollResults.set(dieJson, rollPair.keep);
+                            returnResults.mStruckDroppedRolls.set(dieJson, rollPair.drop);
+                            returnResults.mStruckReRolledRolls.set(dieJson, rollPair.reroll);
+                        }
+                        break;
+    
+                    case RollProperties.rollNaturalValue : 
                         returnResults.mRollResults.set(dieJson, rollPair.keep);
                         returnResults.mDroppedRolls.set(dieJson, rollPair.drop);
                         returnResults.mReRolledRolls.set(dieJson, rollPair.reroll);
-                        returnResults.mStruckRollResults.set(dieJson, secondRollPair.keep);
-                        returnResults.mStruckDroppedRolls.set(dieJson, secondRollPair.drop);
-                        returnResults.mStruckReRolledRolls.set(dieJson, secondRollPair.reroll);
-                    } else {
-                        returnResults.mRollResults.set(dieJson, secondRollPair.keep);
-                        returnResults.mDroppedRolls.set(dieJson, secondRollPair.drop);
-                        returnResults.mReRolledRolls.set(dieJson, secondRollPair.reroll);
-                        returnResults.mStruckRollResults.set(dieJson, rollPair.keep);
-                        returnResults.mStruckDroppedRolls.set(dieJson, rollPair.drop);
-                        returnResults.mStruckReRolledRolls.set(dieJson, rollPair.reroll);
-                    }
-                    break;
-
-                case RollProperties.rollNaturalValue : 
-                    returnResults.mRollResults.set(dieJson, rollPair.keep);
-                    returnResults.mDroppedRolls.set(dieJson, rollPair.drop);
-                    returnResults.mReRolledRolls.set(dieJson, rollPair.reroll);
-                    returnResults.mStruckRollResults.set(dieJson, []);
-                    returnResults.mStruckDroppedRolls.set(dieJson, []);
-                    returnResults.mStruckReRolledRolls.set(dieJson, []);
-                    break;
-
-                case RollProperties.rollAdvantageValue : 
-                    if(rollPair.keep.reduce(summer) > secondRollPair.keep.reduce(summer)) {
-                        returnResults.mRollResults.set(dieJson, rollPair.keep);
-                        returnResults.mDroppedRolls.set(dieJson, rollPair.drop);
-                        returnResults.mReRolledRolls.set(dieJson, rollPair.reroll);
-                        returnResults.mStruckRollResults.set(dieJson, secondRollPair.keep);
-                        returnResults.mStruckDroppedRolls.set(dieJson, secondRollPair.drop);
-                        returnResults.mStruckReRolledRolls.set(dieJson, secondRollPair.reroll);
-                    } else {
-                        returnResults.mRollResults.set(dieJson, secondRollPair.keep);
-                        returnResults.mDroppedRolls.set(dieJson, secondRollPair.drop);
-                        returnResults.mReRolledRolls.set(dieJson, secondRollPair.reroll);
-                        returnResults.mStruckRollResults.set(dieJson, rollPair.keep);
-                        returnResults.mStruckDroppedRolls.set(dieJson, rollPair.drop);
-                        returnResults.mStruckReRolledRolls.set(dieJson, rollPair.reroll);
-                    }
-                    break
+                        returnResults.mStruckRollResults.set(dieJson, []);
+                        returnResults.mStruckDroppedRolls.set(dieJson, []);
+                        returnResults.mStruckReRolledRolls.set(dieJson, []);
+                        break;
+    
+                    case RollProperties.rollAdvantageValue : 
+                        if(rollPair.keep.reduce(summer) > secondRollPair.keep.reduce(summer)) {
+                            returnResults.mRollResults.set(dieJson, rollPair.keep);
+                            returnResults.mDroppedRolls.set(dieJson, rollPair.drop);
+                            returnResults.mReRolledRolls.set(dieJson, rollPair.reroll);
+                            returnResults.mStruckRollResults.set(dieJson, secondRollPair.keep);
+                            returnResults.mStruckDroppedRolls.set(dieJson, secondRollPair.drop);
+                            returnResults.mStruckReRolledRolls.set(dieJson, secondRollPair.reroll);
+                        } else {
+                            returnResults.mRollResults.set(dieJson, secondRollPair.keep);
+                            returnResults.mDroppedRolls.set(dieJson, secondRollPair.drop);
+                            returnResults.mReRolledRolls.set(dieJson, secondRollPair.reroll);
+                            returnResults.mStruckRollResults.set(dieJson, rollPair.keep);
+                            returnResults.mStruckDroppedRolls.set(dieJson, rollPair.drop);
+                            returnResults.mStruckReRolledRolls.set(dieJson, rollPair.reroll);
+                        }
+                        break
+                }
             }
         }
 
@@ -381,7 +394,7 @@ export class Roll {
             if(isDouble(props.mProperties)) { expectedResult *= 2; }
             if(isHalve(props.mProperties)) { expectedResult /= 2; }
 
-            dieAverage += expectedResult;
+            dieAverage += expectedResult * Math.max(1, props.mProperties.mRepeatRoll);
         }
         return dieAverage
     }
@@ -435,62 +448,64 @@ export class Roll {
                 returnString += props.mNumDice + 'x' + die.displayName
             }
 
-            switch(props.mAdvantageDisadvantage) {
-                case RollProperties.rollAdvantageValue : 
-                    returnString += "(Advantage)";
-                    break;
-                case RollProperties.rollDisadvantageValue : 
-                    returnString += "(Disadvantage)";
-                    break;
+            if(isAdvantage(props)) {
+                returnString += "(Advantage)";
             }
 
-            if(props.mDropHigh !== 0) {
+            if(isDisadvantage(props)) {
+                returnString += "(Disadvantage)";
+            }
+
+            if(hasDropHigh(props)) {
                 let dropString = getDropHighString(props.mDropHigh)
                 returnString += '(' + dropString + ')';
             } 
 
-            if(props.mDropLow !== 0) {
+            if(hasDropLow(props)) {
                 let dropString = getDropLowString(props.mDropLow)
                 returnString += '(' + dropString + ')';
             }
 
-            if(props.mKeepHigh !== 0) {
+            if(hasKeepHigh(props)) {
                 let keepString = getKeepHighString(props.mKeepHigh)
                 returnString += '(' + keepString + ')';
             }
 
-            if(props.mKeepLow !== 0) {
+            if(hasKeepLow(props)) {
                 let keepString = getKeepLowString(props.mKeepLow)
                 returnString += '(' + keepString + ')';
             }
 
-            if(props.mReRoll != defaultProps.mReRoll)
+            if(hasReRoll(props))
             {
                 let reRollString = getReRollString(props.mReRoll)
                 returnString += '(' + reRollString + ')';
             }
 
-            if(props.mMinimumRoll != defaultProps.mMinimumRoll)
+            if(hasMinimumRoll(props))
             {
                 let minString = getMinimumString(props.mMinimumRoll)
                 returnString += '(' + minString + ')';
             }
 
-            if(props.mExplode != defaultProps.mExplode) {
+            if(hasExplode(props)) {
                 returnString += '(Explode)';
             }
 
             if(props.mModifier != 0) {
                 returnString += getModifierString(props.mModifier, true)
             }
-            
-            switch(props.mDoubleHalve) {
-                case RollProperties.rollDoubleValue :
-                    returnString += '(Double)';
-                    break;
-                case RollProperties.rollHalveValue :
-                    returnString += '(Halve)';
-                    break;
+
+            if(isDouble(props)) {
+                returnString += '(Double)';
+            }
+
+            if(isHalve(props)) {
+                returnString += '(Halve)';
+            }
+
+            if(hasRepeatRoll(props)) {
+                returnString += '(' + getRepeatRollString(props.mRepeatRoll) + ')';
             }
         }
 

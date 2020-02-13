@@ -4,7 +4,7 @@ import {Roll} from "../Roll"
 import {createUnknownDie} from "../DieFactory"
 import {getModifierString, concatter} from "../../helpers/StringHelper"
 import {StruckStringPair} from "./StruckStringPair"
-import { RollProperties, isDouble, isHalve } from "../RollProperties";
+import { RollProperties, isDouble, isHalve, hasRepeatRoll } from "../RollProperties";
 import SortTypeManager from "../../sync/SortTypeManager";
 import ExpectedResultManager from "../../sync/ExpectedResultManager";
 import { RollResults } from "./RollResults";
@@ -34,14 +34,13 @@ export class RollDisplayHelper {
 
         // Lambda method for use in the reduce method to sum all the values.
         const summer = (accumulator: number, current: number) => accumulator + current;
-        const sortAscending = (left: number, right: number) => left - right;
-        const sortDescending = (left: number, right: number) => right - left;
 
         this.storedResults = roll.roll();
 
         this.rollNameText = roll.getDetailedRollName();
         
-        let sumResult = 0;
+        let sumResult = Array<number>();
+        let showSplitSums = false;
 
         // Go through all of the dice in the roll and start making the roll detail lines
         for(let dieJson of this.storedResults.getKeys()) {
@@ -62,7 +61,9 @@ export class RollDisplayHelper {
             let rollResultsStruckReRolled = this.storedResults.mStruckReRolledRolls.get(dieJson);
             let rollProperties = this.storedResults.mRollProperties.get(dieJson);
 
-            
+            if(hasRepeatRoll(rollProperties)) {
+                showSplitSums = true;
+            }
 
             // Lambda method for turning the roll numbers into a displayable string.
             const processRollPair = (dieName: string, mainList: Array<number>, strikeList: Array<number>, properties : RollProperties, showPropInfo : boolean) : StruckStringPair =>
@@ -75,7 +76,7 @@ export class RollDisplayHelper {
                         if(isDouble(properties)) {subTotal *= 2;}
                         if(isHalve(properties)) {subTotal /= 2;}
                         subTotal = Math.floor(subTotal)
-                        sumResult += subTotal;
+                        sumResult.push(subTotal);
                     }
 
                     let mainListString = mainList.reduce(concatter, '');
@@ -136,7 +137,14 @@ export class RollDisplayHelper {
             this.rollResultsText.push(new StruckStringPair(averageText,'', 'expected'));
         }
 
-        this.rollSumText.regularText = sumResult.toString();
+        let sumTotal = sumResult.reduce(summer,0);
+        let sumText = sumTotal.toString();
+
+        if(showSplitSums) {
+            sumText = sumResult.reduce(concatter,'') + ', [' + sumText + ']';
+        }
+
+        this.rollSumText.regularText = sumText;
         this.rollSumText.struckText = '';
     }
 

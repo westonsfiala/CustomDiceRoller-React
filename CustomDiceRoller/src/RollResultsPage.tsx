@@ -270,7 +270,11 @@ export function RollResultsPage(props : RollResultsInterface) {
                     </Text>
                 </ScrollView>
             </View>
-            <StruckStringPairView pair={rollHelper.rollSumText} style={styles.SumText}/>
+            <View style={styles.ScrollContainer}>
+                <ScrollView>
+                    <StruckStringPairView pair={rollHelper.rollSumText} style={styles.SumText}/>
+                </ScrollView>
+            </View>
             <View style={styles.ScrollContainer}>
                 <ScrollView>
                     {(rollHelper.rollResultsText).map((item, index) => 
