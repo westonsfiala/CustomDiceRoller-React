@@ -41,6 +41,7 @@ export function CreateImbalancedDieDialog(props : ImbalancedInterface) {
     }, [props.die])
 
     function acceptHandler() {
+        if(facesString == undefined) return;
         let numberStrings = facesString.split(',');
         let newFaces = new Array<number>();
 

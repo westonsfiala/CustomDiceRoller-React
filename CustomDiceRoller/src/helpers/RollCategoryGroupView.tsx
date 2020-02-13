@@ -25,7 +25,7 @@ export function RollCategoryGroupView(props : RollCategoryGroupInterface) {
         let rollArray = Array<RollCategoryGroup>();
 
         for(let roll of props.rolls) {
-
+            if(roll.categoryName == undefined) continue;
             let splitString = roll.categoryName.split('/');
 
             let rollGroup = rollArray.find((value) => value.category === splitString[props.depth]);

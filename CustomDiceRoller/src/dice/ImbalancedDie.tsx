@@ -26,10 +26,10 @@ export class ImbalancedDie extends Die
 
     static tempName(facesString: string) {
 
-        if(facesString.length === 0) {return 'd0';}
+        if(facesString == undefined || facesString.length === 0) {return 'd0';}
 
         let name = 'd';
-
+        
         let splitFaces = facesString.split(',');
 
         for(let face of splitFaces) {

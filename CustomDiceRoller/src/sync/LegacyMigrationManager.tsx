@@ -105,10 +105,11 @@ export default class LegacyMigrationManager {
             if(saveString == undefined || saveString == null || saveString.length == 0) throw new DieLoadError();
             let imbalancedStrings = saveString.split(saveSplitStrings[dieSplitStringIndex]);
             
-            if(imbalancedStrings.length != 3) throw new DieLoadError();
+            if(imbalancedStrings.length !== 3) throw new DieLoadError();
 
             let name = imbalancedStrings[1];
 
+            if(imbalancedStrings[2] == undefined || imbalancedStrings[2] == null || imbalancedStrings[2].length == 0) throw new DieLoadError();
             let faceStrings = imbalancedStrings[2].split(saveSplitStrings[imbalancedDieSplitStringIndex]);
             
             let faceList = Array<number>();
@@ -130,15 +131,18 @@ export default class LegacyMigrationManager {
         let migratedRolls = Array<Roll>();
         let rollStrings = Array<string>();
 
-        // Strip away the "[" & "]"
-        let strippedRollString = rollsString.substr(1,rollsString.length-1);
+        try {
+            // Strip away the "[" & "]"
+            if(rollsString == undefined || rollsString == null || rollsString.length == 0) throw new DieLoadError();
+            let strippedRollString = rollsString.substr(1,rollsString.length-1);
 
-        if(strippedRollString == undefined || strippedRollString == null || strippedRollString.length == 0) {
-            this.mLastMigrationErrors.push("Unable to parse rolls.");
-            return migratedRolls;
+            if(strippedRollString == undefined || strippedRollString == null || strippedRollString.length == 0) throw new DieLoadError();
+            rollStrings = strippedRollString.split(',');
         }
-
-        rollStrings = strippedRollString.split(',');
+        catch (error) {
+            this.mLastMigrationErrors.push("Unable to parse rolls.");
+            throw new DieLoadError();
+        }
 
         for(let saveString of rollStrings) {
             try {
@@ -195,14 +199,12 @@ export default class LegacyMigrationManager {
         this.mLastMigrationErrors = Array<string>();
         this.mLastMigratedRolls = Array<Roll>();
 
-        if(clipString == undefined || clipString == null || clipString.length == 0) {
-            this.mLastMigrationErrors.push("Unable to parse rolls. Ensure the copy/paste clipboard has correct information.");
-            return false;
-        }
-        
         try{
+            if(clipString == undefined || clipString == null || clipString.length == 0) throw new DieLoadError();
+        
             this.mLastMigratedRolls = this.parseLegacyRolls(clipString)
             RollManager.getInstance().addMigratedRolls(this.mLastMigratedRolls)
+            
         } catch (error) {
             this.mLastMigrationErrors.push("Unable to parse rolls. Ensure the copy/paste clipboard has correct information.");
             return false;
