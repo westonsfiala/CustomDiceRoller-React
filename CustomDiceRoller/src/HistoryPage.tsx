@@ -1,5 +1,5 @@
 
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState } from 'react'
 
 import {
     View, 
@@ -15,6 +15,8 @@ import { RestoreHistoryButton } from './helpers/RestoreHistoryButton';
 import { HistoryItemView } from './helpers/HistoryItemView';
 import HistoryManager from './sync/HistoryManager';
 
+const ITEMS_TO_GET_BASE = 20;
+
 interface HistoryInterface{
     window : ScaledSize
 }
@@ -22,7 +24,7 @@ interface HistoryInterface{
 export function HistoryPage(props : HistoryInterface) {
 
     const flatList = useRef(null as FlatList<RollDisplayHelper>);
-    const lastNumItemsRef = useRef(HistoryManager.getInstance().getHistory().length);
+    const [itemInfo, setItemInfo] = useState({totalItems:HistoryManager.getInstance().getHistory().length, toGet:ITEMS_TO_GET_BASE});
     
     const [reload, setReload] = useState(false);
 
@@ -38,6 +40,8 @@ export function HistoryPage(props : HistoryInterface) {
 
     function renderItem({item}) { return <HistoryItemView window={props.window} rollHelper={item}/> }
 
+    let fullHistory = HistoryManager.getInstance().getHistory();
+
     return (
         <View>
             <FlatList
@@ -48,16 +52,20 @@ export function HistoryPage(props : HistoryInterface) {
                         <RestoreHistoryButton canRestoreHistory={HistoryManager.getInstance().canRestoreHistory()} restoreHistory={() => HistoryManager.getInstance().restoreHistory()}/>
                     </View>
                 }
-                data={HistoryManager.getInstance().getHistory()}
+                data={HistoryManager.getInstance().getMostRecentHistory(itemInfo.toGet)}
                 ItemSeparatorComponent={divider}
                 renderItem={renderItem}
-                inverted={true}
+                onEndReached={() => {
+                    if(itemInfo.toGet < fullHistory.length) {
+                        setItemInfo({totalItems:fullHistory.length, toGet:itemInfo.toGet*2});
+                    }
+                }}
+                onEndReachedThreshold={0.75}
                 onContentSizeChange={() => {
-                    let numItems = HistoryManager.getInstance().getHistory().length;
                     // You need this block because sometimes this triggers when you haven't actually changed the data.
-                    if(numItems !== lastNumItemsRef.current) {
-                        lastNumItemsRef.current = numItems;
-                        flatList.current.scrollToEnd();
+                    if(fullHistory.length !== itemInfo.totalItems) {
+                        setItemInfo({totalItems:fullHistory.length, toGet:ITEMS_TO_GET_BASE});
+                        setTimeout(() => flatList.current.scrollToIndex({animated:false, index:0}), 0);
                     }
                 }}
             />

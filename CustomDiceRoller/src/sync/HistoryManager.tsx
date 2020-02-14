@@ -38,6 +38,19 @@ export default class HistoryManager {
         return this.mHistory;
     }
 
+    getMostRecentHistory(itemsToGet : number) : Array<RollDisplayHelper> {
+        let returnItems = new Array<RollDisplayHelper>();
+
+
+        let realItemsToGet = Math.min(this.mHistory.length, itemsToGet);
+
+        for(let index = 0; index < realItemsToGet; index += 1) {
+            returnItems.push(this.mHistory[this.mHistory.length-index-1]);
+        }
+
+        return returnItems;
+    }
+
     getLastRoll() : RollDisplayHelper {
         if(this.mHistory.length !== 0) {
             return this.mHistory[this.mHistory.length-1]
