@@ -32,6 +32,8 @@ export function HistoryPage(props : HistoryInterface) {
         setReload(!reload)
     });
 
+    let fullHistory = HistoryManager.getInstance().getHistory();
+
     console.log('refresh history page');
 
     function divider() {
@@ -40,7 +42,15 @@ export function HistoryPage(props : HistoryInterface) {
 
     function renderItem({item}) { return <HistoryItemView window={props.window} rollHelper={item}/> }
 
-    let fullHistory = HistoryManager.getInstance().getHistory();
+    function scrollToStart() {
+        try{
+            if(fullHistory.length > 0) {
+                flatList.current.scrollToIndex({animated:false, index:0})
+            }
+        } catch (error) {
+            // Throw the error away. We don't care about it.
+        }
+    }
 
     return (
         <View>
@@ -65,7 +75,7 @@ export function HistoryPage(props : HistoryInterface) {
                     // You need this block because sometimes this triggers when you haven't actually changed the data.
                     if(fullHistory.length !== itemInfo.totalItems) {
                         setItemInfo({totalItems:fullHistory.length, toGet:ITEMS_TO_GET_BASE});
-                        setTimeout(() => flatList.current.scrollToIndex({animated:false, index:0}), 0);
+                        setTimeout(scrollToStart, 0);
                     }
                 }}
             />
