@@ -11,7 +11,6 @@ import Touchable from 'react-native-platform-touchable';
 import { Die } from '../Die';
 import { DieInfoDialog } from '../../dialogs/DieInfoDialog';
 import { DieView } from './DieView';
-import { CreateDieDialog } from '../../dialogs/CreateDieDialog';
 
 interface SimpleDieViewInterface {
     die : Die;
@@ -24,23 +23,12 @@ interface SimpleDieViewInterface {
 export function SimplePageDieView(props : SimpleDieViewInterface) {
     
     const [modalShown, setModalShown] = useState(false);
-    const [editModalShown, setEditModalShown] = useState(false);
-
-    function handleBeginEdit() {
-        setEditModalShown(true);
-        setModalShown(false);
-    }
-
-    function handleEndEdit(editDie : Die) {
-        setEditModalShown(false);
-        props.editDieCallback(editDie);
-    }
 
     return(
         <View style={{width:props.size}} >
             <Touchable 
             background={Touchable.Ripple('white')} 
-            onPress={() => {props.pressDieCallback()}}
+            onPress={props.pressDieCallback}
             delayLongPress={300}
             onLongPress={() => setModalShown(true)}
             >
@@ -50,21 +38,9 @@ export function SimplePageDieView(props : SimpleDieViewInterface) {
                 modalShown={modalShown} 
                 die={props.die} 
                 dismissModal={() => setModalShown(false)} 
-                removeDie={() => props.removeDieCallback()} 
-                editDie={handleBeginEdit}
-            />
-            <CreateDieDialog 
-                modalShown={editModalShown} 
-                die={props.die} 
-                dismissModal={() => setEditModalShown(false)} 
-                createDie={handleEndEdit}
+                removeDie={props.removeDieCallback} 
+                editDie={props.editDieCallback}
             />
         </View>
     );
-    //<ConfirmRemoveDialog 
-    //            modalShown={removeModalShown} 
-    //            removeName={props.die.mDieName} 
-    //            dismissModal={() => setRemoveModalShown(false)} 
-    //            remove={() => props.removeDieCallback()}
-    //        />
 };

@@ -8,7 +8,7 @@ import {
 
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import Color from 'color';
+import { HorizontalDivider } from './HorizontalDivider';
 
 interface ConfirmActionInterface {
     show : boolean;
@@ -21,28 +21,31 @@ export function ConfirmActionButtons(props : ConfirmActionInterface) {
     if(!props.show) return null;
 
     return (
-        <View style={styles.TopContainer}>
-            <Text style={styles.DisplayText}>{props.displayText}</Text>
-            <View style={styles.ModalButtonLine}>
-                <View style={styles.ModalButtonContainer}>
-                    <Touchable 
-                    style={styles.ModalButton}
-                    hitSlop={styles.HitSlop}
-                    foreground={Touchable.Ripple('white', true)}
-                    onPress={() => props.cancel()}
-                    >
-                        <Text style={styles.ModalText}>Cancel</Text>
-                    </Touchable>
-                </View>
-                <View style={styles.ModalButtonContainer}>
-                    <Touchable 
-                    style={styles.ModalButton}
-                    hitSlop={styles.HitSlop}
-                    foreground={Touchable.Ripple('white', true)}
-                    onPress={() => props.confirm()}
-                    >
-                        <Text style={styles.ModalText}>Confirm</Text>
-                    </Touchable>
+        <View>
+            <HorizontalDivider/>
+            <View style={styles.TopContainer}>
+                <Text style={styles.DisplayText}>{props.displayText}</Text>
+                <View style={styles.ModalButtonLine}>
+                    <View style={styles.ModalButtonContainer}>
+                        <Touchable 
+                        style={styles.ModalButton}
+                        hitSlop={styles.HitSlop}
+                        foreground={Touchable.Ripple('white', true)}
+                        onPress={() => props.cancel()}
+                        >
+                            <Text style={styles.ModalText}>Cancel</Text>
+                        </Touchable>
+                    </View>
+                    <View style={styles.ModalButtonContainer}>
+                        <Touchable 
+                        style={styles.ModalButton}
+                        hitSlop={styles.HitSlop}
+                        foreground={Touchable.Ripple('white', true)}
+                        onPress={() => props.confirm()}
+                        >
+                            <Text style={styles.ModalText}>Confirm</Text>
+                        </Touchable>
+                    </View>
                 </View>
             </View>
         </View>
@@ -53,10 +56,6 @@ const styles = EStyleSheet.create({
     TopContainer:{
         flexDirection:'row',
         justifyContent:'space-between',
-        paddingTop:'5rem',
-        marginTop:'5rem',
-        borderTopColor: Color.rgb(128,128,128).hex(), 
-        borderTopWidth: 1,
     },
     ModalButtonLine:{
         flexDirection:'row',

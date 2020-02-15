@@ -12,27 +12,40 @@ import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { Die } from "../dice/Die";
 import { ConfirmActionButtons } from "../helpers/ConfirmActionButtons";
+import { CreateDieHelper } from "../helpers/CreateDieHelper";
 
 interface DieInfoDialogInterface {
     modalShown : boolean;
     die : Die;
     dismissModal : () => void;
     removeDie : () => void;
-    editDie : () => void;
+    editDie : (editDie: Die) => void;
 }
 
 export function DieInfoDialog(props : DieInfoDialogInterface) {
 
     const [removeConfirmShow, setRemoveConfirmShow] = useState(false);
+    const [editDieShow, setEditDieShow] = useState(false);
 
-    function setRemoveConfirmNice(show: boolean)
-    {
+    function setRemoveConfirmNice(show: boolean) {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setEditDieShow(false);
         setRemoveConfirmShow(show);
     }
 
+    function setEditDieNice(edit: boolean) {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setRemoveConfirmShow(false);
+        setEditDieShow(edit);
+    }
+
+    function dismissNice() {
+        setRemoveConfirmNice(false);
+        props.dismissModal();
+    }
+
     return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal}>
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={dismissNice}>
             <View>
                 <Text style={styles.ModalName}>
                     Die info - {props.die.mDieName}
@@ -48,8 +61,7 @@ export function DieInfoDialog(props : DieInfoDialogInterface) {
                         <Touchable 
                         style={styles.ModalButton}
                         onPress={() => {
-                            props.editDie();
-                            props.dismissModal();
+                            setEditDieNice(true);
                         }}
                         foreground={Touchable.Ripple('white', true)}
                         hitSlop={styles.HitSlop}
@@ -74,7 +86,7 @@ export function DieInfoDialog(props : DieInfoDialogInterface) {
                         <View style={styles.ModalButtonPadding}>
                             <Touchable 
                             style={styles.ModalButton}
-                            onPress={() => props.dismissModal()}
+                            onPress={dismissNice}
                             foreground={Touchable.Ripple('white', true)}
                             hitSlop={styles.HitSlop}
                             >
@@ -83,16 +95,25 @@ export function DieInfoDialog(props : DieInfoDialogInterface) {
                         </View>
                     </View>
                 </View>
+                <CreateDieHelper 
+                    show={editDieShow}
+                    die={props.die}
+                    createDie={(newDie : Die) => {
+                        props.editDie(newDie);
+                        dismissNice();
+
+                    }}
+                    cancel={() => setEditDieNice(false)}
+                />
                 <ConfirmActionButtons
-                        show={removeConfirmShow}
-                        displayText={"Remove?"}
-                        confirm={() => {
-                            props.removeDie()
-                            setRemoveConfirmNice(false);
-                            props.dismissModal();
-                        }}
-                        cancel={() => setRemoveConfirmNice(false)}
-                    />
+                    show={removeConfirmShow}
+                    displayText={"Remove?"}
+                    confirm={() => {
+                        props.removeDie()
+                        dismissNice();
+                    }}
+                    cancel={() => setRemoveConfirmNice(false)}
+                />
             </View>
         </ModalDialogBase>
     );

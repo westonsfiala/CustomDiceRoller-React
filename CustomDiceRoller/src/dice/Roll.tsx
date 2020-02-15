@@ -396,7 +396,7 @@ export class Roll {
 
             dieAverage += expectedResult * Math.max(1, props.mProperties.mRepeatRoll);
         }
-        return dieAverage
+        return dieAverage;
     }
 
     displayInHex(): boolean {
