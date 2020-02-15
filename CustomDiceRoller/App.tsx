@@ -12,7 +12,7 @@
 // For description of how to use icons go to https://github.com/oblador/react-native-vector-icons 
 
 import React, { useState, useEffect } from 'react'
-import { Dimensions, View, Text, StatusBar } from 'react-native';
+import { Dimensions, View, Text, StatusBar, Platform } from 'react-native';
 
 import { MenuProvider } from 'react-native-popup-menu';
 import EStyleSheet from 'react-native-extended-stylesheet'; 
@@ -54,7 +54,7 @@ const App = () => {
 
         return(
             <View style={styles.AppBackground}>
-                <StatusBar hidden={true}/>
+                <StatusBar hidden={Platform.OS === 'ios' ? false : true} barStyle="light-content"/>
                 <Text style={styles.LoadText}>Loading...</Text>
                 <Text style={styles.LoadText}>{appPkg.displayName}</Text>
                 <Text style={styles.LoadText}>Version {versionPkg.version}</Text>
@@ -64,7 +64,7 @@ const App = () => {
 
     return (
         <MenuProvider skipInstanceCheck={true}>
-            <StatusBar hidden={true}/>
+            <StatusBar hidden={Platform.OS === 'ios' ? false : true} barStyle="light-content"/>
             <MainEntry/>
         </MenuProvider>
     );

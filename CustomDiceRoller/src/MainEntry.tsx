@@ -12,7 +12,7 @@
 // For description of how to use icons go to https://github.com/oblador/react-native-vector-icons 
 
 import React, { useRef, useState, useEffect } from 'react'
-import { View, Dimensions, UIManager, LayoutAnimation } from 'react-native';
+import { View, Dimensions, UIManager, LayoutAnimation, SafeAreaView } from 'react-native';
 
 import { AppBar } from "./appBar/AppBar";
 import ViewPager from '@react-native-community/viewpager';
@@ -90,7 +90,7 @@ export function MainEntry() {
     });
 
     return (
-        <View style={styles.AppBackground}>
+        <SafeAreaView style={styles.AppBackground}>
             <ViewPager style={styles.Pager} ref={dialogPager} initialPage={1} orientation="vertical" scrollEnabled={false}>
                 <View key="1">
                     <RollResultsPage dismissPage={dismissRollResultsPage} window={window}/>
@@ -124,7 +124,7 @@ export function MainEntry() {
                     <AboutPage dismissPage={returnToMainPage}/>
                 </View>
             </ViewPager>
-        </View>
+        </SafeAreaView>
     );
 };
 

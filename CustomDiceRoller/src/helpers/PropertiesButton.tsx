@@ -121,7 +121,7 @@ export function PropertiesButton(props: PropertiesInterface) {
         explodeIcon = "checkbox-marked-outline";
     }
 
-    let scrollViewHeight = props.window.height*2/3;
+    let scrollViewHeight = Math.min(props.window.height*2/3, 400);
 
     return(
         <View style={styles.Container}>

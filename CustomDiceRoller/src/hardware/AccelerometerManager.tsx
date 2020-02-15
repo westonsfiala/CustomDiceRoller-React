@@ -3,7 +3,10 @@ import {
     setUpdateIntervalForType, 
     SensorTypes,
 } from "react-native-sensors";
+
+import { isEmulator } from 'react-native-device-info';
 import ShakeSensitivityManager from "../sync/ShakeSensitivityManager";
+import { Platform } from "react-native";
 
 export default class AccelerometerManager {
 
@@ -24,6 +27,8 @@ export default class AccelerometerManager {
     }
 
     private constructor() {
+        if(Platform.OS === 'ios' && isEmulator()) { return; };
+        
         const subscription = accelerometer.subscribe(({ x, y, z }) =>
         {
             
