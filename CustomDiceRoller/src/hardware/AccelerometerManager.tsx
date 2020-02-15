@@ -27,14 +27,20 @@ export default class AccelerometerManager {
     }
 
     private constructor() {
-        if(Platform.OS === 'ios' && isEmulator()) { return; };
-        
         const subscription = accelerometer.subscribe(({ x, y, z }) =>
         {
-            
-            let dX = this.xAcceleration - x;
-            let dY = this.yAcceleration - y;
-            let dZ = this.zAcceleration - z;
+            // iOS devices seem to report values reversed and a magnitude down from android.
+            // So we adust by bumping them up.
+            let adjustForIos = 1;
+            if(Platform.OS === 'ios') adjustForIos = -10;
+
+            let realX = x * adjustForIos;
+            let realY = y * adjustForIos;
+            let realZ = z * adjustForIos;
+
+            let dX = this.xAcceleration - realX;
+            let dY = this.yAcceleration - realY;
+            let dZ = this.zAcceleration - realZ;
 
             let combinedChange = Math.sqrt(dX*dX + dY*dY + dZ*dZ);
 
@@ -45,9 +51,11 @@ export default class AccelerometerManager {
 
             this.mAccelerationStable = totalChange < ShakeSensitivityManager.getInstance().getShakeSensitivityValue();
 
-            this.xAcceleration = x;
-            this.yAcceleration = y;
-            this.zAcceleration = z;
+            this.xAcceleration = realX;
+            this.yAcceleration = realY;
+            this.zAcceleration = realZ;
+
+            //console.log({realX,realY,realZ})
         });
 
         setUpdateIntervalForType(SensorTypes.accelerometer, 100);
