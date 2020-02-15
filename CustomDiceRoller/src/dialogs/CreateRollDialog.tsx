@@ -41,8 +41,8 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
             newCategory = props.roll.mRollCategory;
         }
 
-        props.createRoll(props.roll.setNameCategory(newName, newCategory))
         props.dismissModal();
+        props.createRoll(props.roll.setNameCategory(newName, newCategory))
     }
 
     return(

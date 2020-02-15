@@ -108,7 +108,7 @@ export function CustomDicePage(props: CustomRollPageInterface) {
                 modalShown={createRollModalShown} 
                 roll={CustomRollManager.getInstance().getRoll()} 
                 dismissModal={() => setCreateRollModalShown(false)} 
-                createRoll={handleCreateRoll} 
+                createRoll={(newRoll: Roll) => handleCreateRoll(newRoll, false)} 
             />
             <ConfirmOverrideDialog 
                 modalShown={overrideRollModalShown} 

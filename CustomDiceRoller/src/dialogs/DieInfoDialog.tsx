@@ -1,15 +1,17 @@
 import { ModalDialogBase } from "./ModalDialogBase";
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
     View,
     Text,
+    LayoutAnimation,
 } from 'react-native';
 
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { Die } from "../dice/Die";
+import { ConfirmActionButtons } from "../helpers/ConfirmActionButtons";
 
 interface DieInfoDialogInterface {
     modalShown : boolean;
@@ -20,6 +22,14 @@ interface DieInfoDialogInterface {
 }
 
 export function DieInfoDialog(props : DieInfoDialogInterface) {
+
+    const [removeConfirmShow, setRemoveConfirmShow] = useState(false);
+
+    function setRemoveConfirmNice(show: boolean)
+    {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setRemoveConfirmShow(show);
+    }
 
     return(
         <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal}>
@@ -52,8 +62,7 @@ export function DieInfoDialog(props : DieInfoDialogInterface) {
                             <Touchable 
                             style={styles.ModalButton}
                             onPress={() => {
-                                props.removeDie();
-                                props.dismissModal();
+                                setRemoveConfirmNice(true);
                             }}
                             foreground={Touchable.Ripple('white', true)}
                             hitSlop={styles.HitSlop}
@@ -74,6 +83,16 @@ export function DieInfoDialog(props : DieInfoDialogInterface) {
                         </View>
                     </View>
                 </View>
+                <ConfirmActionButtons
+                        show={removeConfirmShow}
+                        displayText={"Remove?"}
+                        confirm={() => {
+                            props.removeDie()
+                            setRemoveConfirmNice(false);
+                            props.dismissModal();
+                        }}
+                        cancel={() => setRemoveConfirmNice(false)}
+                    />
             </View>
         </ModalDialogBase>
     );
