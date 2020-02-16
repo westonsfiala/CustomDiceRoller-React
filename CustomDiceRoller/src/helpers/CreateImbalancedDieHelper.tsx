@@ -102,8 +102,8 @@ const styles = EStyleSheet.create({
     ModalTextInputLine:{
         flexDirection:'row',
         alignItems:'center',
-        paddingTop:'5rem',
-        paddingBottom:'5rem',
+        paddingTop: Platform.OS === 'ios' ? '5rem' : 0,
+        paddingBottom: Platform.OS === 'ios' ? '5rem' : 0,
     },
     ModalButtonLine:{
         flexDirection:'row',

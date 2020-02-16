@@ -12,7 +12,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
 import { SimpleDie } from '../dice/SimpleDie';
 import { OkCancelButtons } from './OkCancelButtons';
-import { HorizontalDivider } from './HorizontalDivider';
 
 interface CreateSimpleDieInterface {
     die : SimpleDie;
@@ -88,8 +87,8 @@ const styles = EStyleSheet.create({
     ModalTextInputLine:{
         flexDirection:'row',
         alignItems:'center',
-        paddingTop:'5rem',
-        paddingBottom:'5rem',
+        paddingTop: Platform.OS === 'ios' ? '5rem' : 0,
+        paddingBottom: Platform.OS === 'ios' ? '5rem' : 0,
     },
     ModalButtonLine:{
         flexDirection:'row',
