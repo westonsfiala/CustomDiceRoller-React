@@ -17,7 +17,7 @@ import { OkCancelButtons } from "../helpers/OkCancelButtons";
 import { ConfirmActionButtons } from "../helpers/ConfirmActionButtons";
 import CustomRollManager from "../sync/CustomRollManager";
 import RollManager from "../sync/RollManager";
-import { HorizontalDivider } from "../helpers/HorizontalDivider";
+import { VerticalSpace } from "../helpers/VerticalSpace";
 
 interface CreateRollDialogInterface {
     modalShown : boolean;
@@ -122,7 +122,7 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
                     blurOnSubmit={false}
                 />
             </View>
-            <HorizontalDivider/>
+            <VerticalSpace/>
             {getBottomLine()}
         </ModalDialogBase>
     );

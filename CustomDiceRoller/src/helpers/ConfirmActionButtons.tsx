@@ -8,7 +8,6 @@ import {
 
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { HorizontalDivider } from './HorizontalDivider';
 
 interface ConfirmActionInterface {
     show : boolean;

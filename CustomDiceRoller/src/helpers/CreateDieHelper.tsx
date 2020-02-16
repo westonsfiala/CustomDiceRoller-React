@@ -7,8 +7,6 @@ import { ImbalancedDie } from "../dice/ImbalancedDie";
 import { CreateSimpleDieHelper } from './CreateSimpleDieHelper';
 import { CreateMinMaxDieHelper } from './CreateMinMaxDieHelper';
 import { CreateImbalancedDieHelper } from './CreateImbalancedDieHelper';
-import { View } from 'react-native';
-import { HorizontalDivider } from './HorizontalDivider';
 
 interface CreateDieInterface {
     show : boolean;

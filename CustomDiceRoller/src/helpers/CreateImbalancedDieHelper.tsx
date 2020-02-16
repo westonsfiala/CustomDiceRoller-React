@@ -12,7 +12,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
 import { ImbalancedDie } from '../dice/ImbalancedDie';
 import { OkCancelButtons } from './OkCancelButtons';
-import { HorizontalDivider } from './HorizontalDivider';
 import { concatterNoSpace } from './StringHelper';
 
 interface CreateImbalancedDieInterface {

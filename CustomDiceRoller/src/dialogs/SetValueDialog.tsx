@@ -12,6 +12,7 @@ import {
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
 import { OkCancelButtons } from "../helpers/OkCancelButtons";
+import { VerticalSpace } from "../helpers/VerticalSpace";
 
 export function SetValueDialog({modalShown, valueEnforcer, titleText, defaultValue, dismissModal, acceptValue}) {
 
@@ -47,6 +48,7 @@ export function SetValueDialog({modalShown, valueEnforcer, titleText, defaultVal
                     blurOnSubmit={false}
                     />
                 </View>
+                <VerticalSpace/>
                 <OkCancelButtons accept={handleAccept} dismiss={dismissModal}/>
             </View>
         </ModalDialogBase>
