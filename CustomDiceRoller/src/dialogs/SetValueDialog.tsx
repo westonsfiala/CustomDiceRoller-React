@@ -6,6 +6,7 @@ import {
     View,
     Text,
     TextInput,
+    Platform,
 } from 'react-native';
 
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -39,7 +40,7 @@ export function SetValueDialog({modalShown, valueEnforcer, titleText, defaultVal
                     autoFocus={true}
                     selectTextOnFocus={true}
                     defaultValue={defaultValue.toString()}
-                    keyboardType={'number-pad'}
+                    keyboardType={Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'number-pad'}
                     onChangeText={(text) => setCurrentText(text)}
                     returnKeyType = { "done" }
                     onSubmitEditing={() => { handleAccept(); }}
@@ -55,7 +56,9 @@ export function SetValueDialog({modalShown, valueEnforcer, titleText, defaultVal
 const styles = EStyleSheet.create({
     ModalTextInputLine:{
         flexDirection:'row',
-        alignItems:'center'
+        alignItems:'center',
+        paddingTop: Platform.OS === 'ios' ? '5rem' : 0,
+        paddingBottom: Platform.OS === 'ios' ? '5rem' : 0,
     },
     ModalButtonLine:{
         flexDirection:'row',
@@ -67,18 +70,18 @@ const styles = EStyleSheet.create({
         paddingRight:'8rem',
     },
     ModalTitle:{
-        fontSize:'$fontSizeLarge',
+        fontSize:'$fontSizeHuge',
         color:'$textColor',
     },
     ModalText:{
-        fontSize:'$fontSizeNormal',
+        fontSize:'$fontSizeLarge',
         color:'$textColor',
     },
     ModalInputText:{
         flex:1,
         color:'$textColor',
         marginLeft:'8rem',
-        fontSize:'$fontSizeNormal',
+        fontSize:'$fontSizeLarge',
         borderBottomWidth:'1rem',
         borderColor:Color.rgb(128,128,128).hex()
     },
