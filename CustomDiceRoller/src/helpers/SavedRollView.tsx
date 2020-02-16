@@ -35,22 +35,11 @@ export function SavedRollView(props : SavedRollInterface) {
     const categoryMenuRef = useRef(null);
     const [showRemoveModal, setShowRemoveModal] = useState(false);
     const [showChangeCategoryModal, setShowChangeCategoryModal] = useState(false);
-    const overrideCategoryRef = useRef('');
-    const [overrideRollModalShown, setOverrideRollModalShown] = useState(false);
 
     let categories = RollManager.getInstance().getPossibleCategories();
     // If you don't give a height to the menu, the scroll feature doesn't work. 
     let displayItems = Math.min(10, categories.length)
     let menuHeight = displayItems * styles.MenuImage.height;
-
-    function handleChangeCategory(category: string, force: boolean = false) {
-        let newRoll = props.roll.setNameCategory(props.roll.mRollName, category);
-        if(!RollManager.getInstance().editRoll(props.roll, newRoll, force))
-        {
-            overrideCategoryRef.current = category;
-            setOverrideRollModalShown(true);
-        }
-    }
    
     return (
         <View style={styles.ButtonContainer}>
@@ -120,14 +109,8 @@ export function SavedRollView(props : SavedRollInterface) {
             />
             <ChangeCategoryDialog 
                 modalShown={showChangeCategoryModal}
+                roll={props.roll}
                 dismissModal={() => setShowChangeCategoryModal(false)}
-                chooseCategory={handleChangeCategory}
-            />
-            <ConfirmOverrideDialog 
-                modalShown={overrideRollModalShown} 
-                dismissModal={() => setOverrideRollModalShown(false)} 
-                itemName={props.roll.displayName} 
-                override={() => handleChangeCategory(overrideCategoryRef.current, true)} 
             />
         </View>
     );

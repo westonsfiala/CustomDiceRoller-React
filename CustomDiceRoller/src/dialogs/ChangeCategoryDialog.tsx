@@ -1,33 +1,94 @@
 import { ModalDialogBase } from "./ModalDialogBase";
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
     View,
     Text,
     FlatList,
+    LayoutAnimation,
 } from 'react-native';
 
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import RollManager from "../sync/RollManager";
+import { Roll } from "../dice/Roll";
+import { ConfirmActionButtons } from "../helpers/ConfirmActionButtons";
+import { HorizontalDivider } from "../helpers/HorizontalDivider";
 
 interface ChangeCategoryDialogInterface {
     modalShown : boolean;
+    roll : Roll;
     dismissModal : () => void;
-    chooseCategory : (category: string) => void;
 }
 
 export function ChangeCategoryDialog(props : ChangeCategoryDialogInterface) {
 
-    let dice = RollManager.getInstance().getPossibleCategories();
+    const [showOverride, setShowOverride] = useState(false);
+    const [possibleCategory, setPossibleCategory] = useState('');
+
+    function setShowOverrideNice(show: boolean) {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setShowOverride(show);
+    }
+
+    function dismissNice() {
+        setShowOverrideNice(false);
+        props.dismissModal();
+    }
+
+    let categories = RollManager.getInstance().getPossibleCategories();
     // If you don't give a height to the menu, the scroll feature doesn't work. 
     // There is a small gap between each item, so the 1.2 is for making it fit a bit better
-    let displayItems = Math.min(6, dice.length)
+    let displayItems = Math.min(6, categories.length)
     let menuHeight = displayItems * styles.MenuConstants.height;
 
+    function handleCategoryChange(category: string, force: boolean) {
+        let newRoll = props.roll.setNameCategory(props.roll.mRollName, category);
+        if(!RollManager.getInstance().editRoll(props.roll, newRoll, force)) {
+            setPossibleCategory(category);
+            if(force) {
+                dismissNice();
+            } else {
+                setShowOverrideNice(true);
+            }
+        } else {
+            setShowOverrideNice(true);
+        }
+    }
+
+    function getBottom() {
+        if(showOverride) {
+            return (
+                <ConfirmActionButtons 
+                    show={showOverride} 
+                    displayText={'Override?'}
+                    confirm={() => handleCategoryChange(possibleCategory, true)} 
+                    cancel={() => setShowOverrideNice(false)}
+                />
+            );
+        } else {
+            return (
+                <View style={styles.ModalButtonContainer}>
+                    <View style={styles.CancelButtonContainer}>
+                        <View style={styles.ModalButtonPadding}>
+                            <Touchable 
+                            style={styles.ModalButton}
+                            onPress={dismissNice}
+                            foreground={Touchable.Ripple('white', true)}
+                            hitSlop={styles.HitSlop}
+                            >
+                                <Text style={styles.ButtonText}>Cancel</Text>
+                            </Touchable>
+                        </View>
+                    </View>
+                </View>
+            )
+        }
+    }
+
     return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal}>
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={dismissNice}>
             <View>
                 <Text style={styles.ModalName}>
                     Select Catagory
@@ -40,8 +101,7 @@ export function ChangeCategoryDialog(props : ChangeCategoryDialogInterface) {
                             <Touchable 
                             style={styles.ModalButton}
                             onPress={() => {
-                                props.dismissModal();
-                                props.chooseCategory(item);
+                                handleCategoryChange(item, false);
                             }}
                             foreground={Touchable.Ripple('white', true)}
                             hitSlop={styles.HitSlop}
@@ -52,21 +112,9 @@ export function ChangeCategoryDialog(props : ChangeCategoryDialogInterface) {
                     )}
                     keyExtractor={(item, index) => index.toString()}
                 />
-                <View style={styles.ModalButtonContainer}>
-                    <View style={styles.CancelButtonContainer}>
-                        <View style={styles.ModalButtonPadding}>
-                            <Touchable 
-                            style={styles.ModalButton}
-                            onPress={() => props.dismissModal()}
-                            foreground={Touchable.Ripple('white', true)}
-                            hitSlop={styles.HitSlop}
-                            >
-                                <Text style={styles.ButtonText}>Cancel</Text>
-                            </Touchable>
-                        </View>
-                    </View>
-                </View>
             </View>
+            <HorizontalDivider/>
+            {getBottom()}
         </ModalDialogBase>
     );
 }
@@ -89,7 +137,6 @@ const styles = EStyleSheet.create({
     ModalButtonContainer:{
         flexDirection:'row',
         justifyContent:'flex-end',
-        paddingTop:'10rem',
     },
     CancelButtonContainer:{
         flexDirection:'row',
