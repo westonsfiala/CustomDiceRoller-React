@@ -17,6 +17,7 @@ import { OkCancelButtons } from "../helpers/OkCancelButtons";
 import { ConfirmActionButtons } from "../helpers/ConfirmActionButtons";
 import CustomRollManager from "../sync/CustomRollManager";
 import RollManager from "../sync/RollManager";
+import { HorizontalDivider } from "../helpers/HorizontalDivider";
 
 interface CreateRollDialogInterface {
     modalShown : boolean;
@@ -70,6 +71,23 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
         }
     }
 
+    function getBottomLine() {
+        if(showOverride) {
+            return (
+                <ConfirmActionButtons 
+                    show={showOverride} 
+                    displayText={'Override?'}
+                    confirm={() => acceptHandler(true)} 
+                    cancel={() => setShowOverrideNice(false)}
+                />
+            );
+        } else {
+            return (
+                <OkCancelButtons accept={() => acceptHandler(false)} dismiss={dismissNice}/>
+            )
+        }
+    }
+
     return(
         <ModalDialogBase modalShown={props.modalShown} dismissModal={dismissNice}>
             <Text style={styles.ModalTitle}>Create Roll</Text>
@@ -100,17 +118,12 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
                     placeholderTextColor={styles.PlaceholderText.color}
                     onChangeText={(text) => setRollCategory(text)}
                     returnKeyType = { "done" }
-                    onSubmitEditing={() => { acceptHandler(false); }}
+                    onSubmitEditing={() => { acceptHandler(showOverride); }}
                     blurOnSubmit={false}
                 />
             </View>
-            <OkCancelButtons accept={() => acceptHandler(false)} dismiss={dismissNice}/>
-            <ConfirmActionButtons 
-                show={showOverride} 
-                displayText={'Override?'}
-                confirm={() => acceptHandler(true)} 
-                cancel={() => setShowOverrideNice(false)}
-            />
+            <HorizontalDivider/>
+            {getBottomLine()}
         </ModalDialogBase>
     );
 }

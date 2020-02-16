@@ -22,26 +22,11 @@ export function CreateDieHelper(props : CreateDieInterface) {
     if(!props.show) return null;
 
     if(props.die.mDieType === SimpleDie.simpleDieIdentifier) {
-        return (
-            <View>
-                <HorizontalDivider/>
-                <CreateSimpleDieHelper die={props.die as SimpleDie} cancel={props.cancel} createDie={props.createDie}/>
-            </View>
-        )
+        return (<CreateSimpleDieHelper die={props.die as SimpleDie} cancel={props.cancel} createDie={props.createDie}/>)
     } else if (props.die.mDieType === MinMaxDie.minMaxDieIdentifier) {
-        return (
-            <View>
-                <HorizontalDivider/>
-                <CreateMinMaxDieHelper die={props.die as MinMaxDie} cancel={props.cancel} createDie={props.createDie}/>
-            </View>
-        )
+        return (<CreateMinMaxDieHelper die={props.die as MinMaxDie} cancel={props.cancel} createDie={props.createDie}/>)
     }if (props.die.mDieType === ImbalancedDie.imbalancedIdentifier) {
-        return (
-            <View>
-                <HorizontalDivider/>
-                <CreateImbalancedDieHelper die={props.die as ImbalancedDie} cancel={props.cancel} createDie={props.createDie}/>
-            </View>
-        )
+        return (<CreateImbalancedDieHelper die={props.die as ImbalancedDie} cancel={props.cancel} createDie={props.createDie}/>)
     }
     
     return (null);

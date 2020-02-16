@@ -21,31 +21,28 @@ export function ConfirmActionButtons(props : ConfirmActionInterface) {
     if(!props.show) return null;
 
     return (
-        <View>
-            <HorizontalDivider/>
-            <View style={styles.TopContainer}>
-                <Text style={styles.DisplayText}>{props.displayText}</Text>
-                <View style={styles.ModalButtonLine}>
-                    <View style={styles.ModalButtonContainer}>
-                        <Touchable 
-                        style={styles.ModalButton}
-                        hitSlop={styles.HitSlop}
-                        foreground={Touchable.Ripple('white', true)}
-                        onPress={() => props.cancel()}
-                        >
-                            <Text style={styles.ModalText}>Cancel</Text>
-                        </Touchable>
-                    </View>
-                    <View style={styles.ModalButtonContainer}>
-                        <Touchable 
-                        style={styles.ModalButton}
-                        hitSlop={styles.HitSlop}
-                        foreground={Touchable.Ripple('white', true)}
-                        onPress={() => props.confirm()}
-                        >
-                            <Text style={styles.ModalText}>Confirm</Text>
-                        </Touchable>
-                    </View>
+        <View style={styles.TopContainer}>
+            <Text style={styles.DisplayText}>{props.displayText}</Text>
+            <View style={styles.ModalButtonLine}>
+                <View style={styles.ModalButtonContainer}>
+                    <Touchable 
+                    style={styles.ModalButton}
+                    hitSlop={styles.HitSlop}
+                    foreground={Touchable.Ripple('white', true)}
+                    onPress={() => props.cancel()}
+                    >
+                        <Text style={styles.ModalText}>Cancel</Text>
+                    </Touchable>
+                </View>
+                <View style={styles.ModalButtonContainer}>
+                    <Touchable 
+                    style={styles.ModalButton}
+                    hitSlop={styles.HitSlop}
+                    foreground={Touchable.Ripple('white', true)}
+                    onPress={() => props.confirm()}
+                    >
+                        <Text style={styles.ModalText}>Confirm</Text>
+                    </Touchable>
                 </View>
             </View>
         </View>
