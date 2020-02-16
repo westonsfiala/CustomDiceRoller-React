@@ -92,17 +92,17 @@ const styles = EStyleSheet.create({
         alignContent:'center',
     },
     TitleText: {
-        fontSize:'40rem',
+        fontSize:'$fontSizeMassive',
         color:'$textColor',
         textAlign:'center',
     },
     DetailText: {
-        fontSize:'18rem',
+        fontSize:'$fontSizeNormal',
         color:'$textColor',
         textAlign:'center',
     },
     TipText: {
-        fontSize:'18rem',
+        fontSize:'$fontSizeNormal',
         color:'$textColor',
         margin:'5rem',
         paddingLeft:'5rem',
@@ -123,7 +123,7 @@ const styles = EStyleSheet.create({
         margin:'10rem'
     },
     ButtonText: {
-        fontSize: '30rem', 
+        fontSize:'$fontSizeHuge',
         textAlign: 'center', 
         color: '$textColor',
     },

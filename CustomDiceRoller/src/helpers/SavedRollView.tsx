@@ -158,18 +158,18 @@ const styles = EStyleSheet.create({
         padding: '5rem',
     },
     RollName:{
-        fontSize: '20rem', 
+        fontSize:'$fontSizeLarge',
         color: '$textColor',
     },
     RollDetails:{
-        fontSize: '15rem', 
+        fontSize:'$fontSizeNormal',
         color: '$textColorDarkened',
     },
     Menu:{
         backgroundColor:'$primaryColor',
     },
     MenuText:{
-        fontSize:'18rem', 
+        fontSize:'$fontSizeNormal',
         padding:'4rem',
         color:'$textColor',
     },

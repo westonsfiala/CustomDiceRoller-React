@@ -67,7 +67,7 @@ const styles = EStyleSheet.create({
         flexDirection:'row', 
     },
     SumText:{
-        fontSize:'30rem', 
+        fontSize:'$fontSizeHuge',
         fontWeight:'bold', 
         paddingStart:'8rem', 
         paddingEnd:'8rem', 
@@ -91,11 +91,11 @@ const styles = EStyleSheet.create({
     },
     RollNameText:{
         color:'$textColor', 
-        fontSize:'17rem',
+        fontSize:'$fontSizeNormal',
     },
     TimeText:{
         color: Color.rgb(128,128,128).hex(),
-        fontSize:'14rem',
+        fontSize:'$fontSizeNormal',
     },
     DetailStringList:{
         flex:1,
@@ -103,6 +103,6 @@ const styles = EStyleSheet.create({
     },
     DetailString:{
         color:'$textColor',
-        fontSize:'14rem',
+        fontSize:'$fontSizeNormal',
     },
 })

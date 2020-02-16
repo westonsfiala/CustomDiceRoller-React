@@ -54,6 +54,6 @@ const styles = EStyleSheet.create({
     NoRollsText:{
         color:'$textColor', 
         textAlign:'center',
-        fontSize:'22rem'
+        fontSize:'$fontSizeLarge',
     },
 })

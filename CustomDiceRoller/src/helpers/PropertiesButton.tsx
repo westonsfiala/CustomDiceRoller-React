@@ -303,12 +303,12 @@ const styles = EStyleSheet.create({
         padding: '5rem',
     },
     Text:{
-        fontSize: '30rem', 
+        fontSize:'$fontSizeHuge',
         textAlign: 'center', 
         color: '$textColor',
     },
     Icons:{
-        fontSize: '18rem', 
+        fontSize:'$fontSizeNormal',
         color: '$textColor'
     },
     ButtonBackground:{
@@ -331,7 +331,7 @@ const styles = EStyleSheet.create({
         alignItems: 'center', 
     },
     MenuText:{
-        fontSize:'16rem', 
+        fontSize:'$fontSizeNormal',
         padding:'4rem',
         color:'$textColor',
     },

@@ -24,6 +24,11 @@ import { OpenAllSingletons } from './src/sync/SyncMaster';
 let {height, width} = Dimensions.get('window');
 EStyleSheet.build({
     $rem: Math.min(height,width) / 380, // This is an arbitrary value that allows for better scaling.
+    $fontSizeNormal: '16rem',
+    $fontSizeLarge: '20rem',
+    $fontSizeHuge: '30rem',
+    $fontSizeMassive: '40rem',
+    $fontSizeGargantuan: '60rem',
     $textColor: Color.rgb(255,255,255).hex(),
     $textColorDarkened: Color.rgb(255,255,255).darken(.25).hex(),
     $textColorHighlight: Color.rgb(0,255,255).darken(.25).hex(),
@@ -79,7 +84,7 @@ const styles = EStyleSheet.create({
         backgroundColor:'$primaryColor'
     },
     LoadText: {
-        fontSize:'40rem',
+        fontSize:'$fontSizeMassive',
         color:'$textColorDarkened',
         textAlign:'center',
     },

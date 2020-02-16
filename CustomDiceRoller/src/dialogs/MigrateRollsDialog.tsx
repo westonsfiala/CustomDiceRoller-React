@@ -64,22 +64,22 @@ export function MigrateRollsDialog(props : MigrateRollsInterface) {
 
 const styles = EStyleSheet.create({
     ModalName:{
-        fontSize:'24rem',
+        fontSize:'$fontSizeHuge',
         color:'$textColor',
     },
     ModalDetailText: {
-        fontSize:'16rem',
+        fontSize:'$fontSizeNormal',
         color:'$textColor',
     },
     ModalSubDetailText: {
-        fontSize:'14rem',
+        fontSize:'$fontSizeNormal',
         color:'$textColorDarkened',
     },
     ScrollArea: {
         height:'75rem',
     },
     ButtonText: {
-        fontSize:'16rem',
+        fontSize:'$fontSizeNormal',
         textAlign:'center',
         paddingLeft:'5rem',
         paddingRight:'5rem',

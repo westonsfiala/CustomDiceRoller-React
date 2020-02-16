@@ -116,11 +116,11 @@ const styles = EStyleSheet.create({
         justifyContent:'center',
     },
     TitleText: {
-        fontSize:'20rem',
+        fontSize:'$fontSizeLarge',
         color:'$textColor',
     },
     ValueText: {
-        fontSize:'15rem',
+        fontSize:'$fontSizeNormal',
         color:'$textColorDarkened',
     },
     IconConstants: {
@@ -135,7 +135,7 @@ const styles = EStyleSheet.create({
         backgroundColor:'$primaryColor',
     },
     MenuText:{
-        fontSize:'18rem', 
+        fontSize:'$fontSizeNormal',
         padding:'4rem',
         color:'$textColor',
     },

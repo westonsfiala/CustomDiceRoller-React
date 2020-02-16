@@ -320,22 +320,22 @@ const styles = EStyleSheet.create({
         justifyContent:'center'
     },
     ShakeText: {
-        fontSize:'40rem',
+        fontSize:'$fontSizeMassive',
         color:'$textColorDarkened',
         textAlign:'center',
     },
     TitleText: {
-        fontSize:'30rem',
+        fontSize:'$fontSizeHuge',
         color:'$textColor',
         textAlign:'center',
     },
     SumText: {
-        fontSize:'80rem',
+        fontSize:'$fontSizeGargantuan',
         color:'$textColor',
         textAlign:'center',
     },
     DetailText: {
-        fontSize:'20rem',
+        fontSize:'$fontSizeLarge',
         color:'$textColor',
         textAlign:'center',
     },
@@ -354,12 +354,12 @@ const styles = EStyleSheet.create({
         margin:'10rem'
     },
     ButtonText: {
-        fontSize: '30rem', 
+        fontSize:'$fontSizeHuge',
         textAlign: 'center', 
         color: '$textColor',
     },
     DateTimeText: {
-        fontSize: '12rem', 
+        fontSize:'$fontSizeNormal',
         textAlign: 'right', 
         color: '$textColorDarkened',
     },

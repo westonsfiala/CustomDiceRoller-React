@@ -33,7 +33,7 @@ export function CreateImbalancedDieDialog(props : CreateImbalancedDieInterface) 
 
 const styles = EStyleSheet.create({
     ModalTitle:{
-        fontSize:'25rem',
+        fontSize:'$fontSizeHuge',
         color:'$textColor',
     },
 })

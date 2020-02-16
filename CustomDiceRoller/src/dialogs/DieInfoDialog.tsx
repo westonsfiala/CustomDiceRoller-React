@@ -121,15 +121,15 @@ export function DieInfoDialog(props : DieInfoDialogInterface) {
 
 const styles = EStyleSheet.create({
     ModalName:{
-        fontSize:'24rem',
+        fontSize:'$fontSizeHuge',
         color:'$textColor',
     },
     ModalDetailText: {
-        fontSize:'16rem',
+        fontSize:'$fontSizeNormal',
         color:'$textColor',
     },
     ButtonText: {
-        fontSize:'16rem',
+        fontSize:'$fontSizeNormal',
         paddingLeft:'5rem',
         paddingRight:'5rem',
         color:'$textColor',

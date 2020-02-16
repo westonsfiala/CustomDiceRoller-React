@@ -71,12 +71,12 @@ const styles = EStyleSheet.create({
         overflow:'hidden'
     },
     DisplayText:{
-        fontSize:'16rem',
+        fontSize:'$fontSizeNormal',
         color:'$textColor',
         alignSelf:'center',
     },
     ModalText:{
-        fontSize:'16rem',
+        fontSize:'$fontSizeNormal',
         paddingLeft:'8rem',
         paddingRight:'8rem',
         color:'$textColor',

@@ -100,6 +100,6 @@ const styles = EStyleSheet.create({
     },
     NoHistoryText:{
         color:'$textColor', 
-        fontSize:'22rem'
+        fontSize:'$fontSizeHuge',
     },
 })

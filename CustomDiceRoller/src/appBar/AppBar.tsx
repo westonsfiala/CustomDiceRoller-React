@@ -158,12 +158,12 @@ const styles = EStyleSheet.create({
     },
     AppTitleText:{
         color:'$textColor',
-        fontSize:'20rem',
+        fontSize:'$fontSizeLarge',
         fontWeight: 'bold',
     },
     AppSubTitleText:{
         color:'$textColor',
-        fontSize:'14rem',
+        fontSize:'$fontSizeNormal',
     },
     ScrollContainer: {
         alignItems:'center',
@@ -186,7 +186,7 @@ const styles = EStyleSheet.create({
         backgroundColor:'$primaryColor',
     },
     MenuText:{
-        fontSize:'18rem', 
+        fontSize:'$fontSizeNormal',
         padding:'4rem',
         color:'$textColor',
     },
@@ -203,7 +203,7 @@ const styles = EStyleSheet.create({
     },
     TabText: {
         color:'$textColor', 
-        fontSize:'16rem'
+        fontSize:'$fontSizeNormal',
     },
     HitSlop: {
         top: '10rem',

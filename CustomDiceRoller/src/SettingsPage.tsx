@@ -60,7 +60,7 @@ const styles = EStyleSheet.create({
     },
     DividerText: {
         color:'$textColorHighlight',
-        fontSize:'18rem',
+        fontSize:'$fontSizeNormal',
         marginTop:'5rem',
         marginBottom:'5rem',
     },

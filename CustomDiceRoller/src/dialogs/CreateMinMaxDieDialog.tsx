@@ -33,7 +33,7 @@ export function CreateMinMaxDieDialog(props : CreateMinMaxDieInterface) {
 
 const styles = EStyleSheet.create({
     ModalTitle:{
-        fontSize:'25rem',
+        fontSize:'$fontSizeHuge',
         color:'$textColor',
     },
 })

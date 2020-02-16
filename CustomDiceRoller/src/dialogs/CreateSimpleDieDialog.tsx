@@ -33,7 +33,7 @@ export function CreateSimpleDieDialog(props : CreateSimpleDieInterface) {
 
 const styles = EStyleSheet.create({
     ModalTitle:{
-        fontSize:'25rem',
+        fontSize:'$fontSizeHuge',
         color:'$textColor',
     },
 })

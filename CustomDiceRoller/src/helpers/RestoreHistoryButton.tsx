@@ -46,7 +46,7 @@ const styles = EStyleSheet.create({
         overflow:'hidden'
     },
     Text:{
-        fontSize: '30rem', 
+        fontSize:'$fontSizeHuge',
         textAlign: 'center', 
         color: '$textColor',
     },

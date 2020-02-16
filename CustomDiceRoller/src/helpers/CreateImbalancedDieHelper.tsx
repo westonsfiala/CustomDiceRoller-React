@@ -114,19 +114,15 @@ const styles = EStyleSheet.create({
         paddingLeft:'8rem',
         paddingRight:'8rem',
     },
-    ModalTitle:{
-        fontSize:'20rem',
-        color:'$textColor',
-    },
     ModalText:{
-        fontSize:'20rem',
+        fontSize:'$fontSizeLarge',
         color:'$textColor',
     },
     ModalInputText:{
         flex:1,
         color:'$textColor',
         marginLeft:'8rem',
-        fontSize:'20rem',
+        fontSize:'$fontSizeLarge',
         borderBottomWidth:'1rem',
         borderColor:Color.rgb(128,128,128).hex()
     },

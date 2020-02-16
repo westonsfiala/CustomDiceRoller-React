@@ -140,7 +140,7 @@ const styles = EStyleSheet.create({
         borderBottomWidth: 1,
     },
     Text:{
-        fontSize: '30rem', 
+        fontSize:'$fontSizeHuge',
         textAlign: 'center', 
         color: '$textColor',
     },
@@ -157,6 +157,6 @@ const styles = EStyleSheet.create({
     },
     NoDiceText:{
         color:'$textColor', 
-        fontSize:'22rem'
+        fontSize:'$fontSizeHuge',
     },
 })

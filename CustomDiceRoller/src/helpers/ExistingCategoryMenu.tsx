@@ -71,7 +71,7 @@ const styles = EStyleSheet.create({
         padding: '5rem',
     },
     Text:{
-        fontSize: '30rem', 
+        fontSize:'$fontSizeHuge',
         textAlign: 'center', 
         color: '$textColor',
     },
@@ -87,7 +87,7 @@ const styles = EStyleSheet.create({
         backgroundColor:'$primaryColor',
     },
     MenuText:{
-        fontSize:'22rem', 
+        fontSize:'$fontSizeLarge',
         padding:'4rem',
         color:'$textColor',
     },

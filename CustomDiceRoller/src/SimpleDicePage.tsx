@@ -121,6 +121,6 @@ const styles = EStyleSheet.create({
     },
     NoDiceText:{
         color:'$textColor', 
-        fontSize:'22rem'
+        fontSize:'$fontSizeHuge',
     },
 })

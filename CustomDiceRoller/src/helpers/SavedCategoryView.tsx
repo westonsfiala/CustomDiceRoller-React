@@ -6,8 +6,6 @@ import {
     Text,
     FlatList,
     Animated,
-    Platform,
-    UIManager,
     LayoutAnimation,
 } from 'react-native';
 
@@ -95,7 +93,7 @@ const styles = EStyleSheet.create({
     },
     CategoryText:{
         color:'$textColor', 
-        fontSize:'22rem'
+        fontSize:'$fontSizeLarge',
     },
     IconConstants:{
         width:'48rem',

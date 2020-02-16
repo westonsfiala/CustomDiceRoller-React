@@ -121,7 +121,7 @@ const styles = EStyleSheet.create({
         flex: 1, 
     },
     Text:{
-        fontSize: '30rem', 
+        fontSize:'$fontSizeHuge',
         textAlign: 'center', 
         color: '$textColor',
     },

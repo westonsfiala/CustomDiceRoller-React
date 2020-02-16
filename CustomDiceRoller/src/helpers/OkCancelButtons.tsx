@@ -59,7 +59,7 @@ const styles = EStyleSheet.create({
         overflow:'hidden'
     },
     ModalText:{
-        fontSize:'16rem',
+        fontSize:'$fontSizeNormal',
         paddingLeft:'8rem',
         paddingRight:'8rem',
         color:'$textColor',
