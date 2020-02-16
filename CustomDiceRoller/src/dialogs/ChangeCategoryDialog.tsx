@@ -53,7 +53,7 @@ export function ChangeCategoryDialog(props : ChangeCategoryDialogInterface) {
                 setShowOverrideNice(true);
             }
         } else {
-            setShowOverrideNice(true);
+            dismissNice();
         }
     }
 
