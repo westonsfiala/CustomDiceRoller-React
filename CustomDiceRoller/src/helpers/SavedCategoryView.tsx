@@ -33,18 +33,19 @@ export function SavedCategoryView(props : SavedCategoryInterface) {
     
     let showRolls = ExpandedCategoryManager.getInstance().isExpanded(props.rollGroup.baseCategory);
 
+    if(showRolls) {
+        Animated.timing(animatedRotation, {
+            toValue: 1,
+        }).start();
+    } else {
+        Animated.timing(animatedRotation, {
+            toValue: 0,
+        }).start()
+    }
+
     ExpandedCategoryManager.getInstance().setUpdater(props.rollGroup.baseCategory, () => {
-        if(ExpandedCategoryManager.getInstance().isExpanded(props.rollGroup.baseCategory)) {
-            Animated.timing(animatedRotation, {
-                toValue: 1,
-            }).start();
-        } else {
-            Animated.timing(animatedRotation, {
-                toValue: 0,
-            }).start()
-        }
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setReload(!reload)
+        setReload(!reload);
     });
 
     const RotateData = animatedRotation.interpolate({
