@@ -14,12 +14,13 @@
 import React, { useState, useEffect } from 'react'
 import { Dimensions, View, Text, StatusBar, Platform } from 'react-native';
 
-import { MenuProvider } from 'react-native-popup-menu';
+import { MenuProvider, Menu } from 'react-native-popup-menu';
 import EStyleSheet from 'react-native-extended-stylesheet'; 
 import Color from 'color';
 
 import { MainEntry } from './src/MainEntry'
 import { OpenAllSingletons } from './src/sync/SyncMaster';
+import { BetterRenderer } from './src/helpers/BetterRenderer';
 
 let {height, width} = Dimensions.get('window');
 EStyleSheet.build({
@@ -37,6 +38,8 @@ EStyleSheet.build({
     $primaryColorLightened: Color.rgb(63,63,63).lighten(.5).hex(),
     $primaryColorDarkened: Color.rgb(63,63,63).darken(.5).hex(),
 });
+
+Menu.setDefaultRenderer(BetterRenderer);
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 const App = () => {

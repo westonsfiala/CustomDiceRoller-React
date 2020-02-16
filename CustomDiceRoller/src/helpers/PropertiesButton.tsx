@@ -125,7 +125,7 @@ export function PropertiesButton(props: PropertiesInterface) {
 
     return(
         <View style={styles.Container}>
-            <Menu ref={menuRef}>
+            <Menu ref={menuRef} >
                 <MenuTrigger/>
                 <MenuOptions>
                 <ScrollView style={{height:scrollViewHeight}}>
