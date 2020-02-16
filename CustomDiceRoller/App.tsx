@@ -68,7 +68,7 @@ const App = () => {
     }
 
     return (
-        <MenuProvider skipInstanceCheck={true}>
+        <MenuProvider skipInstanceCheck={true} backHandler={true}>
             <StatusBar hidden={Platform.OS === 'ios' ? false : true} barStyle="light-content"/>
             <MainEntry/>
         </MenuProvider>
