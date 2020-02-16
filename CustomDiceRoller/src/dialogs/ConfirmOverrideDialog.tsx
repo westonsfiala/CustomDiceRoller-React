@@ -9,6 +9,7 @@ import {
 
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { ConfirmActionButtons } from "../helpers/ConfirmActionButtons";
 
 interface ConfirmOverrideDialogInterface {
     modalShown : boolean;
@@ -25,36 +26,12 @@ export function ConfirmOverrideDialog(props : ConfirmOverrideDialogInterface) {
                 <Text style={styles.ModalName}>
                     Override Item - {props.itemName}
                 </Text>
-                <Text style={styles.ModalDetailText}>
-                    Would you like to override the existing item?
-                </Text>
-                <View style={styles.ModalButtonContainer}>
-                    <View style={styles.YesNoButtonContainer}>
-                        <View style={styles.ModalButtonPadding}>
-                            <Touchable 
-                            style={styles.ModalButton}
-                            onPress={() => props.dismissModal()}
-                            foreground={Touchable.Ripple('white', true)}
-                            hitSlop={styles.HitSlop}
-                            >
-                                <Text style={styles.ButtonText}>No</Text>
-                            </Touchable>
-                        </View>
-                        <View style={styles.ModalButtonPadding}>
-                            <Touchable 
-                            style={styles.ModalButton}
-                            onPress={() => {
-                                props.override();
-                                props.dismissModal();
-                            }}
-                            foreground={Touchable.Ripple('white', true)}
-                            hitSlop={styles.HitSlop}
-                            >
-                                <Text style={styles.ButtonText}>Yes</Text>
-                            </Touchable>
-                        </View>
-                    </View>
-                </View>
+                <ConfirmActionButtons 
+                    show={true} 
+                    displayText={'Override?'}
+                    confirm={props.override} 
+                    cancel={props.dismissModal}
+                />
             </View>
         </ModalDialogBase>
     );

@@ -9,6 +9,7 @@ import {
 
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { ConfirmActionButtons } from "../helpers/ConfirmActionButtons";
 
 interface ConfirmRemoveDialogInterface {
     modalShown : boolean;
@@ -25,36 +26,12 @@ export function ConfirmRemoveDialog(props : ConfirmRemoveDialogInterface) {
                 <Text style={styles.ModalName}>
                     Remove - {props.removeName}
                 </Text>
-                <Text style={styles.ModalDetailText}>
-                    Are you sure you wish to remove - {props.removeName}
-                </Text>
-                <View style={styles.ModalButtonContainer}>
-                    <View style={styles.YesNoButtonContainer}>
-                        <View style={styles.ModalButtonPadding}>
-                            <Touchable 
-                            style={styles.ModalButton}
-                            onPress={() => props.dismissModal()}
-                            foreground={Touchable.Ripple('white', true)}
-                            hitSlop={styles.HitSlop}
-                            >
-                                <Text style={styles.ButtonText}>No</Text>
-                            </Touchable>
-                        </View>
-                        <View style={styles.ModalButtonPadding}>
-                            <Touchable 
-                            style={styles.ModalButton}
-                            onPress={() => {
-                                props.remove();
-                                props.dismissModal();
-                            }}
-                            foreground={Touchable.Ripple('white', true)}
-                            hitSlop={styles.HitSlop}
-                            >
-                                <Text style={styles.ButtonText}>Yes</Text>
-                            </Touchable>
-                        </View>
-                    </View>
-                </View>
+                <ConfirmActionButtons 
+                    show={true} 
+                    displayText={'Remove?'}
+                    confirm={props.remove} 
+                    cancel={props.dismissModal}
+                />
             </View>
         </ModalDialogBase>
     );
@@ -64,6 +41,7 @@ const styles = EStyleSheet.create({
     ModalName:{
         fontSize:'$fontSizeHuge',
         color:'$textColor',
+        paddingBottom:'10rem'
     },
     ModalDetailText: {
         fontSize:'$fontSizeNormal',
