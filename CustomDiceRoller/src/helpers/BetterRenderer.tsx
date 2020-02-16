@@ -126,7 +126,7 @@ export class BetterRenderer extends React.Component {
     options: {
       position: 'absolute',
       borderRadius: 2,
-      backgroundColor: 'white',
+      backgroundColor: '$primaryColor',
       maxWidth: '300rem',
 
       // Shadow only works on iOS.
