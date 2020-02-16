@@ -18,8 +18,8 @@ export function ModalDialogBase(props : ModalDialogInterface) {
     return(
         <Modal
             isVisible={props.modalShown}
-            animationIn="zoomIn"
-            animationOut="zoomOut"
+            animationIn={'fadeInLeft'}
+            animationOut={'fadeOutRight'}
             useNativeDriver={true}
             hideModalContentWhileAnimating={true}
             onBackdropPress={() => props.dismissModal()} 
