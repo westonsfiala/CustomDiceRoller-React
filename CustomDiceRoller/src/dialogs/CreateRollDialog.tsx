@@ -6,29 +6,44 @@ import {
     View,
     Text,
     TextInput,
+    Platform,
+    LayoutAnimation,
 } from 'react-native';
 
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
 import { Roll } from "../dice/Roll";
 import { OkCancelButtons } from "../helpers/OkCancelButtons";
+import { ConfirmActionButtons } from "../helpers/ConfirmActionButtons";
+import CustomRollManager from "../sync/CustomRollManager";
+import RollManager from "../sync/RollManager";
 
 interface CreateRollDialogInterface {
     modalShown : boolean;
     roll: Roll;
     dismissModal: () => void;
-    createRoll: (roll: Roll) => void;
 }
 
 export function CreateRollDialog(props : CreateRollDialogInterface) {
 
     const [rollName, setRollName] = useState('')
     const [rollCategory, setRollCategory] = useState('')
+    const [showOverride, setShowOverride] = useState(false);
+
+    function setShowOverrideNice(show : boolean) {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setShowOverride(show);
+    }
+
+    function dismissNice() {
+        setShowOverrideNice(false);
+        props.dismissModal();
+    }
 
     const firstLineRef = useRef(null);
     const secondLineRef = useRef(null);
 
-    function acceptHandler() {
+    function acceptHandler(force: boolean) {
         let newName = rollName;
 
         if(newName === '') {
@@ -41,12 +56,22 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
             newCategory = props.roll.mRollCategory;
         }
 
-        props.dismissModal();
-        props.createRoll(props.roll.setNameCategory(newName, newCategory))
+        // Make the new roll, set it as the current roll, and try to override it
+        let newRoll = props.roll.setNameCategory(newName, newCategory)
+        CustomRollManager.getInstance().setRoll(newRoll);
+        if(!RollManager.getInstance().addRoll(newRoll, force)) {
+            if(force) {
+                dismissNice();
+            } else {
+                setShowOverrideNice(true);
+            }
+        } else {
+            dismissNice();
+        }
     }
 
     return(
-        <ModalDialogBase modalShown={props.modalShown} dismissModal={props.dismissModal}>
+        <ModalDialogBase modalShown={props.modalShown} dismissModal={dismissNice}>
             <Text style={styles.ModalTitle}>Create Roll</Text>
             <View style={styles.ModalTextInputLine}>
                 <Text style={styles.ModalText}>Name</Text>
@@ -75,11 +100,17 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
                     placeholderTextColor={styles.PlaceholderText.color}
                     onChangeText={(text) => setRollCategory(text)}
                     returnKeyType = { "done" }
-                    onSubmitEditing={() => { acceptHandler(); }}
+                    onSubmitEditing={() => { acceptHandler(false); }}
                     blurOnSubmit={false}
                 />
             </View>
-            <OkCancelButtons accept={acceptHandler} dismiss={props.dismissModal}/>
+            <OkCancelButtons accept={() => acceptHandler(false)} dismiss={dismissNice}/>
+            <ConfirmActionButtons 
+                show={showOverride} 
+                displayText={'Override?'}
+                confirm={() => acceptHandler(true)} 
+                cancel={() => setShowOverrideNice(false)}
+            />
         </ModalDialogBase>
     );
 }
@@ -87,7 +118,9 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
 const styles = EStyleSheet.create({
     ModalTextInputLine:{
         flexDirection:'row',
-        alignItems:'center'
+        alignItems:'center',
+        paddingTop: Platform.OS === 'ios' ? '5rem' : 0,
+        paddingBottom: Platform.OS === 'ios' ? '5rem' : 0,
     },
     ModalButtonLine:{
         flexDirection:'row',
@@ -103,14 +136,14 @@ const styles = EStyleSheet.create({
         color:'$textColor',
     },
     ModalText:{
-        fontSize:'$fontSizeNormal',
+        fontSize:'$fontSizeLarge',
         color:'$textColor',
     },
     ModalInputText:{
         flex:1,
         color:'$textColor',
         marginLeft:'8rem',
-        fontSize:'$fontSizeNormal',
+        fontSize:'$fontSizeLarge',
         borderBottomWidth:'1rem',
         borderColor:Color.rgb(128,128,128).hex()
     },

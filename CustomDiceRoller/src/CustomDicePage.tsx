@@ -32,7 +32,6 @@ interface CustomRollPageInterface {
 export function CustomDicePage(props: CustomRollPageInterface) {
 
     const [createRollModalShown, setCreateRollModalShown] = useState(false);
-    const [overrideRollModalShown, setOverrideRollModalShown] = useState(false);
     const [reload, setReload] = useState(false);
 
     function updateHandler() {
@@ -44,13 +43,6 @@ export function CustomDicePage(props: CustomRollPageInterface) {
     ThemeManager.getInstance().setCustomPageUpdater(updateHandler);
     
     console.log('refresh custom page');
-
-    function handleCreateRoll(newRoll: Roll, force: boolean = false) {
-        CustomRollManager.getInstance().setRoll(newRoll);
-        if(!RollManager.getInstance().addRoll(newRoll, force)) {
-            setOverrideRollModalShown(true);
-        }
-    }
 
     return (
         <View style={styles.Background}>
@@ -107,14 +99,7 @@ export function CustomDicePage(props: CustomRollPageInterface) {
             <CreateRollDialog 
                 modalShown={createRollModalShown} 
                 roll={CustomRollManager.getInstance().getRoll()} 
-                dismissModal={() => setCreateRollModalShown(false)} 
-                createRoll={(newRoll: Roll) => handleCreateRoll(newRoll, false)} 
-            />
-            <ConfirmOverrideDialog 
-                modalShown={overrideRollModalShown} 
-                dismissModal={() => setOverrideRollModalShown(false)} 
-                itemName={CustomRollManager.getInstance().getRoll().displayName} 
-                override={() => handleCreateRoll(CustomRollManager.getInstance().getRoll(), true)} 
+                dismissModal={() => setCreateRollModalShown(false)}
             />
         </View> 
     );
