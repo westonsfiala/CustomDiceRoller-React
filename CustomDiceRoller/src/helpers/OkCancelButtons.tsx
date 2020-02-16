@@ -17,7 +17,6 @@ interface OkCancelInterface {
 export function OkCancelButtons(props : OkCancelInterface) {
     return (
         <View style={styles.ModalButtonLine}>
-
             <View style={styles.ModalButtonContainer}>
                 <Touchable 
                 style={styles.ModalButton}
@@ -46,10 +45,8 @@ const styles = EStyleSheet.create({
     ModalButtonLine:{
         flexDirection:'row',
         justifyContent:'flex-end',
-        paddingTop:'10rem'
     },
     ModalButtonContainer:{
-        paddingTop:'10rem',
         paddingLeft:'10rem',
     },
     ModalButton:{
