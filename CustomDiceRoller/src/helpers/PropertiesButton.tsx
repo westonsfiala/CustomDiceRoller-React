@@ -121,14 +121,12 @@ export function PropertiesButton(props: PropertiesInterface) {
         explodeIcon = "checkbox-marked-outline";
     }
 
-    let scrollViewHeight = Math.min(props.window.height*2/3, 400);
-
     return(
         <View style={styles.Container}>
             <Menu ref={menuRef} >
                 <MenuTrigger/>
                 <MenuOptions>
-                <ScrollView style={{height:scrollViewHeight}}>
+                <ScrollView>
                     <MenuOption style={styles.Menu} onSelect={() => internalUpdateProperties(new RollProperties({numDice: props.getProperties().mNumDice, modifier: props.getProperties().mModifier}))}>
                         <Text style={styles.MenuText}>
                             Reset Properties

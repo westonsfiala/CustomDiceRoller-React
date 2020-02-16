@@ -3,7 +3,7 @@
 
 
 import React from 'react';
-import { Animated, Easing, I18nManager } from "react-native";
+import { Animated, Easing, I18nManager, Dimensions } from "react-native";
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 const ANIM_DURATION = 300;
@@ -114,8 +114,9 @@ export class BetterRenderer extends React.Component {
         opacity: this.state.scaleAnim,
       };
       const position = computePosition(layouts, I18nManager.isRTL);
+      let window = Dimensions.get('window');
       return (
-        <Animated.View {...other} style={[styles.options, style, animation, position]}>
+        <Animated.View {...other} style={[styles.options, style, animation, position, {maxWidth: window.width/2, maxHeight: window.height*2/3}]}>
           {children}
         </Animated.View>
       );

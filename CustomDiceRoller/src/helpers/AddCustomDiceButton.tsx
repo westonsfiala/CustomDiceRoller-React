@@ -38,10 +38,6 @@ export function AddCustomDiceButton(props : AddCustomDiceInterface) {
     const resetMenuRef = useRef(null);
 
     let dice = DiceManager.getInstance().getDice();
-    // If you don't give a height to the menu, the scroll feature doesn't work. 
-    // There is a small gap between each item, so the 1.2 is for making it fit a bit better
-    let displayItems = Math.min(10, dice.length)
-    let menuHeight = Math.min(props.window.height*2/3, displayItems * styles.MenuImage.height * 1.2);
 
     return(
         <View style={styles.Container}>
@@ -58,7 +54,6 @@ export function AddCustomDiceButton(props : AddCustomDiceInterface) {
                             </Text>
                         </MenuOption>
                     )}
-                    style={{height:menuHeight}}
                     keyExtractor={(item, index) => index.toString()}
                 />
                 </MenuOptions>
