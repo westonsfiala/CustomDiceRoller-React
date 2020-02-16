@@ -805,6 +805,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89531B44EA03969BB0E6684C /* Pods-RPGDiceRoller.debug.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = PJ2H7C725S;
@@ -825,6 +826,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 66F56553FF3A609F1FAFDF80 /* Pods-RPGDiceRoller.release.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PJ2H7C725S;
 				INFOPLIST_FILE = RPGDiceRoller/Info.plist;
