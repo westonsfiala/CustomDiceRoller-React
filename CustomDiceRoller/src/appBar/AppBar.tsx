@@ -110,12 +110,12 @@ export function AppBar(props: AppBarInterface) {
                                     About
                                 </Text>
                             </MenuOption>
-                            <MenuOption style={styles.Menu} onSelect={() => Linking.openURL('mailto:support@fialasfiasco.com?subject=Feedback / Request')}>
+                            <MenuOption style={styles.Menu} onSelect={() => Linking.openURL('mailto:support@fialasfiasco.com?subject=Feedback / Request').then(() => null).catch(() => null)}>
                                 <Text style={styles.MenuText}>
                                     Feedback
                                 </Text>
                             </MenuOption>
-                            <MenuOption style={styles.Menu} onSelect={() => Linking.openURL(Platform.OS === 'ios' ? "itms://itunes.apple.com/us/app/apple-store/id1499274239?mt=8" : "market://details?id=com.fialasfiasco.rpgdiceroller")}>
+                            <MenuOption style={styles.Menu} onSelect={() => Linking.openURL(Platform.OS === 'ios' ? "itms://itunes.apple.com/us/app/apple-store/id1499274239?mt=8" : "market://details?id=com.fialasfiasco.rpgdiceroller").then(() => null).catch(() => null)}>
                                 <Text style={styles.MenuText}>
                                     Rate
                                 </Text>
