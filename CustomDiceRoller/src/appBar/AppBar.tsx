@@ -115,7 +115,7 @@ export function AppBar(props: AppBarInterface) {
                                     Feedback
                                 </Text>
                             </MenuOption>
-                            <MenuOption style={styles.Menu} onSelect={() => Linking.openURL(Platform.OS === 'ios' ? "itms://itunes.apple.com/us/app/apple-store/1499274239?mt=8" : "market://details?id=com.fialasfiasco.rpgdiceroller")}>
+                            <MenuOption style={styles.Menu} onSelect={() => Linking.openURL(Platform.OS === 'ios' ? "itms://itunes.apple.com/us/app/apple-store/id1499274239?mt=8" : "market://details?id=com.fialasfiasco.rpgdiceroller")}>
                                 <Text style={styles.MenuText}>
                                     Rate
                                 </Text>
