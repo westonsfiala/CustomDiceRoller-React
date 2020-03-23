@@ -268,19 +268,9 @@ export function RollResultsPage(props : RollResultsInterface) {
         <View style={styles.Container}>
             <Text style={styles.DateTimeText}>{rollHelper.dateString} - {rollHelper.timeString}</Text>
             <View style={styles.Container}>
-                <ScrollView contentContainerStyle={{justifyContent:'center'}} style={{}}>
-                    <Text style={styles.TitleText}>
-                        {rollHelper.rollNameText}
-                    </Text>
-                </ScrollView>
-            </View>
-            <View style={styles.ScrollContainer}>
-                <ScrollView>
+                <ScrollView contentContainerStyle={{justifyContent:'center', flexGrow: 1}} style={{}}>
+                    <Text style={styles.TitleText}>{rollHelper.rollNameText}</Text>
                     <StruckStringPairView pair={rollHelper.rollSumText} style={styles.SumText}/>
-                </ScrollView>
-            </View>
-            <View style={styles.ScrollContainer}>
-                <ScrollView>
                     {(rollHelper.rollResultsText).map((item, index) => 
                         <StruckStringPairView key={index} pair={item} style={styles.DetailText}/>)
                     }
