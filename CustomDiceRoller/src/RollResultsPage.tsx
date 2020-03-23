@@ -11,6 +11,7 @@ import {
 
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 import { RollDisplayHelper } from './dice/views/RollDisplayHelper';
 import { StruckStringPairView } from './dice/views/StruckStringPair';
@@ -69,11 +70,14 @@ export function RollResultsPage(props : RollResultsInterface) {
                 maxDice = Math.floor((maxDice / totalDice) * MAX_DICE_IN_ROLL)
             }
 
+            // Don't let things go off the screen because of the status bar.
+            let statusHeight = getStatusBarHeight();
+
             for(let i = 0; i < maxDice; i += 1) {
                 let newShakeDie = new ShakeDie(
                     dieProp.mDie.imageID, 
                     props.window.width, 
-                    props.window.height);
+                    props.window.height - statusHeight);
 
                 newShakeDie.key = newShakeDie.dieImageID.toString() + i.toString();
 
@@ -330,7 +334,7 @@ const styles = EStyleSheet.create({
         textAlign:'center',
     },
     SumText: {
-        fontSize:'$fontSizeGargantuan',
+        fontSize:'$fontSizeColossal',
         color:'$textColor',
         textAlign:'center',
     },
