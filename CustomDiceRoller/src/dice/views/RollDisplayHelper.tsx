@@ -2,7 +2,7 @@
 
 import {Roll} from "../Roll"
 import {createUnknownDie} from "../DieFactory"
-import {getModifierString, concatter} from "../../helpers/StringHelper"
+import {getModifierString, concatter, demimalToString} from "../../helpers/StringHelper"
 import {StruckStringPair} from "./StruckStringPair"
 import { RollProperties, isDouble, isHalve, hasRepeatRoll } from "../RollProperties";
 import SortTypeManager from "../../sync/SortTypeManager";
@@ -132,7 +132,8 @@ export class RollDisplayHelper {
         }
 
         if(ExpectedResultManager.getInstance().getShowExpected()) {
-            let averageText = 'Expected Result - [' + roll.average() + ']';
+            let rollAverageString = demimalToString(roll.average(),2);
+            let averageText = 'Expected Result - [' + rollAverageString + ']';
 
             this.rollResultsText.push(new StruckStringPair(averageText,'', 'expected'));
         }

@@ -112,3 +112,16 @@ export function concatterNoSpace(accumulator: string, current: number, index: nu
         return accumulator + ',' + current;
     }
 }
+
+export function demimalToString(decimalNumber: number, decimalPlaces: number) : string
+{
+    let numberString = decimalNumber.toString();
+    let numbersSplit = numberString.split('.');
+
+    if(numbersSplit.length !== 2 || numbersSplit[1].length < decimalPlaces)
+    {
+        return numberString;
+    }
+
+    return numbersSplit[0] + '.' + numbersSplit[1].substr(0, decimalPlaces);
+}
