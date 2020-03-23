@@ -203,9 +203,9 @@ export function getRequiredImage(imageID : number) {
     {
         case DIE_FATE: return require('./white/fate.png');
         case DIE_2: return require('./white/d2.png');
-        case DIE_3: return require('./white/d6-up-3.png');
+        case DIE_3: return require('./white/d3.png');
         case DIE_4: return require('./white/d4.png');
-        case DIE_6: return require('./white/d6-up-6.png');
+        case DIE_6: return require('./white/d6.png');
         case DIE_8: return require('./white/d8.png');
         case DIE_10: return require('./white/d10.png');
         case DIE_12: return require('./white/d12.png');
