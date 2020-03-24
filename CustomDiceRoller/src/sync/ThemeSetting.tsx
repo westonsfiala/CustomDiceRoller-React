@@ -5,6 +5,7 @@ import {
     Text,
     LayoutAnimation,
     ScaledSize,
+    ScrollView,
 } from 'react-native';
 
 import Touchable from 'react-native-platform-touchable';
@@ -40,11 +41,13 @@ function ThemeButton (props : ThemeButtonInterface) {
                 <Menu ref={props.menuRef}>
                     <MenuTrigger/>
                     <MenuOptions>
+                    <ScrollView>
                     {props.themeList.map((value, index) => 
                         <MenuOption key={index} style={styles.MenuBackground} onSelect={() => ThemeManager.getInstance().setDieTheme(value)}>
                             <Text style={styles.MenuText}>{value}</Text>
                         </MenuOption>
                     )}
+                    </ScrollView>
                     </MenuOptions>
                 </Menu>
                 <View style={styles.TextContainer}>
@@ -68,6 +71,7 @@ export function DieThemeSetting(props : DieThemeInterface) {
     const basicMenuRef = useRef(null);
     const metallicMenuRef = useRef(null);
     const iceCreamMenuRef = useRef(null);
+    const prideMenuRef = useRef(null);
 
     const [showButtons, setShowButtons] = useState(false);
 
@@ -93,6 +97,7 @@ export function DieThemeSetting(props : DieThemeInterface) {
                     <ThemeButton menuRef={basicMenuRef} icon={'palette-swatch'} themeName={'Basic'} themeList={ThemeManager.getInstance().BasicDieThemeList} />
                     <ThemeButton menuRef={metallicMenuRef} icon={'diamond-stone'} themeName={'Metallic'} themeList={ThemeManager.getInstance().MetallicDieThemeList} />
                     <ThemeButton menuRef={iceCreamMenuRef} icon={'ice-cream'} themeName={'Ice Cream'} themeList={ThemeManager.getInstance().IceCreamDieThemeList} />
+                    <ThemeButton menuRef={prideMenuRef} icon={'flag-variant'} themeName={'Pride Flags'} themeList={ThemeManager.getInstance().PrideFlagsDieThemeList} />
                 </View>
                 <View style={{justifyContent:'center'}}>
                     <DieView die={new SimpleDie('Theme', 20)} size={props.window.width/3} />

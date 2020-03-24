@@ -28,6 +28,23 @@ export default class ThemeManager {
         'Superman', 
     ];
 
+    readonly PrideFlagsDieThemeList = [
+        'Agender', 
+        'Aromantic', 
+        'Asexual', 
+        'Bisexual', 
+        'Community Lesbian', 
+        'Genderfluid', 
+        'Genderqueer', 
+        'Intersex', 
+        'LGBT', 
+        'Lipstick Lesbian', 
+        'Non-Binary', 
+        'Pansexual', 
+        'Polysexual', 
+        'Transgender', 
+    ];
+
     private mDieTheme = this.BasicDieThemeList[0];
     private mSettingsUpdater = null;
     private mSimplePageUpdater = null;

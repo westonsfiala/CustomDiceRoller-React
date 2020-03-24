@@ -118,7 +118,7 @@ void MainWindow::combine()
             ui->modifiedDieGraphicView->fitInView(mModifiedDieScene.itemsBoundingRect(), Qt::KeepAspectRatio);
         }
 
-        auto newFileName = newFileDir.absoluteFilePath(dieImageFile.baseName() + "-" + mGradientFile.baseName() + ".png");
+        auto newFileName = newFileDir.absoluteFilePath(dieImageFile.baseName() + ".png");
 
         dieGradientImage.save(newFileName);
     }
