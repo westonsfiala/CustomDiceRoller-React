@@ -52,7 +52,6 @@ function ActiveItemHelper(props: helperInterface) {
 }
 
 interface PropertiesInterface {
-    window: ScaledSize;
     getProperties: () => RollProperties;
     updateProperties: (props: RollProperties) => Promise<RollProperties>;
 }

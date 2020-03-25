@@ -101,6 +101,7 @@ export function MainEntry() {
                         clearHistoryHandler={() => HistoryManager.getInstance().clearHistory()}
                         tabPressHandler={tabPressHandler}
                         showAboutPage={showAboutPage}
+                        window={window}
                     />
                     <ViewPager style={styles.Pager} ref={viewPager} initialPage={2} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
                         <View key="a" >

@@ -8,6 +8,7 @@ import {
     Linking,
     FlatList,
     Platform,
+    ScaledSize,
 } from 'react-native';
 
 import {
@@ -31,22 +32,84 @@ const Tabs = [
     'Saved Rolls'
 ]
 
-interface AppBarInterface {
-    subtitle: string;
+interface AppBarButtonsInterface {
     clearHistoryHandler: () => void;
     tabPressHandler: (value: number) => void;
     showAboutPage: () => void;
 }
 
-export function AppBar(props: AppBarInterface) {
-
-    const [reload, setReload] = useState(false);
-    TabManager.getInstance().setUpdater(() => setReload(!reload));
-
-    console.log('refresh app bar');
-
+function AppBarRightButtons(props: AppBarButtonsInterface) 
+{
     const clearHistoryMenuRef = useRef(null);
     const tripleDotMenuRef = useRef(null);
+
+    return(
+        <View style={styles.RowLayout}>
+            <Touchable
+                onPress={() => clearHistoryMenuRef.current.open()}
+                hitSlop={styles.HitSlop}
+                foreground={Touchable.Ripple('white', true)}
+            >
+                <Image source={require('./BurningBook.png')} style={styles.ClearHistory}/>
+            </Touchable>
+            <Menu ref={clearHistoryMenuRef}>
+                <MenuTrigger/>
+                <MenuOptions>
+                    <MenuOption style={styles.Menu} onSelect={() => props.clearHistoryHandler()}>
+                        <Text style={styles.MenuText}>
+                            Clear History
+                        </Text>
+                    </MenuOption>
+                </MenuOptions>
+            </Menu>
+            <Touchable 
+                onPress={() => tripleDotMenuRef.current.open()} 
+                style={{marginStart:20}}
+                foreground={Touchable.Ripple('white', true)}
+            >
+                <Icon 
+                name='dots-vertical'
+                size={styles.IconConstants.width}
+                color={styles.IconConstants.color}
+                />
+            </Touchable>
+            <Menu ref={tripleDotMenuRef}>
+                <MenuTrigger/>
+                <MenuOptions>
+                    <MenuOption style={styles.Menu} onSelect={() => props.tabPressHandler(0)}>
+                        <Text style={styles.MenuText}>
+                            Settings
+                        </Text>
+                    </MenuOption>
+                    <MenuOption style={styles.Menu} onSelect={() => props.showAboutPage()}>
+                        <Text style={styles.MenuText}>
+                            About
+                        </Text>
+                    </MenuOption>
+                    <MenuOption style={styles.Menu} onSelect={() => Linking.openURL('mailto:support@fialasfiasco.com?subject=Feedback / Request').then(() => null).catch(() => null)}>
+                        <Text style={styles.MenuText}>
+                            Feedback
+                        </Text>
+                    </MenuOption>
+                    <MenuOption style={styles.Menu} onSelect={() => Linking.openURL(Platform.OS === 'ios' ? "itms://itunes.apple.com/us/app/apple-store/id1499274239?mt=8" : "market://details?id=com.fialasfiasco.rpgdiceroller").then(() => null).catch(() => null)}>
+                        <Text style={styles.MenuText}>
+                            Rate
+                        </Text>
+                    </MenuOption>
+                        
+                </MenuOptions>
+            </Menu>
+        </View>
+    )
+}
+
+
+interface TabBarInterface {
+    tabPressHandler: (value: number) => void;
+}
+
+function TabBar(props: TabBarInterface)
+{
     const tabListRef = useRef(null);
 
     useEffect(() => {
@@ -57,92 +120,69 @@ export function AppBar(props: AppBarInterface) {
         });
     });
 
+    return (
+        <FlatList
+            ref={tabListRef}
+            data={Tabs}
+            contentContainerStyle={{justifyContent:'center', flexGrow: 1}}
+            renderItem={({item, index}) => 
+                <Touchable 
+                    style={[styles.TabItem, TabManager.getInstance().tab === index ? styles.ActiveTabItem : styles.InactiveTabItem]} 
+                    background={Touchable.Ripple('white')}
+                    onPress={() => props.tabPressHandler(index)}>
+                    <Text style={styles.TabText}>
+                        {item}
+                    </Text>
+                </Touchable>
+            }
+            onScrollToIndexFailed={() => null}
+            keyExtractor={(item) => item}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+        />
+    )
+}
+
+interface AppBarInterface {
+    subtitle: string;
+    clearHistoryHandler: () => void;
+    tabPressHandler: (value: number) => void;
+    showAboutPage: () => void;
+    window : ScaledSize;
+}
+
+export function AppBar(props: AppBarInterface) {
+
+    const [reload, setReload] = useState(false);
+    TabManager.getInstance().setUpdater(() => setReload(!reload));
+
+    console.log('refresh app bar');
+
     const appPkg = require("../../app.json");
 
-    // TODO: Make it so you can open the app store when that is supported.
+    let portraitMode = props.window.width < props.window.height; 
 
-    return (
-        <View style={styles.AppBarBackground}>
-            <View style={styles.ActionBarBackground}>
-                <View>
-                    <Text style={styles.AppTitleText}>{appPkg.displayName}</Text>
-                    <Text style={styles.AppSubTitleText}>{props.subtitle}</Text>
+    if(portraitMode)
+    {
+        return (
+            <View style={styles.AppBarBackground}>
+                <View style={styles.ActionBarBackground}>
+                    <View>
+                        <Text style={styles.AppTitleText}>{appPkg.displayName}</Text>
+                        <Text style={styles.AppSubTitleText}>{props.subtitle}</Text>
+                    </View>
+                    <AppBarRightButtons clearHistoryHandler={props.clearHistoryHandler} tabPressHandler={props.tabPressHandler} showAboutPage={props.showAboutPage}/>
                 </View>
-                <View style={styles.RowLayout}>
-                    <Touchable
-                        onPress={() => clearHistoryMenuRef.current.open()}
-                        hitSlop={styles.HitSlop}
-                        foreground={Touchable.Ripple('white', true)}
-                    >
-                        <Image source={require('./BurningBook.png')} style={styles.ClearHistory}/>
-                    </Touchable>
-                    <Menu ref={clearHistoryMenuRef}>
-                        <MenuTrigger/>
-                        <MenuOptions>
-                            <MenuOption style={styles.Menu} onSelect={() => props.clearHistoryHandler()}>
-                                <Text style={styles.MenuText}>
-                                    Clear History
-                                </Text>
-                            </MenuOption>
-                        </MenuOptions>
-                    </Menu>
-                    <Touchable 
-                        onPress={() => tripleDotMenuRef.current.open()} 
-                        style={{marginStart:20}}
-                        foreground={Touchable.Ripple('white', true)}
-                    >
-                        <Icon 
-                        name='dots-vertical'
-                        size={styles.IconConstants.width}
-                        color={styles.IconConstants.color}
-                        />
-                    </Touchable>
-                    <Menu ref={tripleDotMenuRef}>
-                        <MenuTrigger/>
-                        <MenuOptions>
-                            <MenuOption style={styles.Menu} onSelect={() => props.tabPressHandler(0)}>
-                                <Text style={styles.MenuText}>
-                                    Settings
-                                </Text>
-                            </MenuOption>
-                            <MenuOption style={styles.Menu} onSelect={() => props.showAboutPage()}>
-                                <Text style={styles.MenuText}>
-                                    About
-                                </Text>
-                            </MenuOption>
-                            <MenuOption style={styles.Menu} onSelect={() => Linking.openURL('mailto:support@fialasfiasco.com?subject=Feedback / Request').then(() => null).catch(() => null)}>
-                                <Text style={styles.MenuText}>
-                                    Feedback
-                                </Text>
-                            </MenuOption>
-                            <MenuOption style={styles.Menu} onSelect={() => Linking.openURL(Platform.OS === 'ios' ? "itms://itunes.apple.com/us/app/apple-store/id1499274239?mt=8" : "market://details?id=com.fialasfiasco.rpgdiceroller").then(() => null).catch(() => null)}>
-                                <Text style={styles.MenuText}>
-                                    Rate
-                                </Text>
-                            </MenuOption>
-                             
-                        </MenuOptions>
-                    </Menu>
-                </View>
+                <TabBar tabPressHandler={props.tabPressHandler}/>
             </View>
-            <FlatList
-                ref={tabListRef}
-                data={Tabs}
-                renderItem={({item, index}) => 
-                    <Touchable 
-                        style={[styles.TabItem, TabManager.getInstance().tab === index ? styles.ActiveTabItem : styles.InactiveTabItem]} 
-                        background={Touchable.Ripple('white')}
-                        onPress={() => props.tabPressHandler(index)}>
-                        <Text style={styles.TabText}>
-                            {item}
-                        </Text>
-                    </Touchable>
-                }
-                onScrollToIndexFailed={() => null}
-                keyExtractor={(item) => item}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-            />
+        )
+    }
+
+    // Landscape Mode
+    return (
+        <View style={[styles.AppBarBackground, styles.RowLayout]}>
+            <TabBar tabPressHandler={props.tabPressHandler}/>
+            <AppBarRightButtons clearHistoryHandler={props.clearHistoryHandler} tabPressHandler={props.tabPressHandler} showAboutPage={props.showAboutPage}/>
         </View>
     );
 };
