@@ -88,6 +88,11 @@ export class ImbalancedDie extends Die
             advAverage += value;
         });
 
+        if(this.mFaces.length !== 0)
+        {
+            advAverage /= this.mFaces.length;
+        }
+
         return advAverage;
     }
 

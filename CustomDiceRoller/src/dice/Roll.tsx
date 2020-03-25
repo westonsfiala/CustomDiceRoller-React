@@ -349,6 +349,8 @@ export class Roll {
         {
             let individualAverage = props.mDie.expectedResult(props.mProperties.mMinimumRoll, props.mProperties.mReRoll, props.mProperties.mExplode);
 
+
+
             // How many dice do we actually have.
             let numActualDice = props.mProperties.mNumDice;
             numActualDice -= props.mProperties.mDropHigh + props.mProperties.mDropLow;

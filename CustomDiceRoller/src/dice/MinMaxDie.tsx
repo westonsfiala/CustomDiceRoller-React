@@ -65,13 +65,15 @@ export class MinMaxDie extends Die
         let advAverage = 0;
         const normalAverage = this.average;
 
-        for(let i = this.min; i < this.max; i += 1) {
+        for(let i = this.min; i <= this.max; i += 1) {
             let value = i;
             if(minimum > value) { value = Math.min(this.max, minimum); }
             if(rerollUnder >= value) { value = normalAverage; }
             if(explode && value == this.max) { value = value + normalAverage; }
             advAverage += value;
         }
+
+        advAverage /= (this.max - this.min + 1);
 
         return advAverage;
     }
