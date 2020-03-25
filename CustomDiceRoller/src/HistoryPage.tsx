@@ -26,11 +26,11 @@ export function HistoryPage(props : HistoryInterface) {
     const flatList = useRef(null as FlatList<RollDisplayHelper>);
     const [itemInfo, setItemInfo] = useState({totalItems:HistoryManager.getInstance().getHistory().length, toGet:ITEMS_TO_GET_BASE});
     
-    const [reload, setReload] = useState(false);
+    //const [reload, setReload] = useState(false);
 
-    HistoryManager.getInstance().setHistoryUpdater(() => {
-        setReload(!reload)
-    });
+    //HistoryManager.getInstance().setHistoryUpdater(() => {
+    //    setReload(!reload)
+    //});
 
     let fullHistory = HistoryManager.getInstance().getHistory();
 

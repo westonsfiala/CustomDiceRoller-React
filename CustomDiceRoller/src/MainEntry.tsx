@@ -31,10 +31,17 @@ import CustomRollManager from './sync/CustomRollManager';
 import { AboutPage } from './AboutPage';
 import { SettingsPage } from './SettingsPage';
 
+enum TopLevelItem
+{
+    Roller,
+    Main,
+    About,
+}
+
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 export function MainEntry() {
     const viewPager = useRef(null as ViewPager);
-    const dialogPager = useRef(null as ViewPager);
+    const [currentPage, setCurrentPage] = useState(TopLevelItem.Main);
     const [window, setWindow] = useState(Dimensions.get('window'));
 
     console.log('refresh app');
@@ -48,7 +55,8 @@ export function MainEntry() {
             let newResult = new RollDisplayHelper(newRoll);
             HistoryManager.getInstance().addToHistory(newResult);
             TabManager.getInstance().secondaryTab = 0;
-            dialogPager.current.setPage(0);
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            setCurrentPage(TopLevelItem.Roller);
         }
     };
 
@@ -59,12 +67,14 @@ export function MainEntry() {
 
     function showAboutPage() {
         TabManager.getInstance().secondaryTab = 2;
-        dialogPager.current.setPage(2);
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setCurrentPage(TopLevelItem.About);
     }
 
     function returnToMainPage() {
         TabManager.getInstance().secondaryTab = 1;
-        dialogPager.current.setPage(1);
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setCurrentPage(TopLevelItem.Main);
     }
 
     function dismissRollResultsPage() {
@@ -89,44 +99,54 @@ export function MainEntry() {
         }
     });
 
-    return (
-        <SafeAreaView style={styles.AppBackground}>
-            <ViewPager style={styles.Pager} ref={dialogPager} initialPage={1} orientation="vertical" scrollEnabled={false}>
-                <View key="1">
-                    <RollResultsPage dismissPage={dismissRollResultsPage} window={window}/>
-                </View>
-                <View key="2">
-                    <AppBar
-                        subtitle='Tap die icons to roll!' 
-                        clearHistoryHandler={() => HistoryManager.getInstance().clearHistory()}
-                        tabPressHandler={tabPressHandler}
-                        showAboutPage={showAboutPage}
-                        window={window}
-                    />
-                    <ViewPager style={styles.Pager} ref={viewPager} initialPage={2} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
-                        <View key="a" >
-                            <SettingsPage window={window}/>
-                        </View>
-                        <View key="b" >
-                            <HistoryPage window={window}/>
-                        </View>
-                        <View key="c" >
-                            <SimpleDicePage displayRoll={addRoll} window={window}/>
-                        </View>
-                        <View key="d" >
-                            <CustomDicePage displayRoll={addRoll} window={window}/>
-                        </View>
-                        <View key="e" >
-                            <SavedRollPage displayRoll={addRoll} editRoll={editRoll} window={window}/>
-                        </View>
-                    </ViewPager>
-                </View>
-                <View key="3">
-                    <AboutPage dismissPage={returnToMainPage}/>
-                </View>
-            </ViewPager>
-        </SafeAreaView>
-    );
+
+    if(currentPage === TopLevelItem.Roller)
+    {
+        return (
+            <SafeAreaView style={styles.AppBackground}>
+                <RollResultsPage dismissPage={dismissRollResultsPage} window={window}/>
+            </SafeAreaView>
+        );
+    }
+    else if (currentPage === TopLevelItem.Main)
+    {
+        return (
+            <SafeAreaView style={styles.AppBackground}>
+                <AppBar
+                    subtitle='Tap die icons to roll!' 
+                    clearHistoryHandler={() => HistoryManager.getInstance().clearHistory()}
+                    tabPressHandler={tabPressHandler}
+                    showAboutPage={showAboutPage}
+                    window={window}
+                />
+                <ViewPager style={styles.Pager} ref={viewPager} initialPage={2} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
+                    <View key="a" >
+                        <SettingsPage window={window}/>
+                    </View>
+                    <View key="b" >
+                        <HistoryPage window={window}/>
+                    </View>
+                    <View key="c" >
+                        <SimpleDicePage displayRoll={addRoll} window={window}/>
+                    </View>
+                    <View key="d" >
+                        <CustomDicePage displayRoll={addRoll} window={window}/>
+                    </View>
+                    <View key="e" >
+                        <SavedRollPage displayRoll={addRoll} editRoll={editRoll} window={window}/>
+                    </View>
+                </ViewPager>
+            </SafeAreaView>
+        );
+    }
+    else // if(currentPage === TopLevelItem.About)
+    {
+        return (
+            <SafeAreaView style={styles.AppBackground}>
+                <AboutPage dismissPage={returnToMainPage}/>
+            </SafeAreaView>
+        );
+    }
 };
 
 const styles = EStyleSheet.create({
