@@ -1,17 +1,21 @@
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
     View, 
     Text,
     FlatList,
     ScaledSize,
+    LayoutAnimation,
 } from 'react-native';
 
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color'
 import { RollDisplayHelper } from '../dice/views/RollDisplayHelper';
 import { StruckStringPairView } from '../dice/views/StruckStringPair';
+import HistoryManager from '../sync/HistoryManager';
+import QuickRollEnabledManager from '../sync/QuickRollEnabledManager';
+import Touchable from 'react-native-platform-touchable';
 
 interface HistoryItemInterface {
     window : ScaledSize;
@@ -55,6 +59,64 @@ export function HistoryItemView(props : HistoryItemInterface) {
             />
         </View>
     );
+}
+
+interface SimpleHistoryItemInterface {
+    window : ScaledSize;
+}
+
+export function SimplifiedLastHistoryItemView(props : SimpleHistoryItemInterface) {
+
+    const [showState, setShowState] = useState({show:false, rollHelper:HistoryManager.getInstance().getLastRoll()});
+
+    useEffect(() => {
+        HistoryManager.getInstance().setQuickShowUpdater(() => {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            setShowState({show:true, rollHelper:HistoryManager.getInstance().getLastRoll()})
+        });
+        return(() => HistoryManager.getInstance().setQuickShowUpdater(null))
+    })
+
+    // After we show ourselves, go away after 5 seconds.
+    useEffect(() => {
+        let timeoutHandle = setTimeout(() => {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            setShowState({show:false, rollHelper:HistoryManager.getInstance().getLastRoll()});
+        }, 3000);
+        return (() => {
+            clearTimeout(timeoutHandle)
+        })
+    });
+
+    if(showState.show && QuickRollEnabledManager.getInstance().getQuickRollEnabled())
+    {
+        return (
+            <Touchable 
+                style={styles.SimpleHistoryContainer}
+                foreground={Touchable.Ripple('white')}
+                onPress={() => {
+                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                    setShowState({show:false, rollHelper:HistoryManager.getInstance().getLastRoll()});
+                }}
+            >
+                <View style={styles.SimpleHistoryRow}>
+                    <View style={{maxWidth: props.window.width/3}}>
+                        <StruckStringPairView pair={showState.rollHelper.rollSumText} style={styles.SimpleSumText}/>
+                    </View>
+                    <View style={styles.SimpleHistoryTextContainer}>
+                        <Text style={styles.SimpleRollNameText}>
+                            {showState.rollHelper.storedRoll.displayName}
+                        </Text>
+                        <Text style={styles.SimpleRollNameText}>
+                            {showState.rollHelper.rollNameText}
+                        </Text>
+                    </View>
+                </View>
+            </Touchable>
+        );
+    }
+    
+    return (null);
 }
 
 const styles = EStyleSheet.create({
@@ -104,5 +166,38 @@ const styles = EStyleSheet.create({
     DetailString:{
         color:'$textColor',
         fontSize:'$fontSizeNormal',
+    },
+    SimpleHistoryContainer:{
+        backgroundColor:'$primaryColorLightened',
+        position:'absolute',
+        left:'5rem',
+        bottom:'15rem',
+        right:'5rem',
+        borderRadius: '10rem',
+        borderColor:'$primaryColorDarkened',
+        borderWidth:'2rem',
+        overflow:'hidden',
+        padding:'5rem',
+        margin:'5rem'
+    },
+    SimpleHistoryTextContainer:{
+        marginLeft:'5rem',
+        marginRight:'5rem',
+    },
+    SimpleHistoryRow:{
+        flexDirection:'row',
+    },
+    SimpleRollNameText:{
+        color:'$textColor', 
+        fontSize:'$fontSizeLarge',
+    },
+    SimpleSumText:{
+        fontSize:'$fontSizeHuge',
+        fontWeight:'bold', 
+        padding:'8rem', 
+        borderRadius: '10rem',
+        textAlign:'center', 
+        color:'$textColor', 
+        backgroundColor:Color.rgb(0,0,0).hex(),
     },
 })

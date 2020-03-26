@@ -3,7 +3,6 @@ export default class TabManager {
     private static mInstance = null as TabManager;
 
     private mTab = 1;
-    private mSecondaryTab = 1;
     private mUpdater = null;
 
     static getInstance() : TabManager {
@@ -27,17 +26,5 @@ export default class TabManager {
 
     get tab() : number {
         return this.mTab;
-    }
-
-    set secondaryTab(value: number) {
-        this.mSecondaryTab = value;
-    }
-
-    get secondaryTab() : number {
-        return this.mSecondaryTab;
-    }
-
-    isOnDiceRollTab() : boolean {
-        return this.secondaryTab == 0;
     }
 }

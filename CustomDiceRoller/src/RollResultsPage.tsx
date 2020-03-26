@@ -46,12 +46,28 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     const [reload, setReload] = useState(false);
 
-    HistoryManager.getInstance().setDisplayUpdater(() => setReload(!reload));
-    AnimationsEnabledManager.getInstance().setUpdater(() => setReload(!reload));
-    ShakeEnabledManager.getInstance().setUpdater(() => setReload(!reload));
+    // When we are created register ourselves & unregister when we go away.
+    useEffect(() => {
+        HistoryManager.getInstance().setDisplayUpdater(() => setReload(!reload));
+        AnimationsEnabledManager.getInstance().setUpdater(() => setReload(!reload));
+        ShakeEnabledManager.getInstance().setUpdater(() => setReload(!reload));
 
+        return(() => {
+            HistoryManager.getInstance().setDisplayUpdater(null)
+            AnimationsEnabledManager.getInstance().setUpdater(null);
+            ShakeEnabledManager.getInstance().setUpdater(null);
+        })
+    })
+
+    // Set the initial state so we don't have fade outs that we don't want.
     // Whats going on with the animation.
-    const [animationState, setAnimationState] = useState({startTime:0, lastAnimationTime:0, duration:0, state:shakeEnums.shaking, frames:0});
+    const [animationState, setAnimationState] = useState({
+        startTime:0, 
+        lastAnimationTime:0, 
+        duration:0, 
+        state: AnimationsEnabledManager.getInstance().getAnimationsEnabled() ? shakeEnums.shaking : shakeEnums.done, 
+        frames:0
+    });
 
     const [playCritSounds, setPlayCritSounds] = useState(false);
 
@@ -187,7 +203,7 @@ export function RollResultsPage(props : RollResultsInterface) {
     });
 
     useEffect(() => {
-        if(rollHelper.storedRoll.getTotalDiceInRoll() !== 0 && TabManager.getInstance().isOnDiceRollTab()) {
+        if(rollHelper.storedRoll.getTotalDiceInRoll() !== 0) {
             let startAnimations = AnimationsEnabledManager.getInstance().getAnimationsEnabled();
 
             setPlayCritSounds(true);

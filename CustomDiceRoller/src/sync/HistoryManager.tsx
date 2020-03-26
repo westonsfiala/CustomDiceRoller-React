@@ -13,6 +13,7 @@ export default class HistoryManager {
 
     private mDisplayUpdater = null as () => void;
     private mHistoryUpdater = null as () => void;
+    private mQuickShowUpdater = null as () => void;
 
     static getInstance() : HistoryManager {
         if(HistoryManager.mInstance === null) {
@@ -32,6 +33,10 @@ export default class HistoryManager {
 
     setHistoryUpdater(updater : () => void) {
         this.mHistoryUpdater = updater;
+    }
+
+    setQuickShowUpdater(updater : () => void) {
+        this.mQuickShowUpdater = updater;
     }
 
     getHistory() : Array<RollDisplayHelper> {
@@ -88,11 +93,12 @@ export default class HistoryManager {
         }
 
         this.mHistory.push(newHistory);
-        if(this.mDisplayUpdater !== null) this.mDisplayUpdater();
+        this.runUpdaters();
     }
 
     runUpdaters() {
         if(this.mHistoryUpdater !== null) this.mHistoryUpdater();
         if(this.mDisplayUpdater !== null) this.mDisplayUpdater();
+        if(this.mQuickShowUpdater !== null) this.mQuickShowUpdater();
     }
 }

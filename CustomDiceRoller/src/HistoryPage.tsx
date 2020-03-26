@@ -1,5 +1,5 @@
 
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 
 import {
     View, 
@@ -12,7 +12,7 @@ import { RollDisplayHelper } from './dice/views/RollDisplayHelper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color'
 import { RestoreHistoryButton } from './helpers/RestoreHistoryButton';
-import { HistoryItemView } from './helpers/HistoryItemView';
+import { HistoryItemView, SimplifiedLastHistoryItemView } from './helpers/HistoryItemView';
 import HistoryManager from './sync/HistoryManager';
 
 const ITEMS_TO_GET_BASE = 20;
@@ -26,11 +26,12 @@ export function HistoryPage(props : HistoryInterface) {
     const flatList = useRef(null as FlatList<RollDisplayHelper>);
     const [itemInfo, setItemInfo] = useState({totalItems:HistoryManager.getInstance().getHistory().length, toGet:ITEMS_TO_GET_BASE});
     
-    //const [reload, setReload] = useState(false);
+    const [reload, setReload] = useState(false);
 
-    //HistoryManager.getInstance().setHistoryUpdater(() => {
-    //    setReload(!reload)
-    //});
+    useEffect(() => {
+        HistoryManager.getInstance().setHistoryUpdater(() => setReload(!reload))
+        return(() => HistoryManager.getInstance().setHistoryUpdater(null))
+    })
 
     let fullHistory = HistoryManager.getInstance().getHistory();
 

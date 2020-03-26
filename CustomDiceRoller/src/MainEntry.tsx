@@ -30,6 +30,8 @@ import TabManager from './sync/TabManager';
 import CustomRollManager from './sync/CustomRollManager';
 import { AboutPage } from './AboutPage';
 import { SettingsPage } from './SettingsPage';
+import { SimplifiedLastHistoryItemView } from './helpers/HistoryItemView';
+import QuickRollEnabledManager from './sync/QuickRollEnabledManager';
 
 enum TopLevelItem
 {
@@ -54,9 +56,11 @@ export function MainEntry() {
         {
             let newResult = new RollDisplayHelper(newRoll);
             HistoryManager.getInstance().addToHistory(newResult);
-            TabManager.getInstance().secondaryTab = 0;
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-            setCurrentPage(TopLevelItem.Roller);
+            if(!QuickRollEnabledManager.getInstance().getQuickRollEnabled())
+            {
+                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                setCurrentPage(TopLevelItem.Roller);
+            }
         }
     };
 
@@ -66,13 +70,11 @@ export function MainEntry() {
     }
 
     function showAboutPage() {
-        TabManager.getInstance().secondaryTab = 2;
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setCurrentPage(TopLevelItem.About);
     }
 
     function returnToMainPage() {
-        TabManager.getInstance().secondaryTab = 1;
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setCurrentPage(TopLevelItem.Main);
     }
@@ -136,6 +138,7 @@ export function MainEntry() {
                         <SavedRollPage displayRoll={addRoll} editRoll={editRoll} window={window}/>
                     </View>
                 </ViewPager>
+                <SimplifiedLastHistoryItemView window={window}/>
             </SafeAreaView>
         );
     }

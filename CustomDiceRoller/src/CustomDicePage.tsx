@@ -19,9 +19,7 @@ import { CustomPageDieView } from './dice/views/CustomPageDieView';
 import { AddCustomDiceButton } from './helpers/AddCustomDiceButton';
 import { Die } from './dice/Die';
 import { CreateRollDialog } from './dialogs/CreateRollDialog';
-import RollManager from './sync/RollManager';
 import CustomRollManager from './sync/CustomRollManager';
-import { ConfirmOverrideDialog } from './dialogs/ConfirmOverrideDialog';
 import ThemeManager from './sync/ThemeManager';
 
 interface CustomRollPageInterface {
