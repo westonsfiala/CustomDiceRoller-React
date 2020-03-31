@@ -12,7 +12,7 @@ import { RollDisplayHelper } from './dice/views/RollDisplayHelper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color'
 import { RestoreHistoryButton } from './helpers/RestoreHistoryButton';
-import { HistoryItemView, SimplifiedLastHistoryItemView } from './helpers/HistoryItemView';
+import { HistoryItemView } from './helpers/HistoryItemView';
 import HistoryManager from './sync/HistoryManager';
 
 const ITEMS_TO_GET_BASE = 20;

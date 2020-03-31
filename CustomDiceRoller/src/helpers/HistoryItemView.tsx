@@ -65,7 +65,7 @@ interface SimpleHistoryItemInterface {
     window : ScaledSize;
 }
 
-export function SimplifiedLastHistoryItemView(props : SimpleHistoryItemInterface) {
+export function LastHistoryItemViewPopup(props : SimpleHistoryItemInterface) {
 
     const [showState, setShowState] = useState({show:false, rollHelper:HistoryManager.getInstance().getLastRoll()});
 

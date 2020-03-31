@@ -30,7 +30,7 @@ import TabManager from './sync/TabManager';
 import CustomRollManager from './sync/CustomRollManager';
 import { AboutPage } from './AboutPage';
 import { SettingsPage } from './SettingsPage';
-import { SimplifiedLastHistoryItemView } from './helpers/HistoryItemView';
+import { LastHistoryItemViewPopup } from './helpers/HistoryItemView';
 import QuickRollEnabledManager from './sync/QuickRollEnabledManager';
 
 enum TopLevelItem
@@ -138,7 +138,7 @@ export function MainEntry() {
                         <SavedRollPage displayRoll={addRoll} editRoll={editRoll} window={window}/>
                     </View>
                 </ViewPager>
-                <SimplifiedLastHistoryItemView window={window}/>
+                <LastHistoryItemViewPopup window={window}/>
             </SafeAreaView>
         );
     }
