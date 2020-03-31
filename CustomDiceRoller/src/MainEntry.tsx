@@ -121,7 +121,7 @@ export function MainEntry() {
                     showAboutPage={showAboutPage}
                     window={window}
                 />
-                <ViewPager style={styles.Pager} ref={viewPager} initialPage={2} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
+                <ViewPager style={styles.Pager} ref={viewPager} initialPage={TabManager.getInstance().tab} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
                     <View key="a" >
                         <SettingsPage window={window}/>
                     </View>

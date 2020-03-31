@@ -2,7 +2,7 @@ export default class TabManager {
 
     private static mInstance = null as TabManager;
 
-    private mTab = 1;
+    private mTab = 2;
     private mUpdater = null;
 
     static getInstance() : TabManager {
