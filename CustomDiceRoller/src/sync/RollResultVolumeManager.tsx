@@ -28,7 +28,7 @@ export default class RollResultVolumeManager {
     get volumeModifier() : number {
         // 6 is an arbitrary number that works.
         if(this.mRollResultVolume == this.RollResultVolumeList[0]) return 0;
-        if(this.mRollResultVolume == this.RollResultVolumeList[1]) return .1;
+        if(this.mRollResultVolume == this.RollResultVolumeList[1]) return .25;
         if(this.mRollResultVolume == this.RollResultVolumeList[2]) return .5;
         if(this.mRollResultVolume == this.RollResultVolumeList[3]) return 1;
 

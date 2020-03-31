@@ -27,7 +27,7 @@ export default class ShakeVolumeManager {
     
     get volumeModifier() : number {
         if(this.mShakeVolume == this.ShakeVolumeList[0]) return 0;
-        if(this.mShakeVolume == this.ShakeVolumeList[1]) return .1;
+        if(this.mShakeVolume == this.ShakeVolumeList[1]) return .25;
         if(this.mShakeVolume == this.ShakeVolumeList[2]) return .5;
         if(this.mShakeVolume == this.ShakeVolumeList[3]) return 1;
 
