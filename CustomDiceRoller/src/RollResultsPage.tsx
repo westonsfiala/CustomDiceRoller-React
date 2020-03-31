@@ -24,6 +24,7 @@ import TabManager from './sync/TabManager';
 import { SimpleDie } from './dice/SimpleDie';
 import { ShakeDie, renderShakeDie } from './helpers/ShakeDie';
 import ShakeLengthManager from './sync/ShakeLengthManager';
+import RollResultsManager from './sync/RollResultsManager';
 
 const MAX_DICE_IN_ROLL = 25;
 const ANIMATION_RUNTIME = 10;
@@ -68,8 +69,6 @@ export function RollResultsPage(props : RollResultsInterface) {
         state: AnimationsEnabledManager.getInstance().getAnimationsEnabled() ? shakeEnums.shaking : shakeEnums.done, 
         frames:0
     });
-
-    const [playCritSounds, setPlayCritSounds] = useState(false);
 
     let rollHelper = HistoryManager.getInstance().getLastRoll();
 
@@ -205,8 +204,6 @@ export function RollResultsPage(props : RollResultsInterface) {
     useEffect(() => {
         if(rollHelper.storedRoll.getTotalDiceInRoll() !== 0) {
             let startAnimations = AnimationsEnabledManager.getInstance().getAnimationsEnabled();
-
-            setPlayCritSounds(true);
             
             if(startAnimations) {
                 let rightNow = Date.now();
@@ -259,26 +256,7 @@ export function RollResultsPage(props : RollResultsInterface) {
         )
     }
 
-    if(playCritSounds)
-    {
-        // Check for rolling critical success or critical failures
-        // TODO: generalize this
-        if(rollHelper.storedResults.mRollResults.size == 1) {
-            let d20SaveString = JSON.stringify(new SimpleDie("d20", 20));
-            if(rollHelper.storedResults.mRollResults.has(d20SaveString)) {
-                let results = rollHelper.storedResults.mRollResults.get(d20SaveString);
-                if(results.length == 1) {
-                    if(results[0] == 20) {
-                        SoundManager.getInstance().playAirHorn();
-                    } else if(results[0] == 1) {
-                        SoundManager.getInstance().playWilhelm();
-                    }
-                }
-            }
-        }
-        
-        setPlayCritSounds(false);
-    }
+    RollResultsManager.getInstance().playCritSounds();
 
     return (
         <View style={styles.Container}>

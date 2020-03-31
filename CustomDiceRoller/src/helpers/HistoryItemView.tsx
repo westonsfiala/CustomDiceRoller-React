@@ -16,6 +16,7 @@ import { StruckStringPairView } from '../dice/views/StruckStringPair';
 import HistoryManager from '../sync/HistoryManager';
 import QuickRollEnabledManager from '../sync/QuickRollEnabledManager';
 import Touchable from 'react-native-platform-touchable';
+import RollResultsManager from '../sync/RollResultsManager';
 
 interface HistoryItemInterface {
     window : ScaledSize;
@@ -90,6 +91,8 @@ export function LastHistoryItemViewPopup(props : SimpleHistoryItemInterface) {
 
     if(showState.show && QuickRollEnabledManager.getInstance().getQuickRollEnabled())
     {
+        RollResultsManager.getInstance().playCritSounds();
+
         return (
             <Touchable 
                 style={styles.SimpleHistoryContainer}
