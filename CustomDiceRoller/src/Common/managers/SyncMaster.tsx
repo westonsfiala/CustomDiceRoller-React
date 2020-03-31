@@ -1,0 +1,41 @@
+import CustomRollManager from "../../CustomDicePage/managers/CustomRollManager";
+import DiceManager from "../../SimpleDicePage/managers/DiceManager";
+import SimpleRollPropertiesManager from "../../SimpleDicePage/managers/SimpleRollPropertiesManager";
+import ExpandedCategoryManager from "../../SavedRollPage/managers/ExpandedCategoryManager";
+import TabManager from "../../AppBar/managers/TabManager";
+import HistoryManager from "../../Common/managers/HistoryManager";
+import RollManager from "../../Common/managers/RollManager";
+import DieSizeManager from "../../SettingsPage/Dice/DieSizeManager";
+import ThemeManager from "../../SettingsPage/Dice/ThemeManager";
+import ExpectedResultManager from "../../SettingsPage/Results/ExpectedResultManager";
+import SortTypeManager from "../../SettingsPage/Results/SortTypeManager";
+import RollResultVolumeManager from "../../SettingsPage/Roller/RollResultVolumeManager";
+import ShakeEnabledManager from "../../SettingsPage/Roller/ShakeEnabledManager";
+import ShakeSensitivityManager from "../../SettingsPage/Roller/ShakeSensitivityManager";
+import ShakeVolumeManager from "../../SettingsPage/Roller/ShakeVolumeManager";
+import ShakeLengthManager from "../../SettingsPage/Roller/ShakeLengthManager";
+import ShakeDieSizeManager from "../../SettingsPage/Roller/ShakeDieSizeManager";
+import AnimationsEnabledManager from "../../SettingsPage/Roller/AnimationsEnabledManager";
+import LegacyMigrationManager from "../../SettingsPage/Advanced/LegacyMigrationManager";
+
+export function OpenAllSingletons() {
+    AnimationsEnabledManager.getInstance();
+    CustomRollManager.getInstance();
+    DiceManager.getInstance();
+    DieSizeManager.getInstance();
+    ExpandedCategoryManager.getInstance();
+    ExpectedResultManager.getInstance();
+    LegacyMigrationManager.getInstance();
+    HistoryManager.getInstance();
+    RollManager.getInstance();
+    RollResultVolumeManager.getInstance();
+    ShakeDieSizeManager.getInstance();
+    ShakeEnabledManager.getInstance();
+    ShakeLengthManager.getInstance();
+    ShakeSensitivityManager.getInstance();
+    ShakeVolumeManager.getInstance();
+    SimpleRollPropertiesManager.getInstance();
+    SortTypeManager.getInstance();
+    TabManager.getInstance();
+    ThemeManager.getInstance();
+}

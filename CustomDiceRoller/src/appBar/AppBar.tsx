@@ -22,7 +22,7 @@ import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import TabManager from '../sync/TabManager';
+import TabManager from './managers/TabManager';
 
 const Tabs = [
     'Settings',

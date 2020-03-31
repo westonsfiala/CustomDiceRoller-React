@@ -14,24 +14,29 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { View, Dimensions, UIManager, LayoutAnimation, SafeAreaView } from 'react-native';
 
-import { AppBar } from "./appBar/AppBar";
 import ViewPager from '@react-native-community/viewpager';
 import EStyleSheet from 'react-native-extended-stylesheet'; 
 
-import { SimpleDicePage } from './SimpleDicePage';
-import { RollDisplayHelper } from './dice/views/RollDisplayHelper'
-import { HistoryPage } from './HistoryPage';
-import { Roll } from './dice/Roll';
-import { RollResultsPage } from './RollResultsPage';
-import { CustomDicePage } from './CustomDicePage';
-import { SavedRollPage } from './SavedRollPage';
-import HistoryManager from './sync/HistoryManager';
-import TabManager from './sync/TabManager';
-import CustomRollManager from './sync/CustomRollManager';
-import { AboutPage } from './AboutPage';
-import { SettingsPage } from './SettingsPage';
-import { LastHistoryItemViewPopup } from './helpers/HistoryItemView';
-import QuickRollEnabledManager from './sync/QuickRollEnabledManager';
+import { AppBar } from "./appBar/AppBar";
+
+import { AboutPage } from './AboutPage/AboutPage';
+import { RollResultsPage } from './RollResultsPage/RollResultsPage';
+
+import { SettingsPage } from './SettingsPage/SettingsPage';
+import { HistoryPage } from './HistoryPage/HistoryPage';
+import { SimpleDicePage } from './SimpleDicePage/SimpleDicePage';
+import { CustomDicePage } from './CustomDicePage/CustomDicePage';
+import { SavedRollPage } from './SavedRollPage/SavedRollPage';
+
+import { Roll } from './Common/dice/Roll';
+import { RollDisplayHelper } from './Common/dice/results/RollDisplayHelper'
+
+import HistoryManager from './Common/managers/HistoryManager';
+import TabManager from './AppBar/managers/TabManager';
+import CustomRollManager from './CustomDicePage/managers/CustomRollManager';
+import QuickRollEnabledManager from './SettingsPage/Roller/QuickRollEnabledManager';
+
+import { LastHistoryItemViewPopup } from './HistoryPage/views/HistoryItemView';
 
 enum TopLevelItem
 {
