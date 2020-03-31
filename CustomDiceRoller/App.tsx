@@ -19,8 +19,8 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
 
 import { MainEntry } from './src/MainEntry'
-import { OpenAllSingletons } from './src/sync/SyncMaster';
-import { BetterRenderer } from './src/helpers/BetterRenderer';
+import { OpenAllSingletons } from './src/Common/managers/SyncMaster';
+import { BetterRenderer } from './src/Common/views/BetterRenderer';
 
 let {height, width} = Dimensions.get('window');
 EStyleSheet.build({

@@ -15,8 +15,8 @@ import { Roll } from "../../Common/dice/Roll";
 
 import { ModalDialogBase } from "../../Common/dialogs/ModalDialogBase";
 
-import { OkCancelButtons } from "../../common/buttons/OkCancelButtons";
-import { ConfirmActionButtons } from "../../common/buttons/ConfirmActionButtons";
+import { OkCancelButtons } from "../../Common/buttons/OkCancelButtons";
+import { ConfirmActionButtons } from "../../Common/buttons/ConfirmActionButtons";
 
 import CustomRollManager from "../managers/CustomRollManager";
 import RollManager from "../../Common/managers/RollManager";

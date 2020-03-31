@@ -11,8 +11,8 @@ import { Die } from '../../Common/dice/Die';
 import { RollProperties } from '../../Common/dice/RollProperties';
 import { DiePropertyPair } from '../../Common/dice/DiePropertyPair';
 
-import { NumDiceUpDownButtons, ModifierUpDownButtons } from '../../common/buttons/UpDownButtons';
-import { PropertiesButton } from '../../common/buttons/PropertiesButton';
+import { NumDiceUpDownButtons, ModifierUpDownButtons } from '../../Common/buttons/UpDownButtons';
+import { PropertiesButton } from '../../Common/buttons/PropertiesButton';
 
 import { SimplePageDieView } from '../../SimpleDicePage/views/SimplePageDieView'
 

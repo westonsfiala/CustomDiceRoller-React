@@ -56,8 +56,8 @@ export function AboutPage(props : AboutInterface) {
 
     console.log('refresh about page');
 
-    const appPkg = require("../app.json");
-    const versionPkg = require('../package.json');
+    const appPkg = require("../../app.json");
+    const versionPkg = require('../../package.json');
 
     return (
         <View style={styles.Container}>

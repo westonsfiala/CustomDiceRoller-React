@@ -50,7 +50,7 @@ function AppBarRightButtons(props: AppBarButtonsInterface)
                 hitSlop={styles.HitSlop}
                 foreground={Touchable.Ripple('white', true)}
             >
-                <Image source={require('./BurningBook.png')} style={styles.ClearHistory}/>
+                <Image source={require('./images/BurningBook.png')} style={styles.ClearHistory}/>
             </Touchable>
             <Menu ref={clearHistoryMenuRef}>
                 <MenuTrigger/>

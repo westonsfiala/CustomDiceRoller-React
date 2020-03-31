@@ -17,7 +17,7 @@ import { View, Dimensions, UIManager, LayoutAnimation, SafeAreaView } from 'reac
 import ViewPager from '@react-native-community/viewpager';
 import EStyleSheet from 'react-native-extended-stylesheet'; 
 
-import { AppBar } from "./appBar/AppBar";
+import { AppBar } from "./AppBar/AppBar";
 
 import { AboutPage } from './AboutPage/AboutPage';
 import { RollResultsPage } from './RollResultsPage/RollResultsPage';
