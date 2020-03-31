@@ -98,7 +98,6 @@ export function QuickRollEnabledSetting() {
             </Touchable>
             <View style={[ styles.ButtonContainer, {height: QuickRollEnabled ? 0 : null}]}>
                 <AnimationsEnabledSetting/>
-                <RollResultVolumeSetting/>
             </View>
         </View>
         
