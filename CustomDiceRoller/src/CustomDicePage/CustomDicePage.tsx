@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import {
     View, 
@@ -44,10 +44,12 @@ export function CustomDicePage(props: CustomRollPageInterface) {
     
     console.log('refresh custom page');
 
+    let currentRoll = CustomRollManager.getInstance().getRoll();
+
     return (
         <View style={styles.Background}>
             <FlatList 
-                data={CustomRollManager.getInstance().getRoll().getDiePropArray()}
+                data={currentRoll.getDiePropArray()}
                 ListEmptyComponent={
                     <View style={styles.NoDiceTextContainer}>
                         <Text style={styles.NoDiceText}>No dice</Text>
@@ -90,7 +92,7 @@ export function CustomDicePage(props: CustomRollPageInterface) {
                     <Touchable
                         style={styles.ButtonBackground}
                         foreground={Touchable.Ripple('white')}
-                        onPress={() => props.displayRoll(CustomRollManager.getInstance().getRoll())}
+                        onPress={() => props.displayRoll(CustomRollManager.getInstance().getRoll().setNameCategory('Custom Roll', 'Temp'))}
                     >
                         <Text style={styles.Text}>Roll</Text>
                     </Touchable>
@@ -98,7 +100,7 @@ export function CustomDicePage(props: CustomRollPageInterface) {
             </View>
             <CreateRollDialog 
                 modalShown={createRollModalShown} 
-                roll={CustomRollManager.getInstance().getRoll()} 
+                roll={currentRoll} 
                 dismissModal={() => setCreateRollModalShown(false)}
             />
         </View> 
@@ -126,7 +128,7 @@ const styles = EStyleSheet.create({
     },
     Text:{
         fontSize:'$fontSizeHuge',
-        textAlign: 'center', 
+        textAlign:'center', 
         color: '$textColor',
     },
     ButtonBackground:{

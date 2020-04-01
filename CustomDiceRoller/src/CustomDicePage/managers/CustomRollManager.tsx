@@ -24,7 +24,7 @@ export default class CustomRollManager {
     }
 
     private constructor() {
-        this.getRollStorage().then((roll) => this.setRoll(roll));
+        this.getRollStorage().then((roll) => this.setRoll(roll.setNameCategory("Custom Roll", "Temp")));
     }
 
     setUpdater(updater : () => void) {

@@ -102,8 +102,8 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
                     ref={firstLineRef}
                     autoFocus={true}
                     selectTextOnFocus={true}
-                    defaultValue={rollName}
-                    placeholder={props.roll.mRollName}
+                    defaultValue={props.roll.mRollName}
+                    placeholder={'Temp'}
                     placeholderTextColor={styles.PlaceholderText.color}
                     onChangeText={(text) => setRollName(text)}
                     returnKeyType = { "next" }
@@ -117,8 +117,8 @@ export function CreateRollDialog(props : CreateRollDialogInterface) {
                     style={styles.ModalInputText}
                     ref={secondLineRef}
                     selectTextOnFocus={true}
-                    defaultValue={rollCategory}
-                    placeholder={props.roll.mRollCategory}
+                    defaultValue={props.roll.mRollCategory}
+                    placeholder={'Custom Roll'}
                     placeholderTextColor={styles.PlaceholderText.color}
                     onChangeText={(text) => setRollCategory(text)}
                     returnKeyType = { "done" }
@@ -139,15 +139,6 @@ const styles = EStyleSheet.create({
         paddingTop: Platform.OS === 'ios' ? '5rem' : 0,
         paddingBottom: Platform.OS === 'ios' ? '5rem' : 0,
     },
-    ModalButtonLine:{
-        flexDirection:'row',
-        justifyContent:'flex-end'
-    },
-    ModalButton:{
-        paddingTop:'16rem',
-        paddingLeft:'8rem',
-        paddingRight:'8rem',
-    },
     ModalTitle:{
         fontSize:'$fontSizeHuge',
         color:'$textColor',
@@ -167,10 +158,4 @@ const styles = EStyleSheet.create({
     PlaceholderText:{
         color:Color.rgb(128,128,128).hex()
     },
-    HitSlop: {
-        top:'5rem',
-        bottom:'5rem',
-        right:'5rem',
-        left:'5rem'
-    }
 })
