@@ -221,8 +221,6 @@ PODS:
     - ReactCommon/jscallinvoker (= 0.61.5)
   - RNCAsyncStorage (1.7.1):
     - React
-  - RNDeviceInfo (5.5.3):
-    - React
   - RNSensors (5.3.3):
     - React
   - RNSound (0.11.0):
@@ -264,7 +262,6 @@ DEPENDENCIES:
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
-  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNSensors (from `../node_modules/react-native-sensors`)
   - RNSound (from `../node_modules/react-native-sound`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -327,8 +324,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
-  RNDeviceInfo:
-    :path: "../node_modules/react-native-device-info"
   RNSensors:
     :path: "../node_modules/react-native-sensors"
   RNSound:
@@ -366,7 +361,6 @@ SPEC CHECKSUMS:
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
   RNCAsyncStorage: 8539fc80a0075fcc9c8e2dff84cd22dc5bf1dacf
-  RNDeviceInfo: 67607dfe9cfbed105838144c40187a8392aa404d
   RNSensors: 60197256ecd4e1e906dcaf6d634793f876eaa63b
   RNSound: c980916b596cc15c8dcd2f6ecd3b13c4881dbe20
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
