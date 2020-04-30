@@ -38,10 +38,12 @@ export function SavedCategoryView(props : SavedCategoryInterface) {
     if(showRolls) {
         Animated.timing(animatedRotation, {
             toValue: 1,
+            useNativeDriver:true,
         }).start();
     } else {
         Animated.timing(animatedRotation, {
             toValue: 0,
+            useNativeDriver:true,
         }).start()
     }
 
