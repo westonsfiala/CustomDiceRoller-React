@@ -19,7 +19,23 @@ import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { RollProperties, isAdvantage, isDisadvantage, isDouble, isHalve, hasDropHigh, hasDropLow, hasKeepHigh, hasKeepLow, hasReRoll, hasMinimumRoll, hasExplode, hasRepeatRoll } from '../dice/RollProperties';
+import { 
+    RollProperties, 
+    isAdvantage, 
+    isDisadvantage, 
+    isDouble, 
+    isHalve, 
+    hasDropHigh, 
+    hasDropLow, 
+    hasKeepHigh, 
+    hasKeepLow, 
+    hasReRoll, 
+    hasMinimumRoll, 
+    hasExplode, 
+    hasCountAboveEqual,
+    hasRepeatRoll,
+} from '../dice/RollProperties';
+
 import { 
     getDropHighString, 
     getDropLowString, 
@@ -27,14 +43,16 @@ import {
     getKeepLowString,
     getReRollString,
     getMinimumString,
+    getCountAboveEqualString,
+    getRepeatRollString,
     getDropHighTitle,
     getDropLowTitle,
     getKeepHighTitle,
     getKeepLowTitle,
     getReRollTitle,
     getMinimumTitle,
-    getRepeatRollString,
-    getRepeatRollTitle
+    getCountAboveEqualTitle,
+    getRepeatRollTitle,
 } from '../utility/StringHelper';
 import { SetValueDialog } from '../dialogs/SetValueDialog';
 
@@ -69,6 +87,7 @@ export function PropertiesButton(props: PropertiesInterface) {
     const [showKeepLowModal, setShowKeepLowModal] = useState(false);
     const [showReRollModal, setShowReRollModal] = useState(false);
     const [showMinimumModal, setShowMinimumModal] = useState(false);
+    const [showCountAboveEqualModal, setShowCountAboveEqualModal] = useState(false);
 
     function internalUpdateProperties(updateProps : RollProperties) {
         props.updateProperties(updateProps).then(() => setReload(!reload));
@@ -203,6 +222,11 @@ export function PropertiesButton(props: PropertiesInterface) {
                         <ActiveItemHelper turnOn={hasMinimumRoll(staleProperties)}/>
                     </MenuOption>
                     <View style={styles.MenuDivider}/>
+                    <MenuOption style={styles.Menu} onSelect={() => setShowCountAboveEqualModal(true)} >
+                        <Text style={styles.MenuText}>{getCountAboveEqualString(staleProperties.mCountAboveEqual)}</Text>
+                        <ActiveItemHelper turnOn={hasCountAboveEqual(staleProperties)}/>
+                    </MenuOption>
+                    <View style={styles.MenuDivider}/>
                     <MenuOption style={styles.Menu} onSelect={() => internalUpdateProperties(props.getProperties().clone({explode: !props.getProperties().mExplode})) } >
                         <View style={styles.MenuLineContainer}>
                             <Icon name={explodeIcon} size={styles.Icons.fontSize} color={styles.Icons.color}></Icon>
@@ -287,6 +311,14 @@ export function PropertiesButton(props: PropertiesInterface) {
                 defaultValue={staleProperties.mMinimumRoll} 
                 dismissModal={() => setShowMinimumModal(false)} 
                 acceptValue={(newVal: number) => internalUpdateProperties(props.getProperties().clone({minimumRoll:newVal})) }
+            />
+            <SetValueDialog
+                modalShown={showCountAboveEqualModal} 
+                titleText={getCountAboveEqualTitle()}
+                valueEnforcer={(num: number) => {return Math.max(num, 0)}}
+                defaultValue={staleProperties.mCountAboveEqual} 
+                dismissModal={() => setShowCountAboveEqualModal(false)} 
+                acceptValue={(newVal: number) => internalUpdateProperties(props.getProperties().clone({countAboveEqual:newVal})) }
             />
         </View>
     )

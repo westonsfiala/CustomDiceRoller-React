@@ -3,7 +3,7 @@
 import { RollResults } from "./RollResults";
 
 import {Roll} from "../Roll"
-import { RollProperties, isDouble, isHalve, hasRepeatRoll } from "../RollProperties";
+import { RollProperties, isDouble, isHalve, hasRepeatRoll, hasCountAboveEqual } from "../RollProperties";
 
 import {createUnknownDie} from "../factory/DieFactory"
 
@@ -74,13 +74,24 @@ export class RollDisplayHelper {
             const processRollPair = (dieName: string, mainList: Array<number>, strikeList: Array<number>, properties : RollProperties, showPropInfo : boolean) : StruckStringPair =>
             {
                 if(mainList && mainList.length !== 0 || strikeList && strikeList.length !== 0 || (showPropInfo && properties.mModifier !== 0)) {
-                    let subTotal = mainList.reduce(summer,0) + (showPropInfo ? properties.mModifier : 0);
+                    let subTotal = 0;
 
                     if(showPropInfo)
                     {
-                        if(isDouble(properties)) {subTotal *= 2;}
-                        if(isHalve(properties)) {subTotal /= 2;}
-                        subTotal = Math.floor(subTotal)
+                        if(hasCountAboveEqual(properties)) {
+                            subTotal = (showPropInfo ? properties.mModifier : 0);
+                            for(let item of mainList) {
+                                let value = item;
+                                if(isDouble(properties)) {value *= 2;}
+                                if(isHalve(properties)) {value /= 2;}
+                                if(value >= properties.mCountAboveEqual) {subTotal += 1;}
+                            }
+                        } else {
+                            subTotal = mainList.reduce(summer,0) + (showPropInfo ? properties.mModifier : 0);
+                            if(isDouble(properties)) {subTotal *= 2;}
+                            if(isHalve(properties)) {subTotal /= 2;}
+                            subTotal = Math.floor(subTotal)
+                        }
                         sumResult.push(subTotal);
                     }
 

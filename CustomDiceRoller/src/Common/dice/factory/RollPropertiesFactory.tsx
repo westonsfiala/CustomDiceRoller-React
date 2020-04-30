@@ -19,6 +19,7 @@ export function createRollProperties(rollPropertiesString: string) : RollPropert
     newRollProperties.mKeepLow = propertiesJson.mKeepLow || newRollProperties.mKeepLow;
     newRollProperties.mReRoll = propertiesJson.mReRoll || newRollProperties.mReRoll;
     newRollProperties.mMinimumRoll = propertiesJson.mMinimumRoll || newRollProperties.mMinimumRoll;
+    newRollProperties.mCountAboveEqual = propertiesJson.mCountAboveEqual || newRollProperties.mCountAboveEqual;
     newRollProperties.mExplode = propertiesJson.mExplode || newRollProperties.mExplode;
 
     return newRollProperties;

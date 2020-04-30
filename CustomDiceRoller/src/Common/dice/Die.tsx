@@ -25,7 +25,7 @@ export abstract class Die {
 
     abstract get average() : number;
 
-    abstract expectedResult(minimum: number, rerollUnder:number, explode:boolean) : number;
+    abstract expectedResult(minimum: number, rerollUnder:number, countAbove:number, explode:boolean) : number;
 
     get displayInHex() : boolean {
         // Only display hex when you start with "0x" and have more characters after that.

@@ -1,7 +1,7 @@
 
 import { Die } from './Die'
 import { cloneDie } from './factory/DieFactory'
-import { RollProperties, isDouble, isHalve, isAdvantage, isDisadvantage, hasDropHigh, hasDropLow, hasKeepHigh, hasKeepLow, hasReRoll, hasMinimumRoll, hasExplode, hasRepeatRoll } from './RollProperties'
+import { RollProperties, isDouble, isHalve, isAdvantage, isDisadvantage, hasDropHigh, hasDropLow, hasKeepHigh, hasKeepLow, hasReRoll, hasMinimumRoll, hasExplode, hasRepeatRoll, hasCountAboveEqual } from './RollProperties'
 import { RollResults } from './results/RollResults'
 
 import {
@@ -12,7 +12,8 @@ import {
     getKeepLowString,
     getMinimumString,
     getReRollString,
-    getRepeatRollString
+    getRepeatRollString,
+    getCountAboveEqualString
  } from '../utility/StringHelper'
 import { DiePropertyPair } from '../dice/DiePropertyPair';
 
@@ -346,9 +347,7 @@ export class Roll {
         let dieAverage = 0
         for(let props of this.mDiePropArray)
         {
-            let individualAverage = props.mDie.expectedResult(props.mProperties.mMinimumRoll, props.mProperties.mReRoll, props.mProperties.mExplode);
-
-
+            let individualAverage = props.mDie.expectedResult(props.mProperties.mMinimumRoll, props.mProperties.mReRoll, props.mProperties.mCountAboveEqual, props.mProperties.mExplode);
 
             // How many dice do we actually have.
             let numActualDice = props.mProperties.mNumDice;
@@ -389,6 +388,10 @@ export class Roll {
             // Same math as above, but the moveTotal is always 1.
             if(isAdvantage(props.mProperties)) { expectedResult = (props.mDie.max + expectedResult*2) / 3; }
             if(isDisadvantage(props.mProperties)) { expectedResult = (props.mDie.min + expectedResult*2) / 3; }
+
+            if(hasCountAboveEqual(props.mProperties)) {
+
+            }
 
             expectedResult += props.mProperties.mModifier;
 
@@ -487,6 +490,12 @@ export class Roll {
             {
                 let minString = getMinimumString(props.mMinimumRoll)
                 returnString += '(' + minString + ')';
+            }
+
+            if(hasCountAboveEqual(props))
+            {
+                let countAboveString = getCountAboveEqualString(props.mCountAboveEqual)
+                returnString += '(' + countAboveString + ')';
             }
 
             if(hasExplode(props)) {

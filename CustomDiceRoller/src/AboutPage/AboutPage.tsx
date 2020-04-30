@@ -29,6 +29,7 @@ const tips = [
     "Keep Low - Keep the lowest X number of attached dice, stacks with Drop High",
     "Re-Roll - Re-Roll any dice that is below the given threshold once",
     "Minimum Roll - If any individual die roll is lower than |X|, it is treated as X",
+    "Count Above - If any individual die roll is greater than or equal to |X|, it is treated as 1, else it is 0",
     "Explode - If the maximum die value is rolled add a new dice of the same type to the roll",
     "You can remove dice by long tapping on them and selecting remove die",
     "Dice and saved rolls can be named however you like",

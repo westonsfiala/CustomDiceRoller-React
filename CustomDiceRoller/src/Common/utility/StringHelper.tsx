@@ -54,6 +54,11 @@ export function getMinimumString(minimum : number) : string
     return 'Minimum Value = |' + minimum + '|'
 }
 
+export function getCountAboveEqualString(countAboveEqual : number) : string
+{
+    return 'Count >= |' + countAboveEqual + '|'
+}
+
 export function getRepeatRollTitle() : string
 {
     return 'Repeat X Times';
@@ -87,6 +92,11 @@ export function getReRollTitle() : string
 export function getMinimumTitle() : string
 {
     return 'Minimum Value = |X|'
+}
+
+export function getCountAboveEqualTitle() : string
+{
+    return 'Count >= |X|'
 }
 
 export function concatter(accumulator: string, current: number, index: number) : string

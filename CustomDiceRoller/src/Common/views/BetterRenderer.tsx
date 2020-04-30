@@ -116,7 +116,7 @@ export class BetterRenderer extends React.Component {
       const position = computePosition(layouts, I18nManager.isRTL);
       let window = Dimensions.get('window');
       return (
-        <Animated.View {...other} style={[styles.options, style, animation, position, {maxWidth: window.width/2, maxHeight: window.height*2/3}]}>
+        <Animated.View {...other} style={[styles.options, style, animation, position, {maxWidth: window.width*2/3, maxHeight: window.height*2/3}]}>
           {children}
         </Animated.View>
       );

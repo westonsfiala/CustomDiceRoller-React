@@ -10,6 +10,7 @@
  * mDropLow - How many die should be dropped from the lowest values of the roll
  * mReRollUnder - If the roll us under this value, it will be rerolled once
  * mMinimumRoll - If the roll us under this value, treat it as this value
+ * mCountAboveEqual - Count the number of rolls that are above a threshold
  * mExplode - If not zero, when the maximum value of a die is rolled, roll an extra die. Repeating.
  */
 export class RollProperties {
@@ -32,6 +33,7 @@ export class RollProperties {
     mKeepLow: number;
     mReRoll: number;
     mMinimumRoll: number;
+    mCountAboveEqual: number;
     mExplode: boolean;
 
     constructor ({
@@ -46,6 +48,7 @@ export class RollProperties {
         keepLow = 0,
         reRoll = 0,
         minimumRoll = 0,
+        countAboveEqual = 0,
         explode = false
         }) 
         {
@@ -60,6 +63,7 @@ export class RollProperties {
         this.mKeepLow = keepLow;
         this.mReRoll = reRoll;
         this.mMinimumRoll = minimumRoll;
+        this.mCountAboveEqual = countAboveEqual;
         this.mExplode = explode;
     };
 
@@ -75,6 +79,7 @@ export class RollProperties {
         keepLow = null,
         reRoll = null,
         minimumRoll = null,
+        countAboveEqual = null,
         explode = null
         }) : RollProperties
     {
@@ -90,6 +95,7 @@ export class RollProperties {
             keepLow : keepLow === null ? this.mKeepLow : keepLow,
             reRoll : reRoll === null ? this.mReRoll : reRoll,
             minimumRoll : minimumRoll === null ? this.mMinimumRoll : minimumRoll,
+            countAboveEqual : countAboveEqual === null ? this.mCountAboveEqual : countAboveEqual,
             explode : explode === null ? this.mExplode : explode
         });
     }
@@ -108,6 +114,7 @@ export class RollProperties {
         if(this.mKeepLow !== 0) {numNonDefault++}
         if(this.mReRoll !== 0) {numNonDefault++}
         if(this.mMinimumRoll !== 0) {numNonDefault++}
+        if(this.mCountAboveEqual !== 0) {numNonDefault++}
         if(this.mExplode) {numNonDefault++}
 
         return numNonDefault;
@@ -156,6 +163,10 @@ export function hasReRoll(props: RollProperties) : boolean {
 
 export function hasMinimumRoll(props: RollProperties) : boolean {
     return props.mMinimumRoll !== new RollProperties({}).mMinimumRoll
+}
+
+export function hasCountAboveEqual(props: RollProperties) : boolean {
+    return props.mCountAboveEqual !== new RollProperties({}).mCountAboveEqual
 }
 
 export function hasExplode(props: RollProperties) : boolean {
