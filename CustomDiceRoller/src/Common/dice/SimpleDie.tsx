@@ -72,9 +72,9 @@ export class SimpleDie extends Die
             if(explode && value == this.max) { value = value + normalAverage; }
             if(countAbove > 0 && value >= countAbove) { 
                 value = 1;
-                if(explode && value == this.max && normalAverage >= countAbove) { value += 1; }
-             } else { 
-                 value = 0; 
+                if(explode && value == this.max && normalAverage >= countAbove) { 
+                    value += 1; 
+                }
             }
             advAverage += value;
         }
