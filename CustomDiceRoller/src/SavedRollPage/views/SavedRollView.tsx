@@ -106,7 +106,10 @@ export function SavedRollView(props : SavedRollInterface) {
                 modalShown={showRemoveModal} 
                 removeName={props.roll.mRollName} 
                 dismissModal={() => setShowRemoveModal(false)} 
-                remove={() => RollManager.getInstance().removeRoll(props.roll)}
+                remove={() => {
+                    setShowRemoveModal(false);
+                    RollManager.getInstance().removeRoll(props.roll);
+                }}
             />
             <ChangeCategoryDialog 
                 modalShown={showChangeCategoryModal}

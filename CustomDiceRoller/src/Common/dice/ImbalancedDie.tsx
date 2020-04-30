@@ -74,7 +74,6 @@ export class ImbalancedDie extends Die
         return average / this.mFaces.length;
     }
     
-
     expectedResult(minimum: number, rerollUnder:number, countAbove:number, explode:boolean) : number
     {
         let advAverage = 0;
