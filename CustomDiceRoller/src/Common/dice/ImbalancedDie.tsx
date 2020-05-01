@@ -83,7 +83,15 @@ export class ImbalancedDie extends Die
             let value = face;
             if(minimum > value) { value = Math.min(this.max, minimum); }
             if(rerollUnder >= value) { value = normalAverage; }
-            if(explode && value == this.max) { value = value + normalAverage; }
+            if(explode && value == this.max) { 
+                let numSides = this.mFaces.length;
+                if(numSides == 1)
+                {
+                    value = this.max + normalAverage;
+                } else {
+                    value = this.max + numSides/(numSides-1) * normalAverage; 
+                }
+            }
             if(countAbove > 0 && value >= countAbove) { 
                 value = 1;
                 if(explode && value == this.max && normalAverage >= countAbove) { 
