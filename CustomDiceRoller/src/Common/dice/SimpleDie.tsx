@@ -91,8 +91,6 @@ export class SimpleDie extends Die
             advAverage += value;
         }
 
-        console.log(advAverage)
-
         advAverage /= this.mDie;
 
         return advAverage;
