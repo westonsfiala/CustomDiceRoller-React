@@ -78,14 +78,20 @@ export class SimpleDie extends Die
                     value = this.max + numSides/(numSides-1) * normalAverage; 
                 }
             }
-            if(countAbove !== 0 && value >= countAbove) { 
-                value = 1;
-                if(explode && value == this.max && normalAverage >= countAbove) { 
-                    value += 1; 
+            if(countAbove !== 0) { 
+                if(value >= countAbove) {
+                    value = 1;
+                    if(explode && value == this.max && normalAverage >= countAbove) { 
+                        value += 1; 
+                    }
+                } else {
+                    value = 0;
                 }
             }
             advAverage += value;
         }
+
+        console.log(advAverage)
 
         advAverage /= this.mDie;
 

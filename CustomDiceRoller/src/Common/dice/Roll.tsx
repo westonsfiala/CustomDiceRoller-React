@@ -375,23 +375,27 @@ export class Roll {
             // Are the drop / keep dice skewing the min/max
             let moveTotal = Math.abs(moveTowardsHigh - moveTowardsLow);
 
+            let upperLimit = props.mDie.max;
+            let lowerLimit = props.mDie.min;
+            if(hasCountAboveEqual(props.mProperties))
+            {
+                upperLimit = 1;
+                lowerLimit = 0;
+            }
+
             // This will asymptotically approach either max/min as you move furthur towards high/low
             // This is not the true average shift, but it is pretty close. 
             if(moveTowardsHigh > moveTowardsLow) {
-                individualAverage = (props.mDie.max * moveTotal + 2*individualAverage) / (2 + moveTotal)
+                individualAverage = (upperLimit * moveTotal + 2*individualAverage) / (2 + moveTotal)
             } else if(moveTowardsHigh < moveTowardsLow) {
-                individualAverage = (props.mDie.min * moveTotal + 2*individualAverage) / (2 + moveTotal)
+                individualAverage = (lowerLimit * moveTotal + 2*individualAverage) / (2 + moveTotal)
             }
-            
-            let expectedResult = individualAverage * numActualDice;
 
             // Same math as above, but the moveTotal is always 1.
-            if(isAdvantage(props.mProperties)) { expectedResult = (props.mDie.max + expectedResult*2) / 3; }
-            if(isDisadvantage(props.mProperties)) { expectedResult = (props.mDie.min + expectedResult*2) / 3; }
-
-            if(hasCountAboveEqual(props.mProperties)) {
-
-            }
+            if(isAdvantage(props.mProperties)) { individualAverage = (upperLimit + individualAverage*2) / 3; }
+            if(isDisadvantage(props.mProperties)) { individualAverage = (lowerLimit + individualAverage*2) / 3; }
+            
+            let expectedResult = individualAverage * numActualDice;
 
             expectedResult += props.mProperties.mModifier;
 
