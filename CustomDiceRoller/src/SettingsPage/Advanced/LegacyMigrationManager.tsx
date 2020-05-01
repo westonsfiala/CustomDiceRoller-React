@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-community/async-storage";
 
-import {Clipboard} from 'react-native'
+import Clipboard from '@react-native-community/clipboard'
 
 import RollManager from "../../Common/managers/RollManager";
 

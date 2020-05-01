@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "github:react-native-community/async-storage",
+    "@react-native-community/clipboard": "^1.2.2",
     "@react-native-community/viewpager": "^3.3.0",
     "color": "^3.1.2",
     "core-js": "^3.2.1",
