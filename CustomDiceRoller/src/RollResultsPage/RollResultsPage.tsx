@@ -1,31 +1,37 @@
 
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 
 import {
     View, 
     Text,
-    ScrollView,
     ScaledSize,
+    ScrollView,
 } from 'react-native';
 
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Share from 'react-native-share';
+import ViewShot, { releaseCapture, captureRef } from 'react-native-view-shot';
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-import HistoryManager from '../Common/managers/HistoryManager';
 import AccelerometerManager from '../Common/hardware/AccelerometerManager';
-import ShakeEnabledManager from '../SettingsPage/Roller/ShakeEnabledManager';
-import AnimationsEnabledManager from '../SettingsPage/Roller/AnimationsEnabledManager';
 import SoundManager from '../Common/hardware/SoundManager';
-import ShakeLengthManager from '../SettingsPage/Roller/ShakeLengthManager';
+
 import RollResultsManager from '../Common/managers/RollResultsManager';
 
-import { RollDisplayHelper } from '../Common/dice/results/RollDisplayHelper';
+import HistoryManager from '../Common/managers/HistoryManager';
 
-import { StruckStringPairView } from '../Common/views/StruckStringPair';
+import AnimationsEnabledManager from '../SettingsPage/Roller/AnimationsEnabledManager';
+import ShakeEnabledManager from '../SettingsPage/Roller/ShakeEnabledManager';
+import ShakeLengthManager from '../SettingsPage/Roller/ShakeLengthManager';
+
+import { RollDisplayHelper } from '../Common/dice/results/RollDisplayHelper';
+import { ShareResultsView } from '../Common/dice/results/ShareResultsView';
 
 import { ShakeDie, renderShakeDie } from './views/ShakeDie';
+import { StruckStringPairView } from '../Common/views/StruckStringPair';
 
 const MAX_DICE_IN_ROLL = 25;
 const ANIMATION_RUNTIME = 10;
@@ -47,6 +53,7 @@ enum shakeEnums {
 export function RollResultsPage(props : RollResultsInterface) {
 
     const [reload, setReload] = useState(false);
+    const viewShotRef = useRef(null);
 
     // When we are created register ourselves & unregister when we go away.
     useEffect(() => {
@@ -261,16 +268,9 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     return (
         <View style={styles.Container}>
-            <Text style={styles.DateTimeText}>{rollHelper.dateString} - {rollHelper.timeString}</Text>
-            <View style={styles.Container}>
-                <ScrollView contentContainerStyle={{justifyContent:'center', flexGrow: 1}} style={{}}>
-                    <Text style={styles.TitleText}>{rollHelper.rollNameText}</Text>
-                    <StruckStringPairView pair={rollHelper.rollSumText} style={styles.SumText}/>
-                    {(rollHelper.rollResultsText).map((item, index) => 
-                        <StruckStringPairView key={index} pair={item} style={styles.DetailText}/>)
-                    }
-                </ScrollView>
-            </View>
+            <ViewShot ref={viewShotRef} style={styles.Container} options={{result:"base64"}}>
+                <ShareResultsView rollHelper={rollHelper} />
+            </ViewShot>
             <View style={styles.ButtonContainer}>
                 <Touchable 
                     style={styles.ButtonBackground}
@@ -287,6 +287,17 @@ export function RollResultsPage(props : RollResultsInterface) {
                     hitSlop={styles.HitSlop}
                 >
                     <Text style={styles.ButtonText}>Exit</Text>
+                </Touchable>
+                <Touchable 
+                    style={styles.ShareButtonBackground}
+                    onPress={() => viewShotRef.current.capture().then((uri: string) => {
+                        let encodedImage = "data:image/png;base64," + uri;
+                        Share.open({url:encodedImage}).then(() => releaseCapture(uri)).catch(() => releaseCapture(uri));
+                    }).catch(() => null)}
+                    foreground={Touchable.Ripple('white', true)}
+                    hitSlop={styles.HitSlop}
+                >
+                    <Icon size={styles.IconConstants.width} name='share-variant' color={styles.IconConstants.color}/>
                 </Touchable>
             </View>
         </View>
@@ -340,7 +351,19 @@ const styles = EStyleSheet.create({
         backgroundColor: '$primaryColorLightened',
         borderRadius: '10rem',
         overflow:'hidden',
-        margin:'10rem'
+        marginTop:'10rem',
+        marginBottom:'10rem',
+        marginStart:'5rem',
+        marginEnd:'5rem',
+    },
+    ShareButtonBackground: {
+        backgroundColor: '$primaryColorLightened',
+        borderRadius: '10rem',
+        overflow:'hidden',
+        marginTop:'10rem',
+        marginBottom:'10rem',
+        marginStart:'5rem',
+        marginEnd:'5rem',
     },
     ButtonText: {
         fontSize:'$fontSizeHuge',
@@ -357,5 +380,9 @@ const styles = EStyleSheet.create({
         bottom:'10rem',
         right:'10rem',
         left:'10rem'
+    },
+    IconConstants:{
+        color: '$textColor',
+        width: '$fontSizeMassive',
     },
 })
