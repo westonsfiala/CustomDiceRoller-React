@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 import EStyleSheet from 'react-native-extended-stylesheet';
+import MinMaxHighlightEnabledManager from '../../SettingsPage/Results/MinMaxHighlightEnabledManager';
 
 export class ColoredDieResults {
 
@@ -55,10 +56,12 @@ export function ColoredDieResultsView (props: ColoredStruckStringInterface) {
                 <Text style={props.style}>
                     {props.dieResults.regularRolls.map((value, index) => {
                         let textColor = styles.neutralTextColor.color;
-                        if(value >= props.dieResults.rollMax) {
-                            textColor = styles.goodTextColor.color;
-                        } else if (value <= props.dieResults.rollMin) {
-                            textColor = styles.badTextColor.color;
+                        if(MinMaxHighlightEnabledManager.getInstance().getMinMaxHighlightEnabled()) {
+                            if(value >= props.dieResults.rollMax) {
+                                textColor = styles.goodTextColor.color;
+                            } else if (value <= props.dieResults.rollMin) {
+                                textColor = styles.badTextColor.color;
+                            }
                         }
                         return(
                             <Text key={index}>
@@ -71,10 +74,12 @@ export function ColoredDieResultsView (props: ColoredStruckStringInterface) {
                     <Text style={[props.style, {textDecorationLine: 'line-through'}]}>
                         {props.dieResults.struckRolls.map((value, index) => {
                             let textColor = styles.neutralTextColor.color;
-                            if(value == props.dieResults.rollMax) {
-                                textColor = styles.goodTextColor.color;
-                            } else if (value == props.dieResults.rollMin) {
-                                textColor = styles.badTextColor.color;
+                            if(MinMaxHighlightEnabledManager.getInstance().getMinMaxHighlightEnabled()) {
+                                if(value == props.dieResults.rollMax) {
+                                    textColor = styles.goodTextColor.color;
+                                } else if (value == props.dieResults.rollMin) {
+                                    textColor = styles.badTextColor.color;
+                                }
                             }
                             return(
                                 <Text key={index}>

@@ -17,6 +17,7 @@ import { SortSetting } from './Results/SortTypeManager';
 
 import { QuickRollEnabledSetting } from './Roller/QuickRollEnabledManager';
 import { RollResultVolumeSetting } from './Roller/RollResultVolumeManager';
+import { MinMaxHighlightEnabledSetting } from './Results/MinMaxHighlightEnabledManager';
 
 import { LegacyMigrationSetting } from './Advanced/LegacyMigrationSetting';
 
@@ -46,6 +47,7 @@ export function SettingsPage(props : SettingsInterface) {
                 <Text style={styles.DividerText}>Results</Text>
                 <SortSetting/>
                 <ExpectedResultSetting/>
+                <MinMaxHighlightEnabledSetting/>
                 <View style={styles.Divider}/>
                 <Text style={styles.DividerText}>Advanced</Text>
                 <RateMeSetting/>
