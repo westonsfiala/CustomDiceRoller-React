@@ -11,7 +11,7 @@ import
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import { RollDisplayHelper } from './RollDisplayHelper';
-import { StruckStringPairView } from '../../views/StruckStringPair';
+import { ColoredDieResults, ColoredDieResultsView } from '../../views/ColoredDieResults';
 
 interface ShareResultsInterface {
     rollHelper : RollDisplayHelper;
@@ -24,9 +24,9 @@ export function ShareResultsView(props : ShareResultsInterface) {
             <View style={styles.Container}>
                 <ScrollView contentContainerStyle={{justifyContent:'center', flexGrow: 1}} style={{}}>
                     <Text style={styles.TitleText}>{props.rollHelper.rollNameText}</Text>
-                    <StruckStringPairView pair={props.rollHelper.rollSumText} style={styles.SumText}/>
-                    {(props.rollHelper.rollResultsText).map((item, index) => 
-                        <StruckStringPairView key={index} pair={item} style={styles.DetailText}/>)
+                    <ColoredDieResultsView dieResults={props.rollHelper.rollSum} style={styles.SumText}/>
+                    {(props.rollHelper.rollResultsArray).map((item, index) => 
+                        <ColoredDieResultsView key={index} dieResults={item} style={styles.DetailText}/>)
                     }
                 </ScrollView>
             </View>

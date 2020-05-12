@@ -7,12 +7,13 @@ import { RollProperties, isDouble, isHalve, hasRepeatRoll, hasCountAboveEqual } 
 
 import {createUnknownDie} from "../factory/DieFactory"
 
-import {getModifierString, concatter, demimalToString} from "../../utility/StringHelper"
+import {getModifierString, demimalToString} from "../../utility/StringHelper"
 
-import {StruckStringPair} from "../../views/StruckStringPair"
+import { ColoredDieResults } from "../../views/ColoredDieResults";
 
 import SortTypeManager from "../../../SettingsPage/Results/SortTypeManager";
 import ExpectedResultManager from "../../../SettingsPage/Results/ExpectedResultManager";
+import { Die } from "../Die";
 
 // Class that performs a roll when constructed and turns that roll into displayable chunks of information.
 export class RollDisplayHelper {
@@ -22,8 +23,8 @@ export class RollDisplayHelper {
     public readonly storedRoll : Roll;
     public readonly storedResults : RollResults;
     public readonly rollNameText : string;
-    public readonly rollSumText : StruckStringPair;
-    public readonly rollResultsText : Array<StruckStringPair>;
+    public readonly rollSum : ColoredDieResults;
+    public readonly rollResultsArray : Array<ColoredDieResults>;
     public readonly key : string;
 
     constructor(roll: Roll) {
@@ -33,8 +34,8 @@ export class RollDisplayHelper {
         this.dateString = currentDateTime.toLocaleDateString();
         this.storedRoll = roll;
         this.rollNameText = '';
-        this.rollSumText = new StruckStringPair('','');
-        this.rollResultsText = Array<StruckStringPair>();
+        this.rollSum = new ColoredDieResults('','',0,0,[],[],'');
+        this.rollResultsArray = Array<ColoredDieResults>();
         this.key = Date.now().toString();
 
         // Lambda method for use in the reduce method to sum all the values.
@@ -44,7 +45,7 @@ export class RollDisplayHelper {
 
         this.rollNameText = roll.getDetailedRollName();
         
-        let sumResult = Array<number>();
+        let sumResults = Array<number>();
         let showSplitSums = false;
 
         // Go through all of the dice in the roll and start making the roll detail lines
@@ -71,7 +72,7 @@ export class RollDisplayHelper {
             }
 
             // Lambda method for turning the roll numbers into a displayable string.
-            const processRollPair = (dieName: string, mainList: Array<number>, strikeList: Array<number>, properties : RollProperties, showPropInfo : boolean) : StruckStringPair =>
+            const processRollPair = (die: Die, dieDisplayName: string, mainList: Array<number>, strikeList: Array<number>, properties : RollProperties, showPropInfo : boolean) : ColoredDieResults =>
             {
                 if(mainList && mainList.length !== 0 || strikeList && strikeList.length !== 0 || (showPropInfo && properties.mModifier !== 0)) {
                     let subTotal = 0;
@@ -92,58 +93,51 @@ export class RollDisplayHelper {
                             if(isHalve(properties)) {subTotal /= 2;}
                             subTotal = Math.floor(subTotal)
                         }
-                        sumResult.push(subTotal);
+                        sumResults.push(subTotal);
                     }
 
-                    let mainListString = mainList.reduce(concatter, '');
-                    let strikeListString = strikeList.reduce(concatter, '');
-
-                    let detailString = '';
-                    detailString += dieName + ' [' + subTotal + ']: '; 
-                    detailString += mainListString;
+                    let prependString = dieDisplayName + ' [' + subTotal + ']: ';
+                    let appendString = ''; 
 
                     if(showPropInfo) {
                         if(properties.mModifier !== 0)
                         {
-                            detailString += ' (' + getModifierString(properties.mModifier,true) + ')';
+                            appendString += ' (' + getModifierString(properties.mModifier,true) + ')';
                         }
 
                         if(isDouble(properties))
                         {
-                            detailString += ' (x2)';
+                            appendString += ' (x2)';
                         }
 
                         if(isHalve(properties))
                         {
-                            detailString += ' (/2)';
+                            appendString += ' (/2)';
                         }
                     } 
 
-                    if(strikeListString.length !== 0) {
-                        detailString += ' ';
-                    }
-                    return new StruckStringPair(detailString, strikeListString, dieName);
+                    return new ColoredDieResults(prependString, appendString, die.min, die.max, mainList, strikeList, dieDisplayName);
                 }
 
                 return null
             }
 
-            let mainResults = processRollPair(die.displayName, rollResults, rollResultsStruck, rollProperties, true);
+            let mainResults = processRollPair(die, die.displayName, rollResults, rollResultsStruck, rollProperties, true);
             if(mainResults !== null)
             {
-                this.rollResultsText.push(mainResults)
+                this.rollResultsArray.push(mainResults)
             }
 
-            let droppedResults = processRollPair(die.displayName + ' dropped', rollResultsDropped, rollResultsStruckDropped, rollProperties, false);
+            let droppedResults = processRollPair(die, die.displayName + ' dropped', rollResultsDropped, rollResultsStruckDropped, rollProperties, false);
             if(droppedResults !== null)
             {
-                this.rollResultsText.push(droppedResults)
+                this.rollResultsArray.push(droppedResults)
             }
 
-            let rerolledResults = processRollPair(die.displayName + ' re-rolled', rollResultsReRolled, rollResultsStruckReRolled, rollProperties, false);
+            let rerolledResults = processRollPair(die, die.displayName + ' re-rolled', rollResultsReRolled, rollResultsStruckReRolled, rollProperties, false);
             if(rerolledResults !== null)
             {
-                this.rollResultsText.push(rerolledResults)
+                this.rollResultsArray.push(rerolledResults)
             }
         }
 
@@ -151,18 +145,18 @@ export class RollDisplayHelper {
             let rollAverageString = demimalToString(roll.average(),2);
             let averageText = 'Expected Result - [' + rollAverageString + ']';
 
-            this.rollResultsText.push(new StruckStringPair(averageText,'', 'expected'));
+            // This isn't the best way to do this, but its good enough.
+            this.rollResultsArray.push(new ColoredDieResults(averageText, '', 0, 0, [], [], 'expected'));
         }
 
-        let sumTotal = sumResult.reduce(summer,0);
-        let sumText = sumTotal.toString();
+        let sumTotal = sumResults.reduce(summer,0);
+        let sumAppendText = '';
 
         if(showSplitSums) {
-            sumText = sumResult.reduce(concatter,'') + ', [' + sumText + ']';
+            sumAppendText = ', [' + sumTotal.toString() + ']';
         }
 
-        this.rollSumText.regularText = sumText;
-        this.rollSumText.struckText = '';
+        this.rollSum = new ColoredDieResults('', sumAppendText, roll.min(), roll.max(), sumResults, [], 'sum');
     }
 
 }

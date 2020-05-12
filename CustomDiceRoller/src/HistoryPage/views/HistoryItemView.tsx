@@ -14,7 +14,7 @@ import Color from 'color'
 import Touchable from 'react-native-platform-touchable';
 
 import { RollDisplayHelper } from '../../Common/dice/results/RollDisplayHelper';
-import { StruckStringPairView } from '../../Common/views/StruckStringPair';
+import { ColoredDieResultsView } from '../../Common/views/ColoredDieResults';
 
 import HistoryManager from '../../Common/managers/HistoryManager';
 import QuickRollEnabledManager from '../../SettingsPage/Roller/QuickRollEnabledManager';
@@ -30,7 +30,7 @@ export function HistoryItemView(props : HistoryItemInterface) {
         <View style={styles.HistoryItemContainer}>
             <View style={styles.TopTextLine}>
                 <View style={{maxWidth: props.window.width/3}}>
-                    <StruckStringPairView pair={props.rollHelper.rollSumText} style={styles.SumText}/>
+                    <ColoredDieResultsView dieResults={props.rollHelper.rollSum} style={styles.SumText}/>
                 </View>
                 <View style={styles.NameTimeContainterOuter}>
                     <View style={styles.NameTimeContainterInner}>
@@ -55,9 +55,9 @@ export function HistoryItemView(props : HistoryItemInterface) {
             </View>
             <FlatList 
                 style={styles.DetailStringList}
-                data={props.rollHelper.rollResultsText}
+                data={props.rollHelper.rollResultsArray}
                 renderItem={({ item }) =>  (
-                    <StruckStringPairView pair={item} style={styles.DetailString}/>
+                    <ColoredDieResultsView dieResults={item} style={styles.DetailString}/>
                 )}
             />
         </View>
@@ -106,7 +106,7 @@ export function LastHistoryItemViewPopup(props : SimpleHistoryItemInterface) {
             >
                 <View style={styles.SimpleHistoryRow}>
                     <View style={{maxWidth: props.window.width/3}}>
-                        <StruckStringPairView pair={showState.rollHelper.rollSumText} style={styles.SimpleSumText}/>
+                        <ColoredDieResultsView dieResults={showState.rollHelper.rollSum} style={styles.SimpleSumText}/>
                     </View>
                     <View style={styles.SimpleHistoryTextContainer}>
                         <Text style={styles.SimpleRollNameText}>

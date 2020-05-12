@@ -407,7 +407,61 @@ export class Roll {
         return dieAverage;
     }
 
-    displayInHex(): boolean {
+    min() : number {
+        
+        let dieMin = 0;
+
+        for(let props of this.mDiePropArray)
+        {
+            let numActualDice = props.mProperties.mNumDice;
+            numActualDice -= props.mProperties.mDropHigh + props.mProperties.mDropLow;
+            numActualDice = Math.max(0, numActualDice);
+
+            let expectedMin = props.mDie.min;
+
+            if(hasCountAboveEqual(props.mProperties)) { expectedMin = 0; }
+
+            expectedMin *= numActualDice;
+
+            expectedMin += props.mProperties.mModifier;
+
+            if(isDouble(props.mProperties)) { expectedMin *= 2; }
+            if(isDouble(props.mProperties)) { expectedMin /= 2; }
+
+            dieMin += expectedMin;
+        }
+
+        return dieMin
+    }
+
+    max() : number {
+        
+        let dieMax = 0;
+
+        for(let props of this.mDiePropArray)
+        {
+            let numActualDice = props.mProperties.mNumDice;
+            numActualDice -= props.mProperties.mDropHigh + props.mProperties.mDropLow;
+            numActualDice = Math.max(0, numActualDice);
+
+            let expectedMax = props.mDie.max;
+
+            if(hasCountAboveEqual(props.mProperties)) { expectedMax = 1; }
+
+            expectedMax *= numActualDice;
+
+            expectedMax += props.mProperties.mModifier;
+
+            if(isDouble(props.mProperties)) { expectedMax *= 2; }
+            if(isDouble(props.mProperties)) { expectedMax /= 2; }
+
+            dieMax += expectedMax
+        }
+
+        return dieMax
+    }
+
+    displayInHex() : boolean {
         // Only display hex when you start with "0x" and have more characters after that.
         return this.mRollName.length > (Die.dieDisplayInHexID.length) && this.mRollName.startsWith(Die.dieDisplayInHexID)
     }

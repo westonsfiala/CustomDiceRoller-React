@@ -31,7 +31,6 @@ import { RollDisplayHelper } from '../Common/dice/results/RollDisplayHelper';
 import { ShareResultsView } from '../Common/dice/results/ShareResultsView';
 
 import { ShakeDie, renderShakeDie } from './views/ShakeDie';
-import { StruckStringPairView } from '../Common/views/StruckStringPair';
 
 const MAX_DICE_IN_ROLL = 25;
 const ANIMATION_RUNTIME = 10;
