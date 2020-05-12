@@ -49,7 +49,7 @@ export default class MinMaxHighlightEnabledManager {
 
     private async retrieveMinMaxHighlightEnabled() : Promise<boolean> {
         const MinMaxHighlightEnabledString = await AsyncStorage.getItem(MinMaxHighlightEnabledKey);
-        if(MinMaxHighlightEnabledString === null) { return false; }
+        if(MinMaxHighlightEnabledString === null) { return true; }
         return MinMaxHighlightEnabledString == 'true';
     }
 }
