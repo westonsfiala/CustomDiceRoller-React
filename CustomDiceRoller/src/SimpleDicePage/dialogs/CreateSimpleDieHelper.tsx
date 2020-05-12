@@ -13,6 +13,7 @@ import Color from 'color';
 
 import { SimpleDie } from '../../Common/dice/SimpleDie';
 import { OkCancelButtons } from '../../Common/buttons/OkCancelButtons';
+import { VerticalSpace } from '../../Common/views/VerticalSpace';
 
 interface CreateSimpleDieInterface {
     die : SimpleDie;
@@ -79,6 +80,7 @@ export function CreateSimpleDieHelper(props : CreateSimpleDieInterface) {
                     blurOnSubmit={false}
                 />
             </View>
+            <VerticalSpace/>
             <OkCancelButtons accept={acceptHandler} dismiss={props.cancel}/>
         </View>
     );

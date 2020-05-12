@@ -13,6 +13,7 @@ import Color from 'color';
 
 import { MinMaxDie } from '../../Common/dice/MinMaxDie';
 import { OkCancelButtons } from '../../Common/buttons/OkCancelButtons';
+import { VerticalSpace } from '../../Common/views/VerticalSpace';
 
 interface CreateMinMaxDieInterface {
     die : MinMaxDie;
@@ -101,6 +102,7 @@ export function CreateMinMaxDieHelper(props : CreateMinMaxDieInterface) {
                 blurOnSubmit={false}
                 />
             </View>
+            <VerticalSpace/>
             <OkCancelButtons accept={acceptHandler} dismiss={props.cancel}/>
         </View>
     );

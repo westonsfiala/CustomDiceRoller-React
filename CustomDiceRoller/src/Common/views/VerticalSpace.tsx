@@ -3,7 +3,11 @@ import React from 'react';
 import { View } from "react-native";
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-export function VerticalSpace() {
+interface verticalSpaceInterface {
+
+}
+
+export function VerticalSpace(props: verticalSpaceInterface) {
     return(<View style={styles.ListDivider}/>);
 }
 

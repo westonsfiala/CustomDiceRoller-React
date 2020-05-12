@@ -13,6 +13,7 @@ import Color from 'color';
 import { ImbalancedDie } from '../../Common/dice/ImbalancedDie';
 import { OkCancelButtons } from '../../Common/buttons/OkCancelButtons';
 import { concatterNoSpace } from '../../Common/utility/StringHelper';
+import { VerticalSpace } from '../../Common/views/VerticalSpace';
 
 interface CreateImbalancedDieInterface {
     die : ImbalancedDie;
@@ -92,6 +93,7 @@ export function CreateImbalancedDieHelper(props : CreateImbalancedDieInterface) 
                 blurOnSubmit={false}
                 />
             </View>
+            <VerticalSpace/>
             <OkCancelButtons accept={acceptHandler} dismiss={props.cancel}/>
         </View>
     );
