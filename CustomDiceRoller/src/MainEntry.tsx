@@ -37,6 +37,8 @@ import CustomRollManager from './CustomDicePage/managers/CustomRollManager';
 import QuickRollEnabledManager from './SettingsPage/Roller/QuickRollEnabledManager';
 
 import { LastHistoryItemViewPopup } from './HistoryPage/views/HistoryItemView';
+import RateMeManager from './SettingsPage/Advanced/RateMeManager';
+import { RateMeDialog } from './SettingsPage/Advanced/RateMeDialog';
 
 enum TopLevelItem
 {
@@ -50,8 +52,17 @@ export function MainEntry() {
     const viewPager = useRef(null as ViewPager);
     const [currentPage, setCurrentPage] = useState(TopLevelItem.Main);
     const [window, setWindow] = useState(Dimensions.get('window'));
+    const [showRateDialog, setShowRateDialog] = useState(false);
 
     console.log('refresh app');
+
+    useEffect(() => {
+        RateMeManager.getInstance().shouldPopUpRateDialog().then((popUp) => {
+            if(popUp) {
+                setShowRateDialog(true);
+            }
+        })
+    })
     
     // This block of code enables layout animations to happen.
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -144,6 +155,7 @@ export function MainEntry() {
                     </View>
                 </ViewPager>
                 <LastHistoryItemViewPopup window={window}/>
+                <RateMeDialog modalShown={showRateDialog} dismissModal={() => setShowRateDialog(false)}/>
             </SafeAreaView>
         );
     }

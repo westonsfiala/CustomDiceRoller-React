@@ -7,7 +7,6 @@ import {
     Image,
     Linking,
     FlatList,
-    Platform,
     ScaledSize,
 } from 'react-native';
 
@@ -23,6 +22,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import TabManager from './managers/TabManager';
+import { openRatePage } from '../Common/utility/FunctionHelper';
 
 const Tabs = [
     'Settings',
@@ -91,7 +91,7 @@ function AppBarRightButtons(props: AppBarButtonsInterface)
                             Feedback
                         </Text>
                     </MenuOption>
-                    <MenuOption style={styles.Menu} onSelect={() => Linking.openURL(Platform.OS === 'ios' ? "itms://itunes.apple.com/us/app/apple-store/id1499274239?mt=8" : "market://details?id=com.fialasfiasco.rpgdiceroller").then(() => null).catch(() => null)}>
+                    <MenuOption style={styles.Menu} onSelect={openRatePage}>
                         <Text style={styles.MenuText}>
                             Rate
                         </Text>

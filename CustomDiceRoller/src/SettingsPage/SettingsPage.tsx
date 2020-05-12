@@ -22,6 +22,7 @@ import { LegacyMigrationSetting } from './Advanced/LegacyMigrationSetting';
 
 import Color from 'color';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { RateMeSetting } from './Advanced/RateMeSetting';
 
 interface SettingsInterface{
     window : ScaledSize
@@ -47,6 +48,7 @@ export function SettingsPage(props : SettingsInterface) {
                 <ExpectedResultSetting/>
                 <View style={styles.Divider}/>
                 <Text style={styles.DividerText}>Advanced</Text>
+                <RateMeSetting/>
                 <LegacyMigrationSetting/>
             </ScrollView>
         </View>
