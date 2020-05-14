@@ -126,6 +126,7 @@ export function RollResultsPage(props : RollResultsInterface) {
     
     function goToNextState(currentTime: number, duration: number, state: shakeEnums) {
         if(state == shakeEnums.done) {
+            RollResultsManager.getInstance().playCritSounds();
             exitShake();
         } else {
             let nextFrame = animationState.frames+1;
@@ -262,8 +263,6 @@ export function RollResultsPage(props : RollResultsInterface) {
             </View>
         )
     }
-
-    RollResultsManager.getInstance().playCritSounds();
 
     return (
         <View style={styles.Container}>

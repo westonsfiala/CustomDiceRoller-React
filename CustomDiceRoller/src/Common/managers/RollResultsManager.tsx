@@ -22,8 +22,9 @@ export default class RollResultsManager {
         this.lastHistoryItem = HistoryManager.getInstance().getLastRoll();
     }
     
-    playCritSounds() {
+    playCritSounds() : boolean {
         let newHistoryItem = HistoryManager.getInstance().getLastRoll();
+        let playedSound = false;
         if(this.lastHistoryItem != HistoryManager.getInstance().getLastRoll())
         {
             this.lastHistoryItem = newHistoryItem;
@@ -36,12 +37,15 @@ export default class RollResultsManager {
                     if(results.length == 1) {
                         if(results[0] == 20) {
                             SoundManager.getInstance().playAirHorn();
+                            playedSound = true;
                         } else if(results[0] == 1) {
                             SoundManager.getInstance().playWilhelm();
+                            playedSound = true;
                         }
                     }
                 }
             }
         }
+        return playedSound;
     }
 }
