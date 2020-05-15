@@ -16,7 +16,7 @@ export class ImbalancedDie extends Die
     {
         if(dieName.length === 0)
         {
-            dieName = ImbalancedDie.tempName(faces.reduce(concatterNoSpace, ''));
+            dieName = ImbalancedDie.tempNameFromNumbers(faces);
         }
 
         super(dieName, ImbalancedDie.imbalancedIdentifier);
@@ -24,15 +24,32 @@ export class ImbalancedDie extends Die
         this.mFaces = faces;
     }
 
-    static tempName(facesString: string) {
+    static tempNameFromNumbers(facesArray: Array<number>) {
 
-        if(facesString == undefined || facesString.length === 0) {return 'd0';}
+        if(facesArray == undefined || facesArray.length === 0) {return 'd0';}
 
         let name = 'd';
-        
-        let splitFaces = facesString.split(',');
 
-        for(let face of splitFaces) {
+        for(let face of facesArray) {
+            let faceString = face.toString();
+            faceString.trim();
+            if(faceString.length !== 0) {
+                name += face + '-';
+            }
+        }
+
+        name = name.substring(0, name.length-1)
+
+        return name;
+    }
+
+    static tempNameFromStrings(facesArray: Array<string>) {
+
+        if(facesArray == undefined || facesArray.length === 0) {return 'd0';}
+
+        let name = 'd';
+
+        for(let face of facesArray) {
             face.trim();
             if(face.length !== 0) {
                 name += face + '-';

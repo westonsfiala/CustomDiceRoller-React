@@ -5,6 +5,7 @@ import {
     Text,
     TextInput,
     Platform,
+    FlatList,
 } from 'react-native';
 
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -14,6 +15,8 @@ import { ImbalancedDie } from '../../Common/dice/ImbalancedDie';
 import { OkCancelButtons } from '../../Common/buttons/OkCancelButtons';
 import { concatterNoSpace } from '../../Common/utility/StringHelper';
 import { VerticalSpace } from '../../Common/views/VerticalSpace';
+import Touchable from 'react-native-platform-touchable';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface CreateImbalancedDieInterface {
     die : ImbalancedDie;
@@ -24,28 +27,30 @@ interface CreateImbalancedDieInterface {
 export function CreateImbalancedDieHelper(props : CreateImbalancedDieInterface) {
 
     const [dieName, setDieName] = useState('');
-    const [facesString, setFacesString] = useState('');
+    const [facesArray, setFacesArray] = useState(Array<string>());
 
-    const firstLineRef = useRef(null);
     const secondLineRef = useRef(null);
 
     useEffect(() => {
         // If the name is the default, let the placeholder text show.
-        let defaultFacesString = props.die.mFaces.reduce(concatterNoSpace, '');
-        if(props.die.displayName === ImbalancedDie.tempName(defaultFacesString)) {
+        if(props.die.displayName === ImbalancedDie.tempNameFromNumbers(props.die.mFaces)) {
             setDieName('');
         } else {
             setDieName(props.die.displayName);
         }
-        setFacesString(defaultFacesString);
+
+        let newFacesArray = Array<string>();
+        for(let item of props.die.mFaces) {
+            newFacesArray.push(item.toString())
+        }
+        setFacesArray(newFacesArray);
     }, [props.die])
 
     function acceptHandler() {
-        if(facesString == undefined) return;
-        let numberStrings = facesString.split(',');
+        if(facesArray == undefined) return;
         let newFaces = new Array<number>();
 
-        for(let numString of numberStrings) {
+        for(let numString of facesArray) {
             let possibleNumber = Number.parseInt(numString);
 
             if(Number.isSafeInteger(possibleNumber)) {
@@ -60,24 +65,74 @@ export function CreateImbalancedDieHelper(props : CreateImbalancedDieInterface) 
         props.cancel();
     }
 
+    function addFace() {
+        let newFacesArray  = Object.assign(Array<string>(), facesArray);
+        newFacesArray.push((newFacesArray.length + 1).toString());
+        setFacesArray(newFacesArray);
+    }
+
+    function setFaceString(text: string, index: number) {
+        let newFacesArray  = Object.assign(Array<string>(), facesArray);
+        newFacesArray[index] = text;
+        setFacesArray(newFacesArray);
+    }
+
+    function removeFace(index: number) {
+        let newFacesArray  = Object.assign(Array<string>(), facesArray);
+        newFacesArray.splice(index,1);
+        setFacesArray(newFacesArray);
+    }
+
+    let menuHeight = 3 * styles.MenuConstants.height;
+
     return(
         <View>
-            <Text style={styles.ModalText}>Use a comma separated list</Text>
-            <View style={styles.ModalTextInputLine}>
-                <Text style={styles.ModalText}>Faces</Text>
-                <TextInput 
-                style={styles.ModalInputText}
-                ref={firstLineRef}
-                autoFocus={true}
-                selectTextOnFocus={true}
-                defaultValue={facesString}
-                keyboardType={Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'number-pad'}
-                onChangeText={(text) => setFacesString(text)}
-                returnKeyType = { "next" }
-                onSubmitEditing={() => { secondLineRef.current.focus(); }}
-                blurOnSubmit={false}
-                />
-            </View>
+            <Touchable 
+            style={styles.AddFaceButtonStyle}
+            onPress={addFace}
+            foreground={Touchable.Ripple('white', true)}
+            hitSlop={styles.HitSlop}
+            >
+                <Text style={styles.ButtonText}>Add Face</Text>
+            </Touchable>
+            <FlatList 
+                style={[{height:menuHeight}]}
+                data={facesArray}
+                numColumns={3}
+                ListEmptyComponent={
+                    <Text style={styles.ButtonText}>Click 'Add Face'</Text>
+                }
+                renderItem={({ item, index }) =>  (
+                    <View 
+                    style={styles.DieFaceButtonStyle}
+                    >
+                        <View style={styles.FaceButtonLayoutStyle}>
+                            <TextInput 
+                            style={styles.ModalInputText}
+                            selectTextOnFocus={true}
+                            defaultValue={item}
+                            keyboardType={Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'number-pad'}
+                            onChangeText={(text) => setFaceString(text, index)}
+                            returnKeyType = { "done" }
+                            blurOnSubmit={false}
+                            />
+                            <Touchable 
+                                style={styles.ButtonBackground}
+                                foreground={Touchable.Ripple('white')}
+                                onPress={() => {removeFace(index)}}
+                                hitSlop={styles.HitSlop}
+                            >
+                                <Icon 
+                                    name='close-circle-outline'
+                                    size={styles.IconConstants.width}
+                                    color={styles.IconConstants.color}
+                                />
+                            </Touchable>
+                        </View>
+                    </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+            />
             <View style={styles.ModalTextInputLine}>
                 <Text style={styles.ModalText}>Name</Text>
                 <TextInput 
@@ -85,7 +140,7 @@ export function CreateImbalancedDieHelper(props : CreateImbalancedDieInterface) 
                 ref={secondLineRef}
                 selectTextOnFocus={true}
                 defaultValue={dieName}
-                placeholder={ImbalancedDie.tempName(facesString)}
+                placeholder={ImbalancedDie.tempNameFromStrings(facesArray)}
                 placeholderTextColor={styles.PlaceholderText.color}
                 onChangeText={(text) => setDieName(text)}
                 returnKeyType = { "done" }
@@ -110,10 +165,42 @@ const styles = EStyleSheet.create({
         flexDirection:'row',
         justifyContent:'flex-end'
     },
-    ModalButton:{
-        paddingTop:'16rem',
-        paddingLeft:'8rem',
-        paddingRight:'8rem',
+    DieFaceButtonStyle:{
+        flex:1,
+        margin:'5rem',
+        backgroundColor: '$primaryColorLightened',
+        borderRadius: '10rem',
+        overflow:'hidden'
+    },
+    AddFaceButtonStyle:{
+        padding:'5rem',
+        margin:'5rem',
+        backgroundColor: '$primaryColorLightened',
+        borderRadius: '10rem',
+        overflow:'hidden'
+    },
+    ButtonBackground:{
+        justifyContent:'center',
+        backgroundColor: '$primaryColorLightened',
+        borderRadius: '10rem',
+        overflow:'hidden'
+    },
+    IconConstants:{
+        width:'$fontSizeHuge',
+        color:'$textColor',
+        backgroundColor:'transparent'
+    },
+    ButtonText: {
+        fontSize:'$fontSizeNormal',
+        paddingLeft:'5rem',
+        paddingRight:'5rem',
+        color:'$textColor',
+        textAlign:'center',
+    },
+    FaceButtonLayoutStyle:{
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'space-between'
     },
     ModalText:{
         fontSize:'$fontSizeLarge',
@@ -129,6 +216,9 @@ const styles = EStyleSheet.create({
     },
     PlaceholderText:{
         color:Color.rgb(128,128,128).hex()
+    },
+    MenuConstants:{
+        height:'45rem',
     },
     HitSlop: {
         top:'10rem',
