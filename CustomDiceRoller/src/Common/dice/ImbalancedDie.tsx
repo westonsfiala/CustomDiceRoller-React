@@ -1,12 +1,12 @@
 
-import { Die } from "./Die"
+import { NumberDie } from "./NumberDie"
 import { 
     DIE_UNKNOWN,
 } from "./dieImages/DieImageGetter"
-import { concatterNoSpace } from "../utility/StringHelper";
+import { concatterNoSpace, decimalToString } from "../utility/StringHelper";
 import { randomIntFromInterval } from "../utility/NumberHelper";
 
-export class ImbalancedDie extends Die
+export class ImbalancedDie extends NumberDie
 {
     public static readonly imbalancedIdentifier = "Imbalanced";
 
@@ -26,9 +26,9 @@ export class ImbalancedDie extends Die
 
     static tempNameFromNumbers(facesArray: Array<number>) {
 
-        if(facesArray == undefined || facesArray.length === 0) {return 'd0';}
+        if(facesArray == undefined || facesArray.length === 0) {return 'd-';}
 
-        let name = 'd';
+        let name = 'd-';
 
         for(let face of facesArray) {
             let faceString = face.toString();
@@ -140,7 +140,7 @@ export class ImbalancedDie extends Die
             dieStrings = this.mFaces.reduce(concatterNoSpace, '');
         }
 
-        return 'Rolls one of the following: ' + dieStrings + '\nAverage of ' + this.average;
+        return 'Rolls one of the following: ' + dieStrings + '\nAverage of ' + decimalToString(this.average,2);
     }
  
     get imageID() : number

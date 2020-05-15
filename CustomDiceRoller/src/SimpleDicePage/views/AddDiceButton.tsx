@@ -22,6 +22,7 @@ import { Die } from '../../Common/dice/Die';
 import { SimpleDie } from '../../Common/dice/SimpleDie';
 import { MinMaxDie } from '../../Common/dice/MinMaxDie';
 import { ImbalancedDie } from '../../Common/dice/ImbalancedDie';
+import { WordDie } from '../../Common/dice/WordDie';
 
 interface AddDiceInterface {
     addDie: (die: Die) => void;
@@ -36,10 +37,12 @@ export function AddDiceButton(props: AddDiceInterface) {
     const [simpleModalShown, setSimpleModalShown] = useState(false);
     const [minMaxModalShown, setMinMaxModalShown] = useState(false);
     const [imbalancedModalShown, setImbalancedModalShown] = useState(false);
+    const [wordModalShown, setWordModalShown] = useState(false);
 
     const [simpleDie, setSimpleDie] = useState(new SimpleDie('', 1));
     const [minMaxDie, setMinMaxDie] = useState(new MinMaxDie('', 1, 1));
     const [imbalancedDie, setImbalancedDie] = useState(new ImbalancedDie('', [1,1,2,3,5]));
+    const [wordDie, setWordDie] = useState(new WordDie('', ['a', 'b', 'c', 'd']));
 
     function handleCreateSimpleDie(die: SimpleDie) {
         setSimpleDie(die);
@@ -53,6 +56,11 @@ export function AddDiceButton(props: AddDiceInterface) {
 
     function handleCreateImbalancedDie(die: ImbalancedDie) {
         setImbalancedDie(die);
+        props.addDie(die);
+    }
+
+    function handleCreateWordDie(die: WordDie) {
+        setWordDie(die);
         props.addDie(die);
     }
 
@@ -74,6 +82,9 @@ export function AddDiceButton(props: AddDiceInterface) {
                     </MenuOption>
                     <MenuOption style={styles.Menu} onSelect={() => setImbalancedModalShown(true)}>
                         <Text style={styles.MenuText}>Imbalanced Die</Text>
+                    </MenuOption>
+                    <MenuOption style={styles.Menu} onSelect={() => setWordModalShown(true)}>
+                        <Text style={styles.MenuText}>Word Die</Text>
                     </MenuOption>
                 </MenuOptions>
             </Menu>
@@ -100,6 +111,7 @@ export function AddDiceButton(props: AddDiceInterface) {
             <CreateDieDialog modalShown={simpleModalShown} die={simpleDie} dismissModal={() => setSimpleModalShown(false)} createDie={handleCreateSimpleDie} />
             <CreateDieDialog modalShown={minMaxModalShown} die={minMaxDie} dismissModal={() => setMinMaxModalShown(false)} createDie={handleCreateMinMaxDie} />
             <CreateDieDialog modalShown={imbalancedModalShown} die={imbalancedDie} dismissModal={() => setImbalancedModalShown(false)} createDie={handleCreateImbalancedDie} />
+            <CreateDieDialog modalShown={wordModalShown} die={wordDie} dismissModal={() => setWordModalShown(false)} createDie={handleCreateWordDie} />
         </View>
     )
 }

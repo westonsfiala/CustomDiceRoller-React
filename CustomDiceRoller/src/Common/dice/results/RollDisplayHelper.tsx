@@ -2,18 +2,19 @@
 
 import { RollResults } from "./RollResults";
 
-import {Roll} from "../Roll"
+import { Roll } from "../Roll"
 import { RollProperties, isDouble, isHalve, hasRepeatRoll, hasCountAboveEqual } from "../RollProperties";
 
 import {createUnknownDie} from "../factory/DieFactory"
 
-import {getModifierString, demimalToString} from "../../utility/StringHelper"
+import {getModifierString, decimalToString} from "../../utility/StringHelper"
 
 import { ColoredDieResults } from "../../views/ColoredDieResults";
 
 import SortTypeManager from "../../../SettingsPage/Results/SortTypeManager";
 import ExpectedResultManager from "../../../SettingsPage/Results/ExpectedResultManager";
 import { Die } from "../Die";
+import { NumberDie } from "../NumberDie";
 
 // Class that performs a roll when constructed and turns that roll into displayable chunks of information.
 export class RollDisplayHelper {
@@ -46,6 +47,7 @@ export class RollDisplayHelper {
         this.rollNameText = roll.getDetailedRollName();
         
         let sumResults = Array<number>();
+        let nonNumberResults = Array<any>();
         let showSplitSums = false;
 
         // Go through all of the dice in the roll and start making the roll detail lines
@@ -72,49 +74,63 @@ export class RollDisplayHelper {
             }
 
             // Lambda method for turning the roll numbers into a displayable string.
-            const processRollPair = (die: Die, dieDisplayName: string, mainList: Array<number>, strikeList: Array<number>, properties : RollProperties, showPropInfo : boolean) : ColoredDieResults =>
+            const processRollPair = (die: Die, dieDisplayName: string, mainList: Array<any>, strikeList: Array<any>, properties : RollProperties, showPropInfo : boolean) : ColoredDieResults =>
             {
                 if(mainList && mainList.length !== 0 || strikeList && strikeList.length !== 0 || (showPropInfo && properties.mModifier !== 0)) {
-                    let subTotal = 0;
-
-                    if(showPropInfo)
-                    {
-                        if(hasCountAboveEqual(properties)) {
-                            subTotal = (showPropInfo ? properties.mModifier : 0);
-                            for(let item of mainList) {
-                                let value = item;
-                                if(isDouble(properties)) {value *= 2;}
-                                if(isHalve(properties)) {value /= 2;}
-                                if(value >= properties.mCountAboveEqual) {subTotal += 1;}
-                            }
-                        } else {
-                            subTotal = mainList.reduce(summer,0) + (showPropInfo ? properties.mModifier : 0);
-                            if(isDouble(properties)) {subTotal *= 2;}
-                            if(isHalve(properties)) {subTotal /= 2;}
-                            subTotal = Math.floor(subTotal)
-                        }
-                        sumResults.push(subTotal);
-                    }
-
-                    let prependString = dieDisplayName + ' [' + subTotal + ']: ';
+                    
+                    let prependString = dieDisplayName;
                     let appendString = ''; 
 
-                    if(showPropInfo) {
-                        if(properties.mModifier !== 0)
+                    if(die.isNumbered()) {
+                        
+                        let subTotal = 0;
+
+                        if(showPropInfo)
                         {
-                            appendString += ' (' + getModifierString(properties.mModifier,true) + ')';
+                            if(hasCountAboveEqual(properties)) {
+                                subTotal = (showPropInfo ? properties.mModifier : 0);
+                                for(let item of mainList) {
+                                    let value = item;
+                                    if(isDouble(properties)) {value *= 2;}
+                                    if(isHalve(properties)) {value /= 2;}
+                                    if(value >= properties.mCountAboveEqual) {subTotal += 1;}
+                                }
+                            } else {
+                                subTotal = mainList.reduce(summer,0) + (showPropInfo ? properties.mModifier : 0);
+                                if(isDouble(properties)) {subTotal *= 2;}
+                                if(isHalve(properties)) {subTotal /= 2;}
+                                subTotal = Math.floor(subTotal)
+                            }
+                            sumResults.push(subTotal);
                         }
 
-                        if(isDouble(properties))
-                        {
-                            appendString += ' (x2)';
+                        prependString += ' [' + subTotal + ']: ';
+                        
+                        if(showPropInfo) {
+                            if(properties.mModifier !== 0)
+                            {
+                                appendString += ' (' + getModifierString(properties.mModifier,true) + ')';
+                            }
+
+                            if(isDouble(properties))
+                            {
+                                appendString += ' (x2)';
+                            }
+
+                            if(isHalve(properties))
+                            {
+                                appendString += ' (/2)';
+                            }
+                        } 
+                    }
+                    else {
+
+                        for(let result of mainList) {
+                            nonNumberResults.push(result)
                         }
 
-                        if(isHalve(properties))
-                        {
-                            appendString += ' (/2)';
-                        }
-                    } 
+                        prependString += ': ';
+                    }
 
                     return new ColoredDieResults(prependString, appendString, die.min, die.max, mainList, strikeList, dieDisplayName);
                 }
@@ -141,22 +157,33 @@ export class RollDisplayHelper {
             }
         }
 
-        if(ExpectedResultManager.getInstance().getShowExpected()) {
-            let rollAverageString = demimalToString(roll.average(),2);
+        // Only show expected result when asked for and when we have some some to report.
+        if(ExpectedResultManager.getInstance().getShowExpected() && sumResults.length !== 0) {
+            let rollAverageString = decimalToString(roll.average(),2);
             let averageText = 'Expected Result - [' + rollAverageString + ']';
 
             // This isn't the best way to do this, but its good enough.
             this.rollResultsArray.push(new ColoredDieResults(averageText, '', 0, 0, [], [], 'expected'));
         }
 
-        let sumTotal = sumResults.reduce(summer,0);
         let sumAppendText = '';
 
-        if(showSplitSums) {
+        if(showSplitSums && sumResults.length !== 0) {
+            let sumTotal = sumResults.reduce(summer,0);
             sumAppendText = ', [' + sumTotal.toString() + ']';
         }
 
-        this.rollSum = new ColoredDieResults('', sumAppendText, roll.min(), roll.max(), sumResults, [], 'sum');
+        let combinedResults = Array<any>();
+
+        for(let numberResult of sumResults) {
+            combinedResults.push(numberResult);
+        }
+
+        for(let nonNumberResult of nonNumberResults) {
+            combinedResults.push(nonNumberResult)
+        }
+
+        this.rollSum = new ColoredDieResults('', sumAppendText, roll.min(), roll.max(), combinedResults, [], 'sum');
     }
 
 }

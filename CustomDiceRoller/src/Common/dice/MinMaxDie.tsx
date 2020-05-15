@@ -1,5 +1,5 @@
 
-import { Die } from "./Die"
+import { NumberDie } from "./NumberDie"
 import { 
     DIE_UNKNOWN,
     DIE_2,
@@ -14,8 +14,9 @@ import {
     DIE_FATE
 } from "./dieImages/DieImageGetter"
 import { randomIntFromInterval } from "../utility/NumberHelper";
+import { decimalToString } from "../utility/StringHelper";
 
-export class MinMaxDie extends Die
+export class MinMaxDie extends NumberDie
 {
     public static readonly minMaxDieIdentifier = "MinMax";
 
@@ -98,7 +99,7 @@ export class MinMaxDie extends Die
 
     get info() : string
     {
-        return 'Rolls a number between ' + this.mMinimum + ' and ' + this.mMaximum + '\nAverage of ' + this.average;
+        return 'Rolls a number between ' + this.mMinimum + ' and ' + this.mMaximum + '\nAverage of ' + decimalToString(this.average,2);
     }
  
     get imageID() : number

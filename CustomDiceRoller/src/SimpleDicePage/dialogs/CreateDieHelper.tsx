@@ -7,6 +7,8 @@ import { ImbalancedDie } from "../../Common/dice/ImbalancedDie";
 import { CreateSimpleDieHelper } from './CreateSimpleDieHelper';
 import { CreateMinMaxDieHelper } from './CreateMinMaxDieHelper';
 import { CreateImbalancedDieHelper } from './CreateImbalancedDieHelper';
+import { WordDie } from '../../Common/dice/WordDie';
+import { CreateWordDieHelper } from './CreateWordDieHelper';
 
 interface CreateDieInterface {
     show : boolean;
@@ -23,8 +25,10 @@ export function CreateDieHelper(props : CreateDieInterface) {
         return (<CreateSimpleDieHelper die={props.die as SimpleDie} cancel={props.cancel} createDie={props.createDie}/>)
     } else if (props.die.mDieType === MinMaxDie.minMaxDieIdentifier) {
         return (<CreateMinMaxDieHelper die={props.die as MinMaxDie} cancel={props.cancel} createDie={props.createDie}/>)
-    }if (props.die.mDieType === ImbalancedDie.imbalancedIdentifier) {
+    } else if (props.die.mDieType === ImbalancedDie.imbalancedIdentifier) {
         return (<CreateImbalancedDieHelper die={props.die as ImbalancedDie} cancel={props.cancel} createDie={props.createDie}/>)
+    } else if (props.die.mDieType === WordDie.wordIdentifier) {
+        return (<CreateWordDieHelper die={props.die as WordDie} cancel={props.cancel} createDie={props.createDie}/>)
     }
     
     return (null);

@@ -5,24 +5,24 @@ import { RollProperties } from "../RollProperties";
 // High dropped are values that were dropped because of dropping the highest/lowest values
 // The corresponding low groups are filled out when advantage or disadvantage are in play.
 export class RollResults {
-    public mRollResults : Map<string, Array<number>>;
-    public mDroppedRolls : Map<string, Array<number>>;
-    public mReRolledRolls : Map<string, Array<number>>;
+    public mRollResults : Map<string, Array<any>>;
+    public mDroppedRolls : Map<string, Array<any>>;
+    public mReRolledRolls : Map<string, Array<any>>;
 
-    public mStruckRollResults : Map<string, Array<number>>;
-    public mStruckDroppedRolls : Map<string, Array<number>>;
-    public mStruckReRolledRolls : Map<string, Array<number>>;
+    public mStruckRollResults : Map<string, Array<any>>;
+    public mStruckDroppedRolls : Map<string, Array<any>>;
+    public mStruckReRolledRolls : Map<string, Array<any>>;
 
     public mRollProperties : Map<string, RollProperties>;
 
     constructor() {
-        this.mRollResults = new Map<string, Array<number>>();
-        this.mDroppedRolls = new Map<string, Array<number>>();
-        this.mReRolledRolls = new Map<string, Array<number>>();
+        this.mRollResults = new Map<string, Array<any>>();
+        this.mDroppedRolls = new Map<string, Array<any>>();
+        this.mReRolledRolls = new Map<string, Array<any>>();
     
-        this.mStruckRollResults = new Map<string, Array<number>>();
-        this.mStruckDroppedRolls = new Map<string, Array<number>>();
-        this.mStruckReRolledRolls = new Map<string, Array<number>>();
+        this.mStruckRollResults = new Map<string, Array<any>>();
+        this.mStruckDroppedRolls = new Map<string, Array<any>>();
+        this.mStruckReRolledRolls = new Map<string, Array<any>>();
     
         this.mRollProperties = new Map<string, RollProperties>();
     }
@@ -75,14 +75,14 @@ export class RollResults {
         this.sortMapList(this.mStruckDroppedRolls)
     }
 
-    private sortMapList(rollMap : Map<string, Array<number>>) {
+    private sortMapList(rollMap : Map<string, Array<any>>) {
         for(let rollList of rollMap.values())
         {
             rollList.sort((a,b) => a-b);
         }
     }
 
-    private reverseMapList(rollMap : Map<string, Array<number>>) {
+    private reverseMapList(rollMap : Map<string, Array<any>>) {
         for(let rollList of rollMap.values())
         {
             rollList.reverse()

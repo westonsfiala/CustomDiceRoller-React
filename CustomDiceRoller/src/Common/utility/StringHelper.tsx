@@ -111,7 +111,7 @@ export function concatter(accumulator: string, current: number, index: number) :
     }
 }
 
-export function concatterNoSpace(accumulator: string, current: number, index: number) : string
+export function concatterNoSpace(accumulator: string, current: any, index: number) : string
 {
     if(index === 0) 
     {
@@ -123,7 +123,7 @@ export function concatterNoSpace(accumulator: string, current: number, index: nu
     }
 }
 
-export function demimalToString(decimalNumber: number, decimalPlaces: number) : string
+export function decimalToString(decimalNumber: number, decimalPlaces: number) : string
 {
     let numberString = decimalNumber.toString();
     let numbersSplit = numberString.split('.');

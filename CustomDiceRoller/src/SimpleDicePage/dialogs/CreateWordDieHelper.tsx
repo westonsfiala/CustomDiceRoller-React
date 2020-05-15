@@ -11,20 +11,19 @@ import {
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color';
 
-import { ImbalancedDie } from '../../Common/dice/ImbalancedDie';
+import { WordDie } from '../../Common/dice/WordDie';
 import { OkCancelButtons } from '../../Common/buttons/OkCancelButtons';
-import { concatterNoSpace } from '../../Common/utility/StringHelper';
 import { VerticalSpace } from '../../Common/views/VerticalSpace';
 import Touchable from 'react-native-platform-touchable';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-interface CreateImbalancedDieInterface {
-    die : ImbalancedDie;
-    createDie : (die: ImbalancedDie) => void;
+interface CreateWordDieInterface {
+    die : WordDie;
+    createDie : (die: WordDie) => void;
     cancel : () => void;
 }
 
-export function CreateImbalancedDieHelper(props : CreateImbalancedDieInterface) {
+export function CreateWordDieHelper(props : CreateWordDieInterface) {
 
     const [dieName, setDieName] = useState('');
     const [facesArray, setFacesArray] = useState(Array<string>());
@@ -33,41 +32,35 @@ export function CreateImbalancedDieHelper(props : CreateImbalancedDieInterface) 
 
     useEffect(() => {
         // If the name is the default, let the placeholder text show.
-        if(props.die.displayName === ImbalancedDie.tempNameFromNumbers(props.die.mFaces)) {
+        if(props.die.displayName === WordDie.tempName(props.die.mFaces)) {
             setDieName('');
         } else {
             setDieName(props.die.displayName);
         }
 
-        let newFacesArray = Array<string>();
-        for(let item of props.die.mFaces) {
-            newFacesArray.push(item.toString())
-        }
-        setFacesArray(newFacesArray);
+        setFacesArray(props.die.mFaces);
     }, [props.die])
 
     function acceptHandler() {
-        if(facesArray == undefined) return;
-        let newFaces = new Array<number>();
+        if(facesArray == undefined || facesArray.length == 0) return;
+        let newFaces = new Array<string>();
 
-        for(let numString of facesArray) {
-            let possibleNumber = Number.parseInt(numString);
-
-            if(Number.isSafeInteger(possibleNumber)) {
-                newFaces.push(possibleNumber);
+        for(let faceString of facesArray) {
+            if(faceString !== '') {
+                newFaces.push(faceString);
             } else {
                 props.cancel();
                 return;
             }
         }
 
-        props.createDie(new ImbalancedDie(dieName, newFaces));
+        props.createDie(new WordDie(dieName, newFaces));
         props.cancel();
     }
 
     function addFace() {
         let newFacesArray  = Object.assign(Array<string>(), facesArray);
-        newFacesArray.push((newFacesArray.length + 1).toString());
+        newFacesArray.push(String.fromCharCode('a'.charCodeAt(0) + newFacesArray.length).toString());
         setFacesArray(newFacesArray);
     }
 
@@ -123,7 +116,7 @@ export function CreateImbalancedDieHelper(props : CreateImbalancedDieInterface) 
                             style={styles.ModalInputText}
                             selectTextOnFocus={true}
                             defaultValue={item}
-                            keyboardType={Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'number-pad'}
+                            keyboardType={'default'}
                             onChangeText={(text) => setFaceString(text, index)}
                             returnKeyType = { "done" }
                             blurOnSubmit={false}
@@ -140,7 +133,7 @@ export function CreateImbalancedDieHelper(props : CreateImbalancedDieInterface) 
                 ref={secondLineRef}
                 selectTextOnFocus={true}
                 defaultValue={dieName}
-                placeholder={ImbalancedDie.tempNameFromStrings(facesArray)}
+                placeholder={WordDie.tempName(facesArray)}
                 placeholderTextColor={styles.PlaceholderText.color}
                 onChangeText={(text) => setDieName(text)}
                 returnKeyType = { "done" }

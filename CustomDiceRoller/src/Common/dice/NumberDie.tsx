@@ -1,3 +1,4 @@
+import { Die } from "./Die";
 
 export class DieLoadError extends Error {
     constructor() {
@@ -5,7 +6,7 @@ export class DieLoadError extends Error {
     }
 }
 
-export abstract class Die {
+export abstract class NumberDie extends Die {
 
     public static readonly dieDisplayInHexID = '0x';
 
@@ -13,15 +14,18 @@ export abstract class Die {
     public readonly mDieType: string;
 
     constructor(dieName: string, dieType: string) {
-        this.mDieName = dieName;
-        this.mDieType = dieType;
+        super(dieName, dieType);
     }
 
-    abstract roll() : any;
+    abstract roll() : number;
+    
+    isNumbered() : boolean {
+        return true;
+    }
 
-    abstract isNumbered() : boolean;
-
-    abstract isText() : boolean;
+    isText() : boolean {
+        return true;
+    }
 
     abstract get max() : number;
 
@@ -31,15 +35,9 @@ export abstract class Die {
 
     abstract expectedResult(minimum: number, rerollUnder:number, countAbove:number, explode:boolean) : number;
 
-    get displayName() : string { return this.mDieName; }
-
     get displayInHex() : boolean {
         // Only display hex when you start with "0x" and have more characters after that.
         return this.mDieName.length > Die.dieDisplayInHexID.length && 
             this.mDieName.startsWith (Die.dieDisplayInHexID);
     }
-
-    abstract get info() : string;
-
-    abstract get imageID() : number;
 }

@@ -3,6 +3,7 @@ import { Die, DieLoadError } from '../Die'
 import { SimpleDie } from '../SimpleDie'
 import { MinMaxDie } from '../MinMaxDie'
 import { ImbalancedDie } from '../ImbalancedDie';
+import { WordDie } from '../WordDie';
 
 export function createUnknownDie(dieString: string) : Die {
 
@@ -14,7 +15,9 @@ export function createUnknownDie(dieString: string) : Die {
         return createMinMaxDie(dieJson)
     } else if(dieJson.mDieType === ImbalancedDie.imbalancedIdentifier) {
         return createImbalancedDie(dieJson)
-    }
+    } else if(dieJson.mDieType === WordDie.wordIdentifier) {
+        return createWordDie(dieJson)
+    } 
 
     // If we do not match the types that we support, give up!
     throw new DieLoadError();
@@ -61,4 +64,16 @@ function createImbalancedDie(dieJson: ImbalancedDie) : ImbalancedDie
     }
 
     return new ImbalancedDie(dieName, faceArray);
+}
+
+function createWordDie(dieJson: WordDie) : WordDie 
+{
+    let dieName = dieJson.mDieName;
+    let faceArray = dieJson.mFaces;
+
+    if(dieName === null || faceArray === null) {
+        throw new DieLoadError();
+    }
+
+    return new WordDie(dieName, faceArray);
 }

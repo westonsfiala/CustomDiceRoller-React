@@ -16,7 +16,6 @@ import { ConfirmActionButtons } from "../../Common/buttons/ConfirmActionButtons"
 import { HorizontalDivider } from "../../Common/views/HorizontalDivider";
 
 import { CreateDieHelper } from "./CreateDieHelper";
-import { demimalToString } from "../../Common/utility/StringHelper";
 
 interface DieInfoDialogInterface {
     modalShown : boolean;
@@ -126,10 +125,7 @@ export function DieInfoDialog(props : DieInfoDialogInterface) {
                     Die info - {props.die.mDieName}
                 </Text>
                 <Text style={styles.ModalDetailText}>
-                    Rolls a number between {props.die.min} and {props.die.max}
-                </Text>
-                <Text style={styles.ModalDetailText}>
-                    Average of {demimalToString(props.die.average,2)}
+                    {props.die.info}
                 </Text>
                 <HorizontalDivider/>
                 {getBottomLine()}

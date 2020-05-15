@@ -17,6 +17,8 @@ import ShakeLengthManager from "../../SettingsPage/Roller/ShakeLengthManager";
 import ShakeDieSizeManager from "../../SettingsPage/Roller/ShakeDieSizeManager";
 import AnimationsEnabledManager from "../../SettingsPage/Roller/AnimationsEnabledManager";
 import LegacyMigrationManager from "../../SettingsPage/Advanced/LegacyMigrationManager";
+import RateMeManager from "../../SettingsPage/Advanced/RateMeManager";
+import MinMaxHighlightEnabledManager from "../../SettingsPage/Results/MinMaxHighlightEnabledManager";
 
 export function OpenAllSingletons() {
     AnimationsEnabledManager.getInstance();
@@ -27,6 +29,8 @@ export function OpenAllSingletons() {
     ExpectedResultManager.getInstance();
     LegacyMigrationManager.getInstance();
     HistoryManager.getInstance();
+    MinMaxHighlightEnabledManager.getInstance();
+    RateMeManager.getInstance();
     RollManager.getInstance();
     RollResultVolumeManager.getInstance();
     ShakeDieSizeManager.getInstance();

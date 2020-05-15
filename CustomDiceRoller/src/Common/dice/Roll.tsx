@@ -15,7 +15,9 @@ import {
     getRepeatRollString,
     getCountAboveEqualString
  } from '../utility/StringHelper'
-import { DiePropertyPair } from '../dice/DiePropertyPair';
+import { DiePropertyPair } from './DiePropertyPair';
+import { NumberDie } from './NumberDie'
+import { NonNumberDie } from './NonNumberDie'
 
 export class Roll {
     public static readonly aggregateRollStringStart = "Aggregate"
@@ -191,59 +193,72 @@ export class Roll {
 
                 let dieJson = JSON.stringify(die);
     
-                let rollPair = this.produceRollLists(die, properties);
-                let secondRollPair = this.produceRollLists(die, properties);
-    
-                const summer = (accumulator: number, current: number) => accumulator + current;
-    
                 returnResults.mRollProperties.set(dieJson, properties);
     
-                switch(properties.mAdvantageDisadvantage)
-                {
-                    case RollProperties.rollDisadvantageValue :
-                        if(rollPair.keep.reduce(summer, 0) < secondRollPair.keep.reduce(summer, 0)) {
+                if(originalDie.isNumbered()) {
+                    let rollPair = this.produceNumberRollLists((die as NumberDie), properties);
+                    let secondRollPair = this.produceNumberRollLists(die, properties);
+        
+                    const summer = (accumulator: number, current: number) => accumulator + current;
+
+                    switch(properties.mAdvantageDisadvantage)
+                    {
+                        case RollProperties.rollDisadvantageValue :
+                            if(rollPair.keep.reduce(summer, 0) < secondRollPair.keep.reduce(summer, 0)) {
+                                returnResults.mRollResults.set(dieJson, rollPair.keep);
+                                returnResults.mDroppedRolls.set(dieJson, rollPair.drop);
+                                returnResults.mReRolledRolls.set(dieJson, rollPair.reroll);
+                                returnResults.mStruckRollResults.set(dieJson, secondRollPair.keep);
+                                returnResults.mStruckDroppedRolls.set(dieJson, secondRollPair.drop);
+                                returnResults.mStruckReRolledRolls.set(dieJson, secondRollPair.reroll);
+                            } else {
+                                returnResults.mRollResults.set(dieJson, secondRollPair.keep);
+                                returnResults.mDroppedRolls.set(dieJson, secondRollPair.drop);
+                                returnResults.mReRolledRolls.set(dieJson, secondRollPair.reroll);
+                                returnResults.mStruckRollResults.set(dieJson, rollPair.keep);
+                                returnResults.mStruckDroppedRolls.set(dieJson, rollPair.drop);
+                                returnResults.mStruckReRolledRolls.set(dieJson, rollPair.reroll);
+                            }
+                            break;
+        
+                        case RollProperties.rollNaturalValue : 
                             returnResults.mRollResults.set(dieJson, rollPair.keep);
                             returnResults.mDroppedRolls.set(dieJson, rollPair.drop);
                             returnResults.mReRolledRolls.set(dieJson, rollPair.reroll);
-                            returnResults.mStruckRollResults.set(dieJson, secondRollPair.keep);
-                            returnResults.mStruckDroppedRolls.set(dieJson, secondRollPair.drop);
-                            returnResults.mStruckReRolledRolls.set(dieJson, secondRollPair.reroll);
-                        } else {
-                            returnResults.mRollResults.set(dieJson, secondRollPair.keep);
-                            returnResults.mDroppedRolls.set(dieJson, secondRollPair.drop);
-                            returnResults.mReRolledRolls.set(dieJson, secondRollPair.reroll);
-                            returnResults.mStruckRollResults.set(dieJson, rollPair.keep);
-                            returnResults.mStruckDroppedRolls.set(dieJson, rollPair.drop);
-                            returnResults.mStruckReRolledRolls.set(dieJson, rollPair.reroll);
-                        }
-                        break;
-    
-                    case RollProperties.rollNaturalValue : 
-                        returnResults.mRollResults.set(dieJson, rollPair.keep);
-                        returnResults.mDroppedRolls.set(dieJson, rollPair.drop);
-                        returnResults.mReRolledRolls.set(dieJson, rollPair.reroll);
-                        returnResults.mStruckRollResults.set(dieJson, []);
-                        returnResults.mStruckDroppedRolls.set(dieJson, []);
-                        returnResults.mStruckReRolledRolls.set(dieJson, []);
-                        break;
-    
-                    case RollProperties.rollAdvantageValue : 
-                        if(rollPair.keep.reduce(summer) > secondRollPair.keep.reduce(summer)) {
-                            returnResults.mRollResults.set(dieJson, rollPair.keep);
-                            returnResults.mDroppedRolls.set(dieJson, rollPair.drop);
-                            returnResults.mReRolledRolls.set(dieJson, rollPair.reroll);
-                            returnResults.mStruckRollResults.set(dieJson, secondRollPair.keep);
-                            returnResults.mStruckDroppedRolls.set(dieJson, secondRollPair.drop);
-                            returnResults.mStruckReRolledRolls.set(dieJson, secondRollPair.reroll);
-                        } else {
-                            returnResults.mRollResults.set(dieJson, secondRollPair.keep);
-                            returnResults.mDroppedRolls.set(dieJson, secondRollPair.drop);
-                            returnResults.mReRolledRolls.set(dieJson, secondRollPair.reroll);
-                            returnResults.mStruckRollResults.set(dieJson, rollPair.keep);
-                            returnResults.mStruckDroppedRolls.set(dieJson, rollPair.drop);
-                            returnResults.mStruckReRolledRolls.set(dieJson, rollPair.reroll);
-                        }
-                        break
+                            returnResults.mStruckRollResults.set(dieJson, []);
+                            returnResults.mStruckDroppedRolls.set(dieJson, []);
+                            returnResults.mStruckReRolledRolls.set(dieJson, []);
+                            break;
+        
+                        case RollProperties.rollAdvantageValue : 
+                            if(rollPair.keep.reduce(summer) > secondRollPair.keep.reduce(summer)) {
+                                returnResults.mRollResults.set(dieJson, rollPair.keep);
+                                returnResults.mDroppedRolls.set(dieJson, rollPair.drop);
+                                returnResults.mReRolledRolls.set(dieJson, rollPair.reroll);
+                                returnResults.mStruckRollResults.set(dieJson, secondRollPair.keep);
+                                returnResults.mStruckDroppedRolls.set(dieJson, secondRollPair.drop);
+                                returnResults.mStruckReRolledRolls.set(dieJson, secondRollPair.reroll);
+                            } else {
+                                returnResults.mRollResults.set(dieJson, secondRollPair.keep);
+                                returnResults.mDroppedRolls.set(dieJson, secondRollPair.drop);
+                                returnResults.mReRolledRolls.set(dieJson, secondRollPair.reroll);
+                                returnResults.mStruckRollResults.set(dieJson, rollPair.keep);
+                                returnResults.mStruckDroppedRolls.set(dieJson, rollPair.drop);
+                                returnResults.mStruckReRolledRolls.set(dieJson, rollPair.reroll);
+                            }
+                            break;
+                    }
+                }
+                // Non-Numbered Case
+                else {
+                    let rollList = this.produceNonNumberRollList((die as NonNumberDie), properties)
+
+                    returnResults.mRollResults.set(dieJson, rollList);
+                    returnResults.mDroppedRolls.set(dieJson, []);
+                    returnResults.mReRolledRolls.set(dieJson, []);
+                    returnResults.mStruckRollResults.set(dieJson, []);
+                    returnResults.mStruckDroppedRolls.set(dieJson, []);
+                    returnResults.mStruckReRolledRolls.set(dieJson, []);
                 }
             }
         }
@@ -252,7 +267,7 @@ export class Roll {
     }
 
     // Produces an array of 3 lists, a list of taken values, and a list of dropped values, and a list of rerolled values
-    private produceRollLists(die: Die, properties: RollProperties) : {keep: number[], drop: number[], reroll: number[]} 
+    private produceNumberRollLists(die: NumberDie, properties: RollProperties) : {keep: number[], drop: number[], reroll: number[]} 
     {
         let keepList = new Array<number>();
         let dropList = new Array<number>();
@@ -341,68 +356,96 @@ export class Roll {
 
         return {keep:keepList, drop:dropList, reroll:rerollList};
     }
+    
+    
+    // Produces a list of rolls from a NonNumberDie. All properties but number of dice are ignored.
+    private produceNonNumberRollList(die: NonNumberDie, properties: RollProperties) : any[]
+    {
+        let rollList = new Array<any>();
+
+        // No dice to roll, return empty lists.
+        if(properties.mNumDice == 0)
+        {
+            return [];
+        }
+
+        // Roll all of the dice and add them to the return list.
+        let rollNum = 0;
+        while (rollNum < Math.abs(properties.mNumDice)) {
+
+            let dieRoll = die.roll();
+
+            rollList.push(dieRoll);
+            rollNum += 1;
+        }
+
+        return rollList;
+    }
 
     average() : number
     {
         let dieAverage = 0
         for(let props of this.mDiePropArray)
         {
-            let individualAverage = props.mDie.expectedResult(props.mProperties.mMinimumRoll, props.mProperties.mReRoll, props.mProperties.mCountAboveEqual, props.mProperties.mExplode);
+            if(props.mDie.isNumbered()) {
+                let individualAverage = props.mDie.expectedResult(props.mProperties.mMinimumRoll, props.mProperties.mReRoll, props.mProperties.mCountAboveEqual, props.mProperties.mExplode);
 
-            // How many dice do we actually have.
-            let numActualDice = props.mProperties.mNumDice;
-            numActualDice -= props.mProperties.mDropHigh + props.mProperties.mDropLow;
-            
-            let moveTowardsHigh = props.mProperties.mDropLow;
-            let moveTowardsLow = props.mProperties.mDropHigh;
+                // How many dice do we actually have.
+                let numActualDice = props.mProperties.mNumDice;
+                numActualDice -= props.mProperties.mDropHigh + props.mProperties.mDropLow;
+                
+                let moveTowardsHigh = props.mProperties.mDropLow;
+                let moveTowardsLow = props.mProperties.mDropHigh;
 
-            let keepNum = props.mProperties.mKeepHigh + props.mProperties.mKeepLow;
-            if(keepNum !== 0 && keepNum < numActualDice) {
-                if(props.mProperties.mKeepHigh === 0) {
-                    moveTowardsLow += numActualDice - keepNum;
-                } else if(props.mProperties.mKeepLow === 0) {
-                    moveTowardsHigh += numActualDice - keepNum;
-                } else if(props.mProperties.mKeepHigh > props.mProperties.mKeepLow) {
-                    moveTowardsHigh += props.mProperties.mKeepHigh - props.mProperties.mKeepLow;
-                } else {
-                    moveTowardsLow += props.mProperties.mKeepLow - props.mProperties.mKeepHigh;
+                let keepNum = props.mProperties.mKeepHigh + props.mProperties.mKeepLow;
+                if(keepNum !== 0 && keepNum < numActualDice) {
+                    if(props.mProperties.mKeepHigh === 0) {
+                        moveTowardsLow += numActualDice - keepNum;
+                    } else if(props.mProperties.mKeepLow === 0) {
+                        moveTowardsHigh += numActualDice - keepNum;
+                    } else if(props.mProperties.mKeepHigh > props.mProperties.mKeepLow) {
+                        moveTowardsHigh += props.mProperties.mKeepHigh - props.mProperties.mKeepLow;
+                    } else {
+                        moveTowardsLow += props.mProperties.mKeepLow - props.mProperties.mKeepHigh;
+                    }
+
+                    numActualDice = keepNum;
+                }
+                numActualDice = Math.max(0, numActualDice);
+
+                // Are the drop / keep dice skewing the min/max
+                let moveTotal = Math.abs(moveTowardsHigh - moveTowardsLow);
+
+                let upperLimit = props.mDie.max;
+                let lowerLimit = props.mDie.min;
+                if(hasCountAboveEqual(props.mProperties))
+                {
+                    upperLimit = 1;
+                    lowerLimit = 0;
                 }
 
-                numActualDice = keepNum;
+                // This will asymptotically approach either max/min as you move furthur towards high/low
+                // This is not the true average shift, but it is pretty close. 
+                if(moveTowardsHigh > moveTowardsLow) {
+                    individualAverage = (upperLimit * moveTotal + 2*individualAverage) / (2 + moveTotal)
+                } else if(moveTowardsHigh < moveTowardsLow) {
+                    individualAverage = (lowerLimit * moveTotal + 2*individualAverage) / (2 + moveTotal)
+                }
+
+                // Same math as above, but the moveTotal is always 1.
+                if(isAdvantage(props.mProperties)) { individualAverage = (upperLimit + individualAverage*2) / 3; }
+                if(isDisadvantage(props.mProperties)) { individualAverage = (lowerLimit + individualAverage*2) / 3; }
+                
+                let expectedResult = individualAverage * numActualDice;
+
+                expectedResult += props.mProperties.mModifier;
+
+                if(isDouble(props.mProperties)) { expectedResult *= 2; }
+                if(isHalve(props.mProperties)) { expectedResult /= 2; }
+
+                dieAverage += expectedResult * Math.max(1, props.mProperties.mRepeatRoll);
             }
-            numActualDice = Math.max(0, numActualDice);
-
-            // Are the drop / keep dice skewing the min/max
-            let moveTotal = Math.abs(moveTowardsHigh - moveTowardsLow);
-
-            let upperLimit = props.mDie.max;
-            let lowerLimit = props.mDie.min;
-            if(hasCountAboveEqual(props.mProperties))
-            {
-                upperLimit = 1;
-                lowerLimit = 0;
-            }
-
-            // This will asymptotically approach either max/min as you move furthur towards high/low
-            // This is not the true average shift, but it is pretty close. 
-            if(moveTowardsHigh > moveTowardsLow) {
-                individualAverage = (upperLimit * moveTotal + 2*individualAverage) / (2 + moveTotal)
-            } else if(moveTowardsHigh < moveTowardsLow) {
-                individualAverage = (lowerLimit * moveTotal + 2*individualAverage) / (2 + moveTotal)
-            }
-
-            // Same math as above, but the moveTotal is always 1.
-            if(isAdvantage(props.mProperties)) { individualAverage = (upperLimit + individualAverage*2) / 3; }
-            if(isDisadvantage(props.mProperties)) { individualAverage = (lowerLimit + individualAverage*2) / 3; }
-            
-            let expectedResult = individualAverage * numActualDice;
-
-            expectedResult += props.mProperties.mModifier;
-
-            if(isDouble(props.mProperties)) { expectedResult *= 2; }
-            if(isHalve(props.mProperties)) { expectedResult /= 2; }
-
-            dieAverage += expectedResult * Math.max(1, props.mProperties.mRepeatRoll);
+            // Don't do anything for the non-numbered case.
         }
         return dieAverage;
     }
@@ -413,22 +456,26 @@ export class Roll {
 
         for(let props of this.mDiePropArray)
         {
-            let numActualDice = props.mProperties.mNumDice;
-            numActualDice -= props.mProperties.mDropHigh + props.mProperties.mDropLow;
-            numActualDice = Math.max(0, numActualDice);
+            if(props.mDie.isNumbered())
+            {
+                let numActualDice = props.mProperties.mNumDice;
+                numActualDice -= props.mProperties.mDropHigh + props.mProperties.mDropLow;
+                numActualDice = Math.max(0, numActualDice);
 
-            let expectedMin = props.mDie.min;
+                let expectedMin = props.mDie.min;
 
-            if(hasCountAboveEqual(props.mProperties)) { expectedMin = 0; }
+                if(hasCountAboveEqual(props.mProperties)) { expectedMin = 0; }
 
-            expectedMin *= numActualDice;
+                expectedMin *= numActualDice;
 
-            expectedMin += props.mProperties.mModifier;
+                expectedMin += props.mProperties.mModifier;
 
-            if(isDouble(props.mProperties)) { expectedMin *= 2; }
-            if(isDouble(props.mProperties)) { expectedMin /= 2; }
+                if(isDouble(props.mProperties)) { expectedMin *= 2; }
+                if(isDouble(props.mProperties)) { expectedMin /= 2; }
 
-            dieMin += expectedMin;
+                dieMin += expectedMin;
+            }
+            // Don't do anything for the non-numbered case.
         }
 
         return dieMin
@@ -440,22 +487,26 @@ export class Roll {
 
         for(let props of this.mDiePropArray)
         {
-            let numActualDice = props.mProperties.mNumDice;
-            numActualDice -= props.mProperties.mDropHigh + props.mProperties.mDropLow;
-            numActualDice = Math.max(0, numActualDice);
+            if(props.mDie.isNumbered())
+            {
+                let numActualDice = props.mProperties.mNumDice;
+                numActualDice -= props.mProperties.mDropHigh + props.mProperties.mDropLow;
+                numActualDice = Math.max(0, numActualDice);
 
-            let expectedMax = props.mDie.max;
+                let expectedMax = props.mDie.max;
 
-            if(hasCountAboveEqual(props.mProperties)) { expectedMax = 1; }
+                if(hasCountAboveEqual(props.mProperties)) { expectedMax = 1; }
 
-            expectedMax *= numActualDice;
+                expectedMax *= numActualDice;
 
-            expectedMax += props.mProperties.mModifier;
+                expectedMax += props.mProperties.mModifier;
 
-            if(isDouble(props.mProperties)) { expectedMax *= 2; }
-            if(isDouble(props.mProperties)) { expectedMax /= 2; }
+                if(isDouble(props.mProperties)) { expectedMax *= 2; }
+                if(isDouble(props.mProperties)) { expectedMax /= 2; }
 
-            dieMax += expectedMax
+                dieMax += expectedMax
+            }
+            // Don't do anything for the non-numbered case.
         }
 
         return dieMax
@@ -485,8 +536,6 @@ export class Roll {
             return returnString
         }
 
-        let defaultProps = new RollProperties({})
-
         let firstDie = true
 
         for(let pair of this.mDiePropArray)
@@ -510,65 +559,65 @@ export class Roll {
                 returnString += props.mNumDice + 'x' + die.displayName
             }
 
-            if(isAdvantage(props)) {
+            if(isAdvantage(props) && die.isNumbered()) {
                 returnString += "(Advantage)";
             }
 
-            if(isDisadvantage(props)) {
+            if(isDisadvantage(props) && die.isNumbered()) {
                 returnString += "(Disadvantage)";
             }
 
-            if(hasDropHigh(props)) {
+            if(hasDropHigh(props) && die.isNumbered()) {
                 let dropString = getDropHighString(props.mDropHigh)
                 returnString += '(' + dropString + ')';
             } 
 
-            if(hasDropLow(props)) {
+            if(hasDropLow(props) && die.isNumbered()) {
                 let dropString = getDropLowString(props.mDropLow)
                 returnString += '(' + dropString + ')';
             }
 
-            if(hasKeepHigh(props)) {
+            if(hasKeepHigh(props) && die.isNumbered()) {
                 let keepString = getKeepHighString(props.mKeepHigh)
                 returnString += '(' + keepString + ')';
             }
 
-            if(hasKeepLow(props)) {
+            if(hasKeepLow(props) && die.isNumbered()) {
                 let keepString = getKeepLowString(props.mKeepLow)
                 returnString += '(' + keepString + ')';
             }
 
-            if(hasReRoll(props))
+            if(hasReRoll(props) && die.isNumbered())
             {
                 let reRollString = getReRollString(props.mReRoll)
                 returnString += '(' + reRollString + ')';
             }
 
-            if(hasMinimumRoll(props))
+            if(hasMinimumRoll(props) && die.isNumbered())
             {
                 let minString = getMinimumString(props.mMinimumRoll)
                 returnString += '(' + minString + ')';
             }
 
-            if(hasCountAboveEqual(props))
+            if(hasCountAboveEqual(props) && die.isNumbered())
             {
                 let countAboveString = getCountAboveEqualString(props.mCountAboveEqual)
                 returnString += '(' + countAboveString + ')';
             }
 
-            if(hasExplode(props)) {
+            if(hasExplode(props) && die.isNumbered()) {
                 returnString += '(Explode)';
             }
 
-            if(props.mModifier != 0) {
+            if(props.mModifier != 0 && die.isNumbered()) {
                 returnString += getModifierString(props.mModifier, true)
             }
 
-            if(isDouble(props)) {
+            if(isDouble(props) && die.isNumbered()) {
                 returnString += '(Double)';
             }
 
-            if(isHalve(props)) {
+            if(isHalve(props) && die.isNumbered()) {
                 returnString += '(Halve)';
             }
 

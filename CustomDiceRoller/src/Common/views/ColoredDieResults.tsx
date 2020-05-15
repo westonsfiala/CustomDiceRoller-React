@@ -17,10 +17,10 @@ export class ColoredDieResults {
     public appendText : string;
     public rollMin : number;
     public rollMax : number;
-    public regularRolls : Array<number>;
-    public struckRolls : Array<number>;
+    public regularRolls : Array<any>;
+    public struckRolls : Array<any>;
 
-    constructor(prependText: string, appendText: string, rollMin: number, rollMax: number, regularRolls: Array<number>, struckRolls: Array<number>, id: string = '') {
+    constructor(prependText: string, appendText: string, rollMin: number, rollMax: number, regularRolls: Array<any>, struckRolls: Array<any>, id: string = '') {
         this.id = id;
         this.prependText = prependText;
         this.appendText = appendText;

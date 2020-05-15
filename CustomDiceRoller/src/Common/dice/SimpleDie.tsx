@@ -1,5 +1,4 @@
 
-import { Die } from "./Die"
 import { 
     DIE_UNKNOWN,
     DIE_2,
@@ -14,8 +13,10 @@ import {
 } from "./dieImages/DieImageGetter"
 
 import { randomIntFromInterval } from "../utility/NumberHelper";
+import { NumberDie } from "./NumberDie";
+import { decimalToString } from "../utility/StringHelper";
 
-export class SimpleDie extends Die
+export class SimpleDie extends NumberDie
 {
     public static readonly simpleDieIdentifier = "Simple";
 
@@ -98,7 +99,7 @@ export class SimpleDie extends Die
 
     get info() : string
     {
-        return 'Rolls a number between 1 and ' + this.mDie + '\nAverage of ' + this.average;
+        return 'Rolls a number between 1 and ' + this.mDie + '\nAverage of ' + decimalToString(this.average,2);
     }
  
     get imageID() : number

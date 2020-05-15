@@ -15,6 +15,9 @@ import { CreateMinMaxDieDialog } from "./CreateMinMaxDieDialog";
 import { ImbalancedDie } from "../../Common/dice/ImbalancedDie";
 import { CreateImbalancedDieDialog } from "./CreateImbalancedDieDialog";
 
+import { WordDie } from '../../Common/dice/WordDie';
+import { CreateWordDieDialog } from "./CreateWordDieDialog";
+
 interface CreateDieInterface {
     modalShown : boolean;
     die : Die;
@@ -28,8 +31,10 @@ export function CreateDieDialog(props : CreateDieInterface) {
         return (<CreateSimpleDieDialog modalShown={props.modalShown} die={props.die as SimpleDie} dismissModal={props.dismissModal} createDie={props.createDie}/>)
     } else if (props.die.mDieType === MinMaxDie.minMaxDieIdentifier) {
         return (<CreateMinMaxDieDialog modalShown={props.modalShown} die={props.die as MinMaxDie} dismissModal={props.dismissModal} createDie={props.createDie}/>)
-    }if (props.die.mDieType === ImbalancedDie.imbalancedIdentifier) {
+    } else if (props.die.mDieType === ImbalancedDie.imbalancedIdentifier) {
         return (<CreateImbalancedDieDialog modalShown={props.modalShown} die={props.die as ImbalancedDie} dismissModal={props.dismissModal} createDie={props.createDie}/>)
+    } else if (props.die.mDieType === WordDie.wordIdentifier) {
+        return (<CreateWordDieDialog modalShown={props.modalShown} die={props.die as WordDie} dismissModal={props.dismissModal} createDie={props.createDie}/>)
     }
     
     return (<View/>);
