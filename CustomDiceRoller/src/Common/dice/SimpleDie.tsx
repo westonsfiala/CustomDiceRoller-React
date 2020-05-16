@@ -68,8 +68,8 @@ export class SimpleDie extends NumberDie
 
         for(let i = 0; i < Math.abs(this.mDie); i += 1) {
             let value = i+1;
-            if(minimum > value) { value = Math.min(this.max, minimum); }
-            if(rerollUnder >= value) { value = normalAverage; }
+            if(minimum !== 0 && minimum > value) { value = Math.min(this.max, minimum); }
+            if(rerollUnder !== 0 && rerollUnder >= value) { value = normalAverage; }
             if(explode && value == this.max) { 
                 let numSides = this.max;
                 if(numSides == 1)

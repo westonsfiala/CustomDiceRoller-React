@@ -167,16 +167,19 @@ export class RollDisplayHelper {
         }
 
         let sumAppendText = '';
-
-        if(showSplitSums && sumResults.length !== 0) {
-            let sumTotal = sumResults.reduce(summer,0);
-            sumAppendText = ', [' + sumTotal.toString() + ']';
-        }
-
+        
+        let sumTotal = sumResults.reduce(summer,0);
         let combinedResults = Array<any>();
 
-        for(let numberResult of sumResults) {
-            combinedResults.push(numberResult);
+        if(sumResults.length !== 0) {
+            if(showSplitSums) {
+                for(let numberResult of sumResults) {
+                    combinedResults.push(numberResult);
+                }
+                sumAppendText = ', [' + sumTotal.toString() + ']';
+            } else {
+                combinedResults.push(sumTotal);
+            }
         }
 
         for(let nonNumberResult of nonNumberResults) {

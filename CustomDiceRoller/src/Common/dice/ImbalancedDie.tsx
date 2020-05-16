@@ -98,8 +98,8 @@ export class ImbalancedDie extends NumberDie
 
         this.mFaces.forEach((face) => {
             let value = face;
-            if(minimum > value) { value = Math.min(this.max, minimum); }
-            if(rerollUnder >= value) { value = normalAverage; }
+            if(minimum !== 0 && minimum > value) { value = Math.min(this.max, minimum); }
+            if(rerollUnder !== 0 && rerollUnder >= value) { value = normalAverage; }
             if(explode && value == this.max) { 
                 let numSides = this.mFaces.length;
                 if(numSides == 1)

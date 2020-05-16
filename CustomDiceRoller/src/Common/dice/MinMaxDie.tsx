@@ -68,8 +68,8 @@ export class MinMaxDie extends NumberDie
 
         for(let i = this.min; i <= this.max; i += 1) {
             let value = i;
-            if(minimum > value) { value = Math.min(this.max, minimum); }
-            if(rerollUnder >= value) { value = normalAverage; }
+            if(minimum !== 0 && minimum > value) { value = Math.min(this.max, minimum); }
+            if(rerollUnder !== 0 && rerollUnder >= value) { value = normalAverage; }
             if(explode && value == this.max) { 
                 let numSides = this.max-this.min+1;
                 if(numSides == 1)
@@ -89,10 +89,13 @@ export class MinMaxDie extends NumberDie
                     value = 0;
                 }
             }
+            console.log({value})
             advAverage += value;
         }
 
         advAverage /= (this.max - this.min + 1);
+
+        console.log({advAverage})
 
         return advAverage;
     }
