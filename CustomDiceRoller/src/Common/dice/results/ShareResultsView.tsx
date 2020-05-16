@@ -11,7 +11,7 @@ import
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import { RollDisplayHelper } from './RollDisplayHelper';
-import { ColoredDieResults, ColoredDieResultsView } from '../../views/ColoredDieResults';
+import { ColoredDieResultsView } from '../../views/ColoredDieResults';
 
 interface ShareResultsInterface {
     rollHelper : RollDisplayHelper;
@@ -24,7 +24,7 @@ export function ShareResultsView(props : ShareResultsInterface) {
             <View style={styles.Container}>
                 <ScrollView contentContainerStyle={{justifyContent:'center', flexGrow: 1}} style={{}}>
                     <Text style={styles.TitleText}>{props.rollHelper.rollNameText}</Text>
-                    <ColoredDieResultsView dieResults={props.rollHelper.rollSum} style={styles.SumText}/>
+                    <ColoredDieResultsView dieResults={props.rollHelper.rollSum} style={props.rollHelper.storedRoll.isNumbersOnly() ? styles.SumText : styles.NonNumberedSumText }/>
                     {(props.rollHelper.rollResultsArray).map((item, index) => 
                         <ColoredDieResultsView key={index} dieResults={item} style={styles.DetailText}/>)
                     }
@@ -47,6 +47,11 @@ const styles = EStyleSheet.create({
     },
     SumText: {
         fontSize:'$fontSizeColossal',
+        color:'$textColor',
+        textAlign:'center',
+    },
+    NonNumberedSumText: {
+        fontSize:'$fontSizeGargantuan',
         color:'$textColor',
         textAlign:'center',
     },

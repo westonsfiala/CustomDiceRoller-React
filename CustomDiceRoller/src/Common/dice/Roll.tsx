@@ -52,6 +52,15 @@ export class Roll {
         return newRoll;
     }
 
+    isNumbersOnly() : boolean {
+        for(let diePropPair of this.mDiePropArray) {
+            if(!diePropPair.mDie.isNumbered()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     addDieToRoll(die: Die, properties: RollProperties) : Roll
     {
         let newRoll = this.clone();
