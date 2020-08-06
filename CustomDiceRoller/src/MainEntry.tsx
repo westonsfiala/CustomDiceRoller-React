@@ -126,7 +126,7 @@ export function MainEntry() {
             </SafeAreaView>
         );
     }
-    else if (currentPage === TopLevelItem.Main)
+    else if (currentPage === TopLevelItem.Main || currentPage === TopLevelItem.About)
     {
         return (
             <SafeAreaView style={styles.AppBackground}>
@@ -154,19 +154,14 @@ export function MainEntry() {
                         <SavedRollPage displayRoll={addRoll} editRoll={editRoll} window={window}/>
                     </View>
                 </ViewPager>
+                <AboutPage show={currentPage === TopLevelItem.About} dismissPage={returnToMainPage}/>
                 <LastHistoryItemViewPopup window={window}/>
                 <RateMeDialog modalShown={showRateDialog} dismissModal={() => setShowRateDialog(false)}/>
             </SafeAreaView>
         );
     }
-    else // if(currentPage === TopLevelItem.About)
-    {
-        return (
-            <SafeAreaView style={styles.AppBackground}>
-                <AboutPage dismissPage={returnToMainPage}/>
-            </SafeAreaView>
-        );
-    }
+
+    return (null);
 };
 
 const styles = EStyleSheet.create({

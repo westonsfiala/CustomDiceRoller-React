@@ -50,6 +50,7 @@ const tips = [
     ];
 
 interface AboutInterface {
+    show: boolean;
     dismissPage: () => void;
 }
 
@@ -60,36 +61,47 @@ export function AboutPage(props : AboutInterface) {
     const appPkg = require("../../app.json");
     const versionPkg = require('../../package.json');
 
-    return (
-        <View style={styles.Container}>
-            <Text style={styles.TitleText}>{appPkg.displayName}</Text>
-            <Text style={styles.DetailText}>Developed by Weston Fiala</Text>
-            <Text style={styles.DetailText}>Version {versionPkg.version}</Text>
-            <FlatList
-                data={tips}
-                renderItem={({item}) => 
-                    <Text style={styles.TipText}>{item}</Text>
-                }
-                keyExtractor={(item) => item}
-            />
-            <View style={styles.ButtonContainer}>
-                <Touchable 
-                style={styles.ButtonBackground}
-                onPress={() => props.dismissPage()}
-                foreground={Touchable.Ripple('white', true)}
-                hitSlop={styles.HitSlop}
-                >
-                    <Text style={styles.ButtonText}>Back</Text>
-                </Touchable>
+    if(props.show)
+    {
+        return (
+            <View style={styles.Container}>
+                <Text style={styles.TitleText}>{appPkg.displayName}</Text>
+                <Text style={styles.DetailText}>Developed by Weston Fiala</Text>
+                <Text style={styles.DetailText}>Version {versionPkg.version}</Text>
+                <FlatList
+                    data={tips}
+                    renderItem={({item}) => 
+                        <Text style={styles.TipText}>{item}</Text>
+                    }
+                    keyExtractor={(item) => item}
+                />
+                <View style={styles.ButtonContainer}>
+                    <Touchable 
+                    style={styles.ButtonBackground}
+                    onPress={() => props.dismissPage()}
+                    foreground={Touchable.Ripple('white', true)}
+                    hitSlop={styles.HitSlop}
+                    >
+                        <Text style={styles.ButtonText}>Back</Text>
+                    </Touchable>
+                </View>
             </View>
-        </View>
-    );
+        );
+    }
+    
+    return (null);
+
 }
 
 const styles = EStyleSheet.create({
     Container: {
-        flex:1,
-        alignContent:'center',
+        backgroundColor:'$primaryColor',
+        position:'absolute',
+        left:'0rem',
+        bottom:'0rem',
+        right:'0rem',
+        top:'0rem',
+        overflow:'hidden',
     },
     TitleText: {
         fontSize:'$fontSizeMassive',
@@ -104,6 +116,7 @@ const styles = EStyleSheet.create({
     TipText: {
         fontSize:'$fontSizeNormal',
         color:'$textColor',
+        borderRadius:'5rem',
         margin:'5rem',
         paddingLeft:'5rem',
         backgroundColor:'$primaryColorLightened',
