@@ -101,7 +101,7 @@ export function RollResultsPage(props : RollResultsInterface) {
                     props.window.width, 
                     props.window.height - statusHeight);
 
-                newShakeDie.key = newShakeDie.dieImageID.toString() + i.toString();
+                newShakeDie.key = dieProp.mDie.displayName + newShakeDie.dieImageID.toString() + i.toString();
 
                 newArray.push(newShakeDie);
             }
