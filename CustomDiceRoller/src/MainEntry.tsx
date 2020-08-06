@@ -39,18 +39,12 @@ import QuickRollEnabledManager from './SettingsPage/Roller/QuickRollEnabledManag
 import { LastHistoryItemViewPopup } from './HistoryPage/views/HistoryItemView';
 import RateMeManager from './SettingsPage/Advanced/RateMeManager';
 import { RateMeDialog } from './SettingsPage/Advanced/RateMeDialog';
-
-enum TopLevelItem
-{
-    Roller,
-    Main,
-    About,
-}
+import AboutManager from './Common/managers/AboutManager';
+import RollResultsManager from './Common/managers/RollResultsManager';
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 export function MainEntry() {
     const viewPager = useRef(null as ViewPager);
-    const [currentPage, setCurrentPage] = useState(TopLevelItem.Main);
     const [window, setWindow] = useState(Dimensions.get('window'));
     const [showRateDialog, setShowRateDialog] = useState(false);
 
@@ -74,8 +68,7 @@ export function MainEntry() {
             HistoryManager.getInstance().addToHistory(newResult);
             if(!QuickRollEnabledManager.getInstance().getQuickRollEnabled())
             {
-                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                setCurrentPage(TopLevelItem.Roller);
+                RollResultsManager.getInstance().showRollResultsDialog();
             }
         }
     };
@@ -86,17 +79,15 @@ export function MainEntry() {
     }
 
     function showAboutPage() {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setCurrentPage(TopLevelItem.About);
+        AboutManager.getInstance().showAboutDialog();
     }
 
-    function returnToMainPage() {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setCurrentPage(TopLevelItem.Main);
+    function dismissAboutPage() {
+        AboutManager.getInstance().hideAboutDialog();
     }
 
     function dismissRollResultsPage() {
-        returnToMainPage();
+        RollResultsManager.getInstance().hideRollResultsDialog();
         HistoryManager.getInstance().runUpdaters();
     }
 
@@ -117,51 +108,38 @@ export function MainEntry() {
         }
     });
 
-
-    if(currentPage === TopLevelItem.Roller)
-    {
-        return (
-            <SafeAreaView style={styles.AppBackground}>
-                <RollResultsPage dismissPage={dismissRollResultsPage} window={window}/>
-            </SafeAreaView>
-        );
-    }
-    else if (currentPage === TopLevelItem.Main || currentPage === TopLevelItem.About)
-    {
-        return (
-            <SafeAreaView style={styles.AppBackground}>
-                <AppBar
-                    subtitle='Tap die icons to roll!' 
-                    clearHistoryHandler={() => HistoryManager.getInstance().clearHistory()}
-                    tabPressHandler={tabPressHandler}
-                    showAboutPage={showAboutPage}
-                    window={window}
-                />
-                <ViewPager style={styles.Pager} ref={viewPager} initialPage={TabManager.getInstance().tab} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
-                    <View key="a" >
-                        <SettingsPage window={window}/>
-                    </View>
-                    <View key="b" >
-                        <HistoryPage window={window}/>
-                    </View>
-                    <View key="c" >
-                        <SimpleDicePage displayRoll={addRoll} window={window}/>
-                    </View>
-                    <View key="d" >
-                        <CustomDicePage displayRoll={addRoll} window={window}/>
-                    </View>
-                    <View key="e" >
-                        <SavedRollPage displayRoll={addRoll} editRoll={editRoll} window={window}/>
-                    </View>
-                </ViewPager>
-                <AboutPage show={currentPage === TopLevelItem.About} dismissPage={returnToMainPage}/>
-                <LastHistoryItemViewPopup window={window}/>
-                <RateMeDialog modalShown={showRateDialog} dismissModal={() => setShowRateDialog(false)}/>
-            </SafeAreaView>
-        );
-    }
-
-    return (null);
+    return (
+        <SafeAreaView style={styles.AppBackground}>
+            <AppBar
+                subtitle='Tap die icons to roll!' 
+                clearHistoryHandler={() => HistoryManager.getInstance().clearHistory()}
+                tabPressHandler={tabPressHandler}
+                showAboutPage={showAboutPage}
+                window={window}
+            />
+            <ViewPager style={styles.Pager} ref={viewPager} initialPage={TabManager.getInstance().tab} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
+                <View key="a" >
+                    <SettingsPage window={window}/>
+                </View>
+                <View key="b" >
+                    <HistoryPage window={window}/>
+                </View>
+                <View key="c" >
+                    <SimpleDicePage displayRoll={addRoll} window={window}/>
+                </View>
+                <View key="d" >
+                    <CustomDicePage displayRoll={addRoll} window={window}/>
+                </View>
+                <View key="e" >
+                    <SavedRollPage displayRoll={addRoll} editRoll={editRoll} window={window}/>
+                </View>
+            </ViewPager>
+            <RollResultsPage dismissPage={dismissRollResultsPage} window={window}/>
+            <AboutPage dismissPage={dismissAboutPage}/>
+            <LastHistoryItemViewPopup window={window}/>
+            <RateMeDialog modalShown={showRateDialog} dismissModal={() => setShowRateDialog(false)}/>
+        </SafeAreaView>
+    );
 };
 
 const styles = EStyleSheet.create({

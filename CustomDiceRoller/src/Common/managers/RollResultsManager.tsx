@@ -10,6 +10,8 @@ export default class RollResultsManager {
 
     private lastHistoryItem = null as RollDisplayHelper;
 
+    private mRollResultsShower = null as (show: boolean) => void;
+
     static getInstance() : RollResultsManager {
         if(RollResultsManager.mInstance === null) {
             RollResultsManager.mInstance = new RollResultsManager();
@@ -20,6 +22,19 @@ export default class RollResultsManager {
 
     private constructor() {
         this.lastHistoryItem = HistoryManager.getInstance().getLastRoll();
+    }
+    
+
+    setRollResultsShower(updater : (show: boolean) => void) {
+        this.mRollResultsShower = updater;
+    }
+
+    showRollResultsDialog() {
+        if(this.mRollResultsShower !== null) this.mRollResultsShower(true);
+    }
+
+    hideRollResultsDialog() {
+        if(this.mRollResultsShower !== null) this.mRollResultsShower(false);
     }
     
     playCritSounds() : boolean {

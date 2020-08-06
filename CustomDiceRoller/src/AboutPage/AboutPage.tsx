@@ -1,12 +1,15 @@
 
 
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 
 import {
     View, 
     Text,
     FlatList,
+    LayoutAnimation,
 } from 'react-native';
+
+import AboutManager from '../Common/managers/AboutManager';
 
 import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -50,18 +53,28 @@ const tips = [
     ];
 
 interface AboutInterface {
-    show: boolean;
     dismissPage: () => void;
 }
 
 export function AboutPage(props : AboutInterface) {
+
+    const [show, setShow] = useState(false);
+
+    // Register a callback that will allow us to show and hide this dialog without having to reload the page it is contained in.
+    useEffect(() => {
+        AboutManager.getInstance().setAboutShower((show: boolean) => {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            setShow(show);
+        });
+        return(() => AboutManager.getInstance().setAboutShower(null))
+    })
 
     console.log('refresh about page');
 
     const appPkg = require("../../app.json");
     const versionPkg = require('../../package.json');
 
-    if(props.show)
+    if(show)
     {
         return (
             <View style={styles.Container}>
@@ -101,7 +114,6 @@ const styles = EStyleSheet.create({
         bottom:'0rem',
         right:'0rem',
         top:'0rem',
-        overflow:'hidden',
     },
     TitleText: {
         fontSize:'$fontSizeMassive',

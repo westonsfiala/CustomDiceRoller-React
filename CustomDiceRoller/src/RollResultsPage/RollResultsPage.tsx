@@ -7,6 +7,7 @@ import {
     Text,
     ScaledSize,
     ScrollView,
+    LayoutAnimation,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -53,6 +54,17 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     const [reload, setReload] = useState(false);
     const viewShotRef = useRef(null);
+
+    const [show, setShow] = useState(false);
+
+    // Register a callback that will allow us to show and hide this dialog without having to reload the page it is contained in.
+    useEffect(() => {
+        RollResultsManager.getInstance().setRollResultsShower((show: boolean) => {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            setShow(show);
+        });
+        return(() => RollResultsManager.getInstance().setRollResultsShower(null))
+    })
 
     // When we are created register ourselves & unregister when we go away.
     useEffect(() => {
@@ -203,7 +215,7 @@ export function RollResultsPage(props : RollResultsInterface) {
     let animationsRunning = animationState.state != shakeEnums.done;
 
     useEffect(() => {
-        if(animationsRunning) { 
+        if(animationsRunning && show) { 
             let clear = setTimeout(() => animateDice(), ANIMATION_RUNTIME); 
             return (() => clearTimeout(clear));
         }
@@ -228,84 +240,97 @@ export function RollResultsPage(props : RollResultsInterface) {
         }
     }, [rollHelper]);
 
-    if(animationsRunning) {
+    if(show)
+    {
+        if(animationsRunning) {
 
-        let displayText = "";
-
-        if(animationState.state == shakeEnums.shaking) {
-            displayText = "Shake!";
-        } else if(animationState.state == shakeEnums.holding) {
-            displayText = "Hold Still";
-        } else if (animationState.state == shakeEnums.slowing) {
-            displayText = "Calculating...";
-        } else {
-            displayText = "Done!"
+            let displayText = "";
+    
+            if(animationState.state == shakeEnums.shaking) {
+                displayText = "Shake!";
+            } else if(animationState.state == shakeEnums.holding) {
+                displayText = "Hold Still";
+            } else if (animationState.state == shakeEnums.slowing) {
+                displayText = "Calculating...";
+            } else {
+                displayText = "Done!"
+            }
+    
+            return (
+                <View style={styles.FullscreenContainer}>
+                    <View style={{position:"absolute"}}>
+                        {shakeDieArray.map(renderShakeDie)}
+                    </View>
+                    <View style={styles.ShakeContainer}>
+                        <Text style={styles.ShakeText}>{displayText}</Text>
+                    </View>
+                    <View style={styles.ButtonContainer}>
+                        <Touchable 
+                            style={styles.ButtonBackground}
+                            onPress={exitShake}
+                            foreground={Touchable.Ripple('white', true)}
+                            hitSlop={styles.HitSlop}
+                        >
+                            <Text style={styles.ButtonText}>Go To Results</Text>
+                        </Touchable>
+                    </View>
+                </View>
+            )
         }
-
+    
         return (
-            <View style={styles.Container}>
-                <View style={{position:"absolute"}}>
-                    {shakeDieArray.map(renderShakeDie)}
-                </View>
-                <View style={styles.ShakeContainer}>
-                    <Text style={styles.ShakeText}>{displayText}</Text>
-                </View>
+            <View style={styles.FullscreenContainer}>
+                <ViewShot ref={viewShotRef} style={styles.Container} options={{result:"base64"}}>
+                    <ShareResultsView rollHelper={rollHelper} />
+                </ViewShot>
                 <View style={styles.ButtonContainer}>
                     <Touchable 
                         style={styles.ButtonBackground}
-                        onPress={exitShake}
+                        onPress={reroll}
                         foreground={Touchable.Ripple('white', true)}
                         hitSlop={styles.HitSlop}
                     >
-                        <Text style={styles.ButtonText}>Go To Results</Text>
+                        <Text style={styles.ButtonText}>Roll Again</Text>
+                    </Touchable>
+                    <Touchable 
+                        style={styles.ButtonBackground}
+                        onPress={exitDialog}
+                        foreground={Touchable.Ripple('white', true)}
+                        hitSlop={styles.HitSlop}
+                    >
+                        <Text style={styles.ButtonText}>Exit</Text>
+                    </Touchable>
+                    <Touchable 
+                        style={styles.ShareButtonBackground}
+                        onPress={() => viewShotRef.current.capture().then((uri: string) => {
+                            let encodedImage = "data:image/png;base64," + uri;
+                            Share.open({url:encodedImage}).then(() => releaseCapture(uri)).catch(() => releaseCapture(uri));
+                        }).catch(() => null)}
+                        foreground={Touchable.Ripple('white', true)}
+                        hitSlop={styles.HitSlop}
+                    >
+                        <Icon size={styles.IconConstants.width} name='share-variant' color={styles.IconConstants.color}/>
                     </Touchable>
                 </View>
             </View>
-        )
+        );
     }
 
-    return (
-        <View style={styles.Container}>
-            <ViewShot ref={viewShotRef} style={styles.Container} options={{result:"base64"}}>
-                <ShareResultsView rollHelper={rollHelper} />
-            </ViewShot>
-            <View style={styles.ButtonContainer}>
-                <Touchable 
-                    style={styles.ButtonBackground}
-                    onPress={reroll}
-                    foreground={Touchable.Ripple('white', true)}
-                    hitSlop={styles.HitSlop}
-                >
-                    <Text style={styles.ButtonText}>Roll Again</Text>
-                </Touchable>
-                <Touchable 
-                    style={styles.ButtonBackground}
-                    onPress={exitDialog}
-                    foreground={Touchable.Ripple('white', true)}
-                    hitSlop={styles.HitSlop}
-                >
-                    <Text style={styles.ButtonText}>Exit</Text>
-                </Touchable>
-                <Touchable 
-                    style={styles.ShareButtonBackground}
-                    onPress={() => viewShotRef.current.capture().then((uri: string) => {
-                        let encodedImage = "data:image/png;base64," + uri;
-                        Share.open({url:encodedImage}).then(() => releaseCapture(uri)).catch(() => releaseCapture(uri));
-                    }).catch(() => null)}
-                    foreground={Touchable.Ripple('white', true)}
-                    hitSlop={styles.HitSlop}
-                >
-                    <Icon size={styles.IconConstants.width} name='share-variant' color={styles.IconConstants.color}/>
-                </Touchable>
-            </View>
-        </View>
-    );
+    return (null);
 }
 
 const styles = EStyleSheet.create({
     Container: {
         flex:1,
         alignContent:'center',
+    },
+    FullscreenContainer: {
+        backgroundColor:'$primaryColor',
+        position:'absolute',
+        left:'0rem',
+        bottom:'0rem',
+        right:'0rem',
+        top:'0rem',
     },
     ShakeContainer: {
         flex:1,
