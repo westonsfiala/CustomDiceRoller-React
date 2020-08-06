@@ -204,8 +204,6 @@ export class RollDisplayHelper {
             rollMax = roll.min();
         }
 
-        console.log({rollMin, rollMax, sumTotal})
-
         this.rollSum = new ColoredDieResults('', sumAppendText, rollMin, rollMax, combinedResults, [], 'sum');
     }
 

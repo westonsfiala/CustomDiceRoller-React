@@ -89,13 +89,10 @@ export class MinMaxDie extends NumberDie
                     value = 0;
                 }
             }
-            console.log({value})
             advAverage += value;
         }
 
         advAverage /= (this.max - this.min + 1);
-
-        console.log({advAverage})
 
         return advAverage;
     }

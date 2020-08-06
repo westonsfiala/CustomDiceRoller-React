@@ -492,8 +492,6 @@ export class Roll {
                     expectedMin = -expectedMin;
                 }
 
-                console.log({dice:props.mProperties.mNumDice, numActualDice, expectedMin})
-
                 dieMin += expectedMin;
             }
             // Don't do anything for the non-numbered case.
