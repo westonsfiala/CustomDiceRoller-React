@@ -400,7 +400,7 @@ export class Roll {
                 let individualAverage = props.mDie.expectedResult(props.mProperties.mMinimumRoll, props.mProperties.mReRoll, props.mProperties.mCountAboveEqual, props.mProperties.mExplode);
 
                 // How many dice do we actually have.
-                let numActualDice = props.mProperties.mNumDice;
+                let numActualDice = Math.abs(props.mProperties.mNumDice);
                 numActualDice -= props.mProperties.mDropHigh + props.mProperties.mDropLow;
                 
                 let moveTowardsHigh = props.mProperties.mDropLow;
@@ -447,6 +447,11 @@ export class Roll {
                 
                 let expectedResult = individualAverage * numActualDice;
 
+                if(props.mProperties.mNumDice < 0)
+                {
+                    expectedResult = -expectedResult;
+                }
+
                 expectedResult += props.mProperties.mModifier;
 
                 if(isDouble(props.mProperties)) { expectedResult *= 2; }
@@ -467,7 +472,7 @@ export class Roll {
         {
             if(props.mDie.isNumbered())
             {
-                let numActualDice = props.mProperties.mNumDice;
+                let numActualDice = Math.abs(props.mProperties.mNumDice);
                 numActualDice -= props.mProperties.mDropHigh + props.mProperties.mDropLow;
                 numActualDice = Math.max(0, numActualDice);
 
@@ -481,6 +486,13 @@ export class Roll {
 
                 if(isDouble(props.mProperties)) { expectedMin *= 2; }
                 if(isDouble(props.mProperties)) { expectedMin /= 2; }
+
+                if(props.mProperties.mNumDice < 0)
+                {
+                    expectedMin = -expectedMin;
+                }
+
+                console.log({dice:props.mProperties.mNumDice, numActualDice, expectedMin})
 
                 dieMin += expectedMin;
             }
@@ -498,7 +510,7 @@ export class Roll {
         {
             if(props.mDie.isNumbered())
             {
-                let numActualDice = props.mProperties.mNumDice;
+                let numActualDice = Math.abs(props.mProperties.mNumDice);
                 numActualDice -= props.mProperties.mDropHigh + props.mProperties.mDropLow;
                 numActualDice = Math.max(0, numActualDice);
 
@@ -512,6 +524,11 @@ export class Roll {
 
                 if(isDouble(props.mProperties)) { expectedMax *= 2; }
                 if(isDouble(props.mProperties)) { expectedMax /= 2; }
+
+                if(props.mProperties.mNumDice < 0)
+                {
+                    expectedMax = -expectedMax;
+                }
 
                 dieMax += expectedMax
             }

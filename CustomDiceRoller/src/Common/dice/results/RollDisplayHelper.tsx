@@ -132,7 +132,16 @@ export class RollDisplayHelper {
                         prependString += ': ';
                     }
 
-                    return new ColoredDieResults(prependString, appendString, die.min, die.max, mainList, strikeList, dieDisplayName);
+                    let dieMinimum = die.min;
+                    let dieMaximum = die.max;
+                    if(properties.mNumDice < 0)
+                    {
+                        dieMinimum = -die.max;
+                        dieMaximum = -die.min;
+                    }
+                    
+
+                    return new ColoredDieResults(prependString, appendString, dieMinimum, dieMaximum, mainList, strikeList, dieDisplayName);
                 }
 
                 return null
@@ -186,7 +195,18 @@ export class RollDisplayHelper {
             combinedResults.push(nonNumberResult)
         }
 
-        this.rollSum = new ColoredDieResults('', sumAppendText, roll.min(), roll.max(), combinedResults, [], 'sum');
+        let rollMin = roll.min();
+        let rollMax = roll.max();
+
+        if(roll.min() > roll.max())
+        {
+            rollMin = roll.max();
+            rollMax = roll.min();
+        }
+
+        console.log({rollMin, rollMax, sumTotal})
+
+        this.rollSum = new ColoredDieResults('', sumAppendText, rollMin, rollMax, combinedResults, [], 'sum');
     }
 
 }

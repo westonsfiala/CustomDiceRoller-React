@@ -57,9 +57,11 @@ export function ColoredDieResultsView (props: ColoredStruckStringInterface) {
                     {props.dieResults.regularRolls.map((value, index) => {
                         let textColor = styles.neutralTextColor.color;
                         if(MinMaxHighlightEnabledManager.getInstance().getMinMaxHighlightEnabled()) {
-                            if(value >= props.dieResults.rollMax) {
+                            if (props.dieResults.rollMax == props.dieResults.rollMin) {
+                                textColor = styles.neutralTextColor.color;
+                            } else if(value == props.dieResults.rollMax) {
                                 textColor = styles.goodTextColor.color;
-                            } else if (value <= props.dieResults.rollMin) {
+                            } else if (value == props.dieResults.rollMin) {
                                 textColor = styles.badTextColor.color;
                             }
                         }
@@ -75,7 +77,9 @@ export function ColoredDieResultsView (props: ColoredStruckStringInterface) {
                         {props.dieResults.struckRolls.map((value, index) => {
                             let textColor = styles.neutralTextColor.color;
                             if(MinMaxHighlightEnabledManager.getInstance().getMinMaxHighlightEnabled()) {
-                                if(value == props.dieResults.rollMax) {
+                                if (props.dieResults.rollMax == props.dieResults.rollMin) {
+                                    textColor = styles.neutralTextColor.color;
+                                } else if(value == props.dieResults.rollMax) {
                                     textColor = styles.goodTextColor.color;
                                 } else if (value == props.dieResults.rollMin) {
                                     textColor = styles.badTextColor.color;
