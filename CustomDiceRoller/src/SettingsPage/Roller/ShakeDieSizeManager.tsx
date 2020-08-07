@@ -33,6 +33,8 @@ export default class ShakeDieSizeManager {
         if(this.mShakeDieSize == this.ShakeDieSizeList[4]) return 4;
 
         this.setShakeDieSize(this.ShakeDieSizeList[2]);
+
+        return this.shakeDieSizeDivider;
     }
 
     setSettingsUpdater(updater : () => void) {

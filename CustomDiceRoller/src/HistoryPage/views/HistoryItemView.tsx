@@ -17,8 +17,8 @@ import { RollDisplayHelper } from '../../Common/dice/results/RollDisplayHelper';
 import { ColoredDieResultsView } from '../../Common/views/ColoredDieResults';
 
 import HistoryManager from '../../Common/managers/HistoryManager';
-import QuickRollEnabledManager from '../../SettingsPage/Roller/QuickRollEnabledManager';
 import RollResultsManager from '../../Common/managers/RollResultsManager';
+import RollContainerSizeManager from '../../SettingsPage/Roller/RollContainerSizeManager';
 
 interface HistoryItemInterface {
     window : ScaledSize;
@@ -91,7 +91,7 @@ export function LastHistoryItemViewPopup(props : SimpleHistoryItemInterface) {
         })
     });
 
-    if(showState.show && QuickRollEnabledManager.getInstance().getQuickRollEnabled())
+    if(showState.show && RollContainerSizeManager.getInstance().isMinimal)
     {
         RollResultsManager.getInstance().playCritSounds();
 

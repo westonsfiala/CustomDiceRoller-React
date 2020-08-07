@@ -19,6 +19,7 @@ import AnimationsEnabledManager from "../../SettingsPage/Roller/AnimationsEnable
 import LegacyMigrationManager from "../../SettingsPage/Advanced/LegacyMigrationManager";
 import RateMeManager from "../../SettingsPage/Advanced/RateMeManager";
 import MinMaxHighlightEnabledManager from "../../SettingsPage/Results/MinMaxHighlightEnabledManager";
+import RollContainerSizeManager from "../../SettingsPage/Roller/RollContainerSizeManager";
 
 export function OpenAllSingletons() {
     AnimationsEnabledManager.getInstance();
@@ -31,6 +32,7 @@ export function OpenAllSingletons() {
     HistoryManager.getInstance();
     MinMaxHighlightEnabledManager.getInstance();
     RateMeManager.getInstance();
+    RollContainerSizeManager.getInstance();
     RollManager.getInstance();
     RollResultVolumeManager.getInstance();
     ShakeDieSizeManager.getInstance();

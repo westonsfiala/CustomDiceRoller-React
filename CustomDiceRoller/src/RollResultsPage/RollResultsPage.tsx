@@ -32,6 +32,7 @@ import { RollDisplayHelper } from '../Common/dice/results/RollDisplayHelper';
 import { ShareResultsView } from '../Common/dice/results/ShareResultsView';
 
 import { ShakeDie, renderShakeDie } from './views/ShakeDie';
+import RollContainerSizeManager from '../SettingsPage/Roller/RollContainerSizeManager';
 
 const MAX_DICE_IN_ROLL = 25;
 const ANIMATION_RUNTIME = 10;
@@ -97,6 +98,20 @@ export function RollResultsPage(props : RollResultsInterface) {
         let totalDice = rollHelper.storedRoll.getTotalDiceInRoll();
         let needsDieRepresentation = totalDice > MAX_DICE_IN_ROLL;
 
+        // Don't let things go off the screen because of the status bar.
+        let statusHeight = getStatusBarHeight();
+
+        let width = props.window.width;
+        let height = props.window.height - statusHeight;
+
+        // TODO, figure out how to get this to work.
+        if(RollContainerSizeManager.getInstance().isDialogBox)
+        {
+            let squareSize = Math.min(width, height);
+            width = width - 50;
+            height = height - 50;
+        }
+
         for(let dieProp of rollHelper.storedRoll.getDiePropArray()) {
             let maxDice = Math.abs(dieProp.mProperties.mNumDice);
 
@@ -104,14 +119,11 @@ export function RollResultsPage(props : RollResultsInterface) {
                 maxDice = Math.floor((maxDice / totalDice) * MAX_DICE_IN_ROLL)
             }
 
-            // Don't let things go off the screen because of the status bar.
-            let statusHeight = getStatusBarHeight();
-
             for(let i = 0; i < maxDice; i += 1) {
                 let newShakeDie = new ShakeDie(
                     dieProp.mDie.imageID, 
-                    props.window.width, 
-                    props.window.height - statusHeight);
+                    width, 
+                    height);
 
                 newShakeDie.key = dieProp.mDie.displayName + newShakeDie.dieImageID.toString() + i.toString();
 
@@ -242,6 +254,24 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     if(show)
     {
+        let containerStyle = styles.FullscreenContainer;
+        if(RollContainerSizeManager.getInstance().isDialogBox){
+
+            let squareSize = Math.min(props.window.width, props.window.height) / 2;
+
+            // let left = props.window.width - squareSize/2;
+            // let right = props.window.width - squareSize/2;
+            // let top = props.window.height - squareSize/2;
+            // let bottom = props.window.height - squareSize/2;
+
+            let left = 0;
+            let right = 0;
+            let top = 0;
+            let bottom = 0;
+
+            containerStyle = [styles.HalfscreenContainer, {left:left, right:right, top:top, bottom:bottom}];
+        }
+
         if(animationsRunning) {
 
             let displayText = "";
@@ -257,7 +287,7 @@ export function RollResultsPage(props : RollResultsInterface) {
             }
     
             return (
-                <View style={styles.FullscreenContainer}>
+                <View style={containerStyle}>
                     <View style={{position:"absolute"}}>
                         {shakeDieArray.map(renderShakeDie)}
                     </View>
@@ -279,7 +309,7 @@ export function RollResultsPage(props : RollResultsInterface) {
         }
     
         return (
-            <View style={styles.FullscreenContainer}>
+            <View style={containerStyle}>
                 <ViewShot ref={viewShotRef} style={styles.Container} options={{result:"base64"}}>
                     <ShareResultsView rollHelper={rollHelper} />
                 </ViewShot>
@@ -331,6 +361,10 @@ const styles = EStyleSheet.create({
         bottom:'0rem',
         right:'0rem',
         top:'0rem',
+    },
+    HalfscreenContainer: {
+        backgroundColor:'$primaryColor',
+        position:'absolute',
     },
     ShakeContainer: {
         flex:1,

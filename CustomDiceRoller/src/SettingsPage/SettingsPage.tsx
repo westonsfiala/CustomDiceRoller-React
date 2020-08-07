@@ -14,10 +14,10 @@ import { DieThemeSetting } from './Dice/ThemeSetting';
 
 import { ExpectedResultSetting } from './Results/ExpectedResultManager';
 import { SortSetting } from './Results/SortTypeManager';
-
-import { QuickRollEnabledSetting } from './Roller/QuickRollEnabledManager';
-import { RollResultVolumeSetting } from './Roller/RollResultVolumeManager';
 import { MinMaxHighlightEnabledSetting } from './Results/MinMaxHighlightEnabledManager';
+
+import { RollResultVolumeSetting } from './Roller/RollResultVolumeManager';
+import { RollContainerSizeSetting } from './Roller/RollContainerSizeManager';
 
 import { LegacyMigrationSetting } from './Advanced/LegacyMigrationSetting';
 
@@ -41,7 +41,7 @@ export function SettingsPage(props : SettingsInterface) {
                 <DieThemeSetting window={props.window}/>
                 <View style={styles.Divider}/>
                 <Text style={styles.DividerText}>Roller</Text>
-                <QuickRollEnabledSetting/>
+                <RollContainerSizeSetting/>
                 <RollResultVolumeSetting/>
                 <View style={styles.Divider}/>
                 <Text style={styles.DividerText}>Results</Text>

@@ -34,13 +34,13 @@ import { RollDisplayHelper } from './Common/dice/results/RollDisplayHelper'
 import HistoryManager from './Common/managers/HistoryManager';
 import TabManager from './AppBar/managers/TabManager';
 import CustomRollManager from './CustomDicePage/managers/CustomRollManager';
-import QuickRollEnabledManager from './SettingsPage/Roller/QuickRollEnabledManager';
-
-import { LastHistoryItemViewPopup } from './HistoryPage/views/HistoryItemView';
 import RateMeManager from './SettingsPage/Advanced/RateMeManager';
-import { RateMeDialog } from './SettingsPage/Advanced/RateMeDialog';
 import AboutManager from './Common/managers/AboutManager';
 import RollResultsManager from './Common/managers/RollResultsManager';
+import RollContainerSizeManager from './SettingsPage/Roller/RollContainerSizeManager';
+
+import { LastHistoryItemViewPopup } from './HistoryPage/views/HistoryItemView';
+import { RateMeDialog } from './SettingsPage/Advanced/RateMeDialog';
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 export function MainEntry() {
@@ -66,7 +66,7 @@ export function MainEntry() {
         {
             let newResult = new RollDisplayHelper(newRoll);
             HistoryManager.getInstance().addToHistory(newResult);
-            if(!QuickRollEnabledManager.getInstance().getQuickRollEnabled())
+            if(!RollContainerSizeManager.getInstance().isMinimal)
             {
                 RollResultsManager.getInstance().showRollResultsDialog();
             }
