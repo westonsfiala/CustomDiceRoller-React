@@ -23,6 +23,7 @@ import { CreateRollDialog } from './dialogs/CreateRollDialog';
 import { CustomPageDieView } from './views/CustomPageDieView';
 
 import ThemeManager from '../SettingsPage/Dice/ThemeManager';
+import DieTintManager from '../SettingsPage/Dice/DieTintManager';
 
 interface CustomRollPageInterface {
     displayRoll: (roll: Roll) => void;
@@ -41,6 +42,7 @@ export function CustomDicePage(props: CustomRollPageInterface) {
     
     CustomRollManager.getInstance().setUpdater(updateHandler);
     ThemeManager.getInstance().setCustomPageUpdater(updateHandler);
+    DieTintManager.getInstance().setCustomPageUpdater(updateHandler);
     
     console.log('refresh custom page');
 

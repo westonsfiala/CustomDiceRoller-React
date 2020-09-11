@@ -24,6 +24,7 @@ import { LegacyMigrationSetting } from './Advanced/LegacyMigrationSetting';
 import Color from 'color';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { RateMeSetting } from './Advanced/RateMeSetting';
+import { DieTintSetting } from './Dice/DieTintSetting';
 
 interface SettingsInterface{
     window : ScaledSize
@@ -39,6 +40,7 @@ export function SettingsPage(props : SettingsInterface) {
                 <Text style={styles.DividerText}>Dice</Text>
                 <DieSizeSetting/>
                 <DieThemeSetting window={props.window}/>
+                <DieTintSetting window={props.window}/>
                 <View style={styles.Divider}/>
                 <Text style={styles.DividerText}>Roller</Text>
                 <RollContainerSizeSetting/>

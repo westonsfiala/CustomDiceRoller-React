@@ -9,6 +9,7 @@ import ShakeDieSizeManager from '../../SettingsPage/Roller/ShakeDieSizeManager';
 
 import { randomIntFromInterval } from '../../Common/utility/NumberHelper';
 import { getRequiredImage } from '../../Common/dice/dieImages/DieImageGetter';
+import { DieImage } from '../../Common/dice/views/DieView';
 
 export class ShakeDie {
     dieImageID : number;
@@ -106,11 +107,13 @@ export class ShakeDie {
 
 export function renderShakeDie(shakeDie: ShakeDie) {
     return(
-        <Animated.Image key={shakeDie.key} source={getRequiredImage(shakeDie.dieImageID)} style={[{transform:[
+        <Animated.View key={shakeDie.key} style={[{transform:[
             { translateX: shakeDie.xPosition },
             { translateY: shakeDie.yPosition },
             { rotate: shakeDie.rotation.toString() + 'deg' },
-        ]}, styles.DisplayDice, {width: shakeDie.size, height: shakeDie.size}]}/>
+        ]}, styles.DisplayDice]}>
+            <DieImage dieId={shakeDie.dieImageID} size={shakeDie.size}/>
+        </Animated.View>
     )
 }
 

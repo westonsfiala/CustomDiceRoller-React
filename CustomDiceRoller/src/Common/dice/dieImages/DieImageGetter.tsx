@@ -440,3 +440,22 @@ export function getRequiredImage(imageID : number) {
         default : return require('./basic/white/unknown-die.png');
     }
 }
+
+export function getRequiredImageWhite(imageID : number) {
+
+    // Default Case
+    switch(imageID)
+    {
+        case DIE_FATE: return require('./basic/white/fate.png');
+        case DIE_2: return require('./basic/white/d2.png');
+        case DIE_3: return require('./basic/white/d3.png');
+        case DIE_4: return require('./basic/white/d4.png');
+        case DIE_6: return require('./basic/white/d6.png');
+        case DIE_8: return require('./basic/white/d8.png');
+        case DIE_10: return require('./basic/white/d10.png');
+        case DIE_12: return require('./basic/white/d12.png');
+        case DIE_20: return require('./basic/white/d20.png');
+        case DIE_100: return require('./basic/white/d100.png');
+        default : return require('./basic/white/unknown-die.png');
+    }
+}

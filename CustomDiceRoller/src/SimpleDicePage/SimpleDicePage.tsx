@@ -25,6 +25,7 @@ import SimpleRollPropertiesManager from './managers/SimpleRollPropertiesManager'
 
 import DieSizeManager from '../SettingsPage/Dice/DieSizeManager';
 import ThemeManager from '../SettingsPage/Dice/ThemeManager';
+import DieTintManager from '../SettingsPage/Dice/DieTintManager';
 
 interface DieViewListInterface {
     displayRoll : (roll: Roll) => void;
@@ -126,6 +127,7 @@ export function SimpleDicePage(props : SimpleDiePageInterface) {
     DiceManager.getInstance().setSimpleUpdater(() => setReload(!reload));
     DieSizeManager.getInstance().setUpdater(() => setReload(!reload));
     ThemeManager.getInstance().setSimplePageUpdater(() => setReload(!reload));
+    DieTintManager.getInstance().setSimplePageUpdater(() => setReload(!reload));
 
     console.log('refresh simple page');
 

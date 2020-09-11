@@ -20,12 +20,14 @@ import LegacyMigrationManager from "../../SettingsPage/Advanced/LegacyMigrationM
 import RateMeManager from "../../SettingsPage/Advanced/RateMeManager";
 import MinMaxHighlightEnabledManager from "../../SettingsPage/Results/MinMaxHighlightEnabledManager";
 import RollContainerSizeManager from "../../SettingsPage/Roller/RollContainerSizeManager";
+import DieTintManager from "../../SettingsPage/Dice/DieTintManager";
 
 export function OpenAllSingletons() {
     AnimationsEnabledManager.getInstance();
     CustomRollManager.getInstance();
     DiceManager.getInstance();
     DieSizeManager.getInstance();
+    DieTintManager.getInstance();
     ExpandedCategoryManager.getInstance();
     ExpectedResultManager.getInstance();
     LegacyMigrationManager.getInstance();
