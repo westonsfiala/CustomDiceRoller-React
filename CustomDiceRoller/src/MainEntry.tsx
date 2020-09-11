@@ -88,7 +88,6 @@ export function MainEntry() {
 
     function dismissRollResultsPage() {
         RollResultsManager.getInstance().hideRollResultsDialog();
-        HistoryManager.getInstance().runUpdaters();
     }
 
     function tabPressHandler(index: number) {

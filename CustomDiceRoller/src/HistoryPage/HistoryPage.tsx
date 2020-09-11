@@ -18,9 +18,6 @@ import HistoryManager from '../Common/managers/HistoryManager';
 import { RestoreHistoryButton } from './buttons/RestoreHistoryButton';
 import { HistoryItemView } from './views/HistoryItemView';
 
-
-const ITEMS_TO_GET_BASE = 20;
-
 interface HistoryInterface{
     window : ScaledSize
 }
@@ -28,16 +25,17 @@ interface HistoryInterface{
 export function HistoryPage(props : HistoryInterface) {
 
     const flatList = useRef(null as FlatList<RollDisplayHelper>);
-    const [itemInfo, setItemInfo] = useState({totalItems:HistoryManager.getInstance().getHistory().length, toGet:ITEMS_TO_GET_BASE});
     
     const [reload, setReload] = useState(false);
 
+    let HistoryManagerInstance = HistoryManager.getInstance();
+
     useEffect(() => {
-        HistoryManager.getInstance().setHistoryUpdater(() => setReload(!reload))
-        return(() => HistoryManager.getInstance().setHistoryUpdater(null))
+        HistoryManagerInstance.setHistoryUpdater(() => setReload(!reload))
+        return(() => HistoryManagerInstance.setHistoryUpdater(null))
     })
 
-    let fullHistory = HistoryManager.getInstance().getHistory();
+    let fullHistory = HistoryManagerInstance.getHistory();
 
     console.log('refresh history page');
 
@@ -64,22 +62,24 @@ export function HistoryPage(props : HistoryInterface) {
                 ListEmptyComponent={
                     <View style={styles.NoHistoryTextContainer}>
                         <Text style={styles.NoHistoryText}>No history</Text>
-                        <RestoreHistoryButton canRestoreHistory={HistoryManager.getInstance().canRestoreHistory()} restoreHistory={() => HistoryManager.getInstance().restoreHistory()}/>
+                        <RestoreHistoryButton canRestoreHistory={HistoryManagerInstance.canRestoreHistory()} restoreHistory={() => HistoryManagerInstance.restoreHistory()}/>
                     </View>
                 }
-                data={HistoryManager.getInstance().getMostRecentHistory(itemInfo.toGet)}
+                data={HistoryManagerInstance.getMostRecentHistory(HistoryManagerInstance.ItemsToGet)}
                 ItemSeparatorComponent={divider}
                 renderItem={renderItem}
                 onEndReached={() => {
-                    if(itemInfo.toGet < fullHistory.length) {
-                        setItemInfo({totalItems:fullHistory.length, toGet:itemInfo.toGet*2});
+                    if(HistoryManagerInstance.ItemsToGet < fullHistory.length) {
+                        HistoryManagerInstance.TotalItems = fullHistory.length;
+                        HistoryManagerInstance.ItemsToGet = HistoryManagerInstance.ItemsToGet * 2;
                     }
                 }}
                 onEndReachedThreshold={0.75}
                 onContentSizeChange={() => {
                     // You need this block because sometimes this triggers when you haven't actually changed the data.
-                    if(fullHistory.length !== itemInfo.totalItems) {
-                        setItemInfo({totalItems:fullHistory.length, toGet:ITEMS_TO_GET_BASE});
+                    if(fullHistory.length !== HistoryManagerInstance.TotalItems) {
+                        HistoryManagerInstance.TotalItems = fullHistory.length;
+                        HistoryManagerInstance.ItemsToGet = HistoryManagerInstance.ITEMS_TO_GET_BASE;
                         setTimeout(scrollToStart, 0);
                     }
                 }}

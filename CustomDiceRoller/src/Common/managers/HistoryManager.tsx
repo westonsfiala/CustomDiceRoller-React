@@ -2,7 +2,10 @@
 import { RollDisplayHelper } from '../dice/results/RollDisplayHelper';
 import { Roll } from '../dice/Roll';
 
+
 export default class HistoryManager {
+
+    readonly ITEMS_TO_GET_BASE = 20;
 
     private static mInstance = null as HistoryManager;
 
@@ -10,6 +13,9 @@ export default class HistoryManager {
 
     private mHistory = Array<RollDisplayHelper>();
     private mRestorableHistory = null as Array<RollDisplayHelper>;
+
+    private mItemsToGet = this.ITEMS_TO_GET_BASE;
+    private mTotalItems = 0;
 
     private mDisplayUpdater = null as () => void;
     private mHistoryUpdater = null as () => void;
@@ -37,6 +43,22 @@ export default class HistoryManager {
 
     setQuickShowUpdater(updater : () => void) {
         this.mQuickShowUpdater = updater;
+    }
+
+    set ItemsToGet(ItemsToGet: number) {
+        this.mItemsToGet = ItemsToGet;
+    }
+
+    get ItemsToGet() : number {
+        return this.mItemsToGet;
+    }
+
+    set TotalItems(TotalItems: number) {
+        this.mTotalItems = TotalItems;
+    }
+
+    get TotalItems() : number {
+        return this.mTotalItems;
     }
 
     getHistory() : Array<RollDisplayHelper> {
