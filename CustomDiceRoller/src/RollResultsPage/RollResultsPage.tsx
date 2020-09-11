@@ -92,11 +92,34 @@ export function RollResultsPage(props : RollResultsInterface) {
 
     let rollHelper = HistoryManager.getInstance().getLastRoll();
 
+    // Calculate the dialog box size
+    let squareSize = Math.min(props.window.width, props.window.height) * .85;
+
+    let left = (props.window.width - squareSize)/2;
+    let right = (props.window.width - squareSize)/2;
+    let top = (props.window.height - squareSize)/2;
+    let bottom = (props.window.height - squareSize)/2;
+
+    // We use the ratio to determine if we are in landscape or not, so the dialog box size needs to reflect that
+    if(props.window.width > props.window.height)
+    {
+        right = right - 1;
+        left = left - 1;
+    }
+    else
+    {
+        top = top - 1;
+        bottom = bottom - 1;
+    }
+
+    let dialogBounds = {left:left, right:right, top:top, bottom:bottom};
+
     const shakeDieArray = useMemo(() => {
         let newArray = Array<ShakeDie>();
 
         let totalDice = rollHelper.storedRoll.getTotalDiceInRoll();
         let needsDieRepresentation = totalDice > MAX_DICE_IN_ROLL;
+
 
         // Don't let things go off the screen because of the status bar.
         let statusHeight = getStatusBarHeight();
@@ -107,9 +130,8 @@ export function RollResultsPage(props : RollResultsInterface) {
         // TODO, figure out how to get this to work.
         if(RollContainerSizeManager.getInstance().isDialogBox)
         {
-            let squareSize = Math.min(width, height);
-            width = width - 50;
-            height = height - 50;
+            width = width - dialogBounds.left - dialogBounds.right;
+            height = height - dialogBounds.top - dialogBounds.bottom;
         }
 
         for(let dieProp of rollHelper.storedRoll.getDiePropArray()) {
@@ -123,7 +145,8 @@ export function RollResultsPage(props : RollResultsInterface) {
                 let newShakeDie = new ShakeDie(
                     dieProp.mDie.imageID, 
                     width, 
-                    height);
+                    height,
+                    props.window.height > props.window.width);
 
                 newShakeDie.key = dieProp.mDie.displayName + newShakeDie.dieImageID.toString() + i.toString();
 
@@ -256,20 +279,7 @@ export function RollResultsPage(props : RollResultsInterface) {
     {
         let containerStyle = styles.FullscreenContainer;
         if(RollContainerSizeManager.getInstance().isDialogBox){
-
-            let squareSize = Math.min(props.window.width, props.window.height) / 2;
-
-            // let left = props.window.width - squareSize/2;
-            // let right = props.window.width - squareSize/2;
-            // let top = props.window.height - squareSize/2;
-            // let bottom = props.window.height - squareSize/2;
-
-            let left = 0;
-            let right = 0;
-            let top = 0;
-            let bottom = 0;
-
-            containerStyle = [styles.HalfscreenContainer, {left:left, right:right, top:top, bottom:bottom}];
+            containerStyle = [styles.HalfscreenContainer, dialogBounds];
         }
 
         if(animationsRunning) {
@@ -320,7 +330,7 @@ export function RollResultsPage(props : RollResultsInterface) {
                         foreground={Touchable.Ripple('white', true)}
                         hitSlop={styles.HitSlop}
                     >
-                        <Text style={styles.ButtonText}>Roll Again</Text>
+                        <Text style={styles.ButtonText}>Re-Roll</Text>
                     </Touchable>
                     <Touchable 
                         style={styles.ButtonBackground}
@@ -353,6 +363,7 @@ const styles = EStyleSheet.create({
     Container: {
         flex:1,
         alignContent:'center',
+        borderRadius:'5rem',
     },
     FullscreenContainer: {
         backgroundColor:'$primaryColor',
@@ -365,6 +376,9 @@ const styles = EStyleSheet.create({
     HalfscreenContainer: {
         backgroundColor:'$primaryColor',
         position:'absolute',
+        borderRadius:'5rem',
+        borderColor:'black',
+        borderWidth:'2rem',
     },
     ShakeContainer: {
         flex:1,

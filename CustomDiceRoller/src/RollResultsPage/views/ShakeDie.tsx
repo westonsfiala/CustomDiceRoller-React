@@ -16,6 +16,7 @@ export class ShakeDie {
 
     maxX : number;
     maxY : number;
+    portraitMode : boolean;
 
     xPosition : number;
     yPosition : number;
@@ -28,11 +29,12 @@ export class ShakeDie {
 
     key : string;
 
-    constructor(imageID : number, maxX : number, maxY: number) {
+    constructor(imageID : number, maxX : number, maxY: number, portraitMode: boolean) {
         this.dieImageID = imageID;
         this.size = Math.min(maxX, maxY) / ShakeDieSizeManager.getInstance().shakeDieSizeDivider;
         this.maxX = maxX - this.size;
         this.maxY = maxY - this.size;
+        this.portraitMode = portraitMode;
 
         this.xPosition = randomIntFromInterval(0, maxX);
         this.yPosition = randomIntFromInterval(0, maxY);
@@ -88,7 +90,7 @@ export class ShakeDie {
             this.rotationVelocity += randomIntFromInterval(-5, 5);
         }
 
-        if(this.maxX < this.maxY) {
+        if(this.portraitMode) {
             // Portrait
             this.xVelocity -= AccelerometerManager.getInstance().xAccel;
             this.yVelocity += AccelerometerManager.getInstance().yAccel;
