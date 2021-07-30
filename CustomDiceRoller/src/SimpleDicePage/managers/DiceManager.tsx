@@ -1,5 +1,5 @@
 
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Die } from '../../Common/dice/Die'
 import { SimpleDie } from '../../Common/dice/SimpleDie'

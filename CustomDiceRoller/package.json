@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "github:react-native-community/async-storage",
-    "@react-native-community/async-storage": "github:react-native-community/async-storage",
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/slider": "^3.0.3",
     "@react-native-community/viewpager": "^3.3.1",
@@ -35,8 +34,8 @@
     "react-native-view-shot": "^3.1.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.8",
-    "@babel/runtime": "^7.14.8",
+    "@babel/core": "~7.12.9",
+    "@babel/runtime": "~7.12.5",
     "@react-native-community/eslint-config": "^3.0.0",
     "@types/color": "^3.0.2",
     "@types/jest": "^26.0.24",

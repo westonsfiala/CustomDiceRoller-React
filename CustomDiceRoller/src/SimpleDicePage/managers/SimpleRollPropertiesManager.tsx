@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { RollProperties } from '../../Common/dice/RollProperties';
 import { createRollProperties } from '../../Common/dice/factory/RollPropertiesFactory';
