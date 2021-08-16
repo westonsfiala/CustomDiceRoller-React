@@ -8,6 +8,7 @@ import {
     Linking,
     FlatList,
     ScaledSize,
+    Pressable,
 } from 'react-native';
 
 import {
@@ -17,7 +18,6 @@ import {
     MenuOption,
 } from 'react-native-popup-menu';
 
-import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Color from 'color'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -45,13 +45,15 @@ function AppBarRightButtons(props: AppBarButtonsInterface)
 
     return(
         <View style={styles.RowLayout}>
-            <Touchable
-                onPress={() => clearHistoryMenuRef.current.open()}
-                hitSlop={styles.HitSlop}
-                foreground={Touchable.Ripple('white', true)}
-            >
-                <Image source={require('./images/BurningBook.png')} style={styles.ClearHistory}/>
-            </Touchable>
+            <View>
+                <Pressable 
+                    android_ripple={{color:'white', borderless:false}}
+                    onPress={() => clearHistoryMenuRef.current.open()}
+                    hitSlop={styles.HitSlop}
+                >
+                    <Image source={require('./images/BurningBook.png')} style={styles.ClearHistory}/>
+                </Pressable>
+            </View>
             <Menu ref={clearHistoryMenuRef}>
                 <MenuTrigger/>
                 <MenuOptions>
@@ -62,17 +64,20 @@ function AppBarRightButtons(props: AppBarButtonsInterface)
                     </MenuOption>
                 </MenuOptions>
             </Menu>
-            <Touchable 
-                onPress={() => tripleDotMenuRef.current.open()} 
+            <View
                 style={{marginStart:20}}
-                foreground={Touchable.Ripple('white', true)}
             >
-                <Icon 
-                name='dots-vertical'
-                size={styles.IconConstants.width}
-                color={styles.IconConstants.color}
-                />
-            </Touchable>
+                <Pressable 
+                    android_ripple={{color:'white', borderless:false}}
+                    onPress={() => tripleDotMenuRef.current.open()} 
+                >
+                    <Icon 
+                    name='dots-vertical'
+                    size={styles.IconConstants.width}
+                    color={styles.IconConstants.color}
+                    />
+                </Pressable>
+            </View>
             <Menu ref={tripleDotMenuRef}>
                 <MenuTrigger/>
                 <MenuOptions>
@@ -126,14 +131,18 @@ function TabBar(props: TabBarInterface)
             data={Tabs}
             contentContainerStyle={{justifyContent:'center', flexGrow: 1}}
             renderItem={({item, index}) => 
-                <Touchable 
+                <View
                     style={[styles.TabItem, TabManager.getInstance().tab === index ? styles.ActiveTabItem : styles.InactiveTabItem]} 
-                    background={Touchable.Ripple('white')}
-                    onPress={() => props.tabPressHandler(index)}>
-                    <Text style={styles.TabText}>
-                        {item}
-                    </Text>
-                </Touchable>
+                >
+                    <Pressable 
+                        style={styles.TabItemInside}
+                        android_ripple={{color:'white', borderless:false}}
+                        onPress={() => props.tabPressHandler(index)}>
+                        <Text style={styles.TabText}>
+                            {item}
+                        </Text>
+                    </Pressable>
+                </View>
             }
             onScrollToIndexFailed={() => null}
             keyExtractor={(item) => item}
@@ -232,9 +241,11 @@ const styles = EStyleSheet.create({
         color:'$textColor',
     },
     TabItem: {
-        padding:'8rem', 
         alignItems:'center',
         borderBottomWidth:3, 
+    },
+    TabItemInside: {
+        padding:'8rem', 
     },
     ActiveTabItem: {
         borderBottomColor:Color.rgb(0,255,255).hex(), // Cyan

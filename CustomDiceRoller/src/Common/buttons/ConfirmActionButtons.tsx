@@ -4,9 +4,9 @@ import React from 'react';
 import {
     View,
     Text,
+    Pressable,
 } from 'react-native';
 
-import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 interface ConfirmActionInterface {
@@ -24,24 +24,28 @@ export function ConfirmActionButtons(props : ConfirmActionInterface) {
             <Text style={styles.DisplayText}>{props.displayText}</Text>
             <View style={styles.ModalButtonLine}>
                 <View style={styles.ModalButtonContainer}>
-                    <Touchable 
-                    style={styles.ModalButton}
-                    hitSlop={styles.HitSlop}
-                    foreground={Touchable.Ripple('white', true)}
-                    onPress={() => props.cancel()}
-                    >
-                        <Text style={styles.ModalText}>Cancel</Text>
-                    </Touchable>
+                    <View style={styles.ModalButton}>
+                        <Pressable 
+                            style={styles.ModalButtonInside}
+                            android_ripple={{color:'white', borderless:false}}
+                            hitSlop={styles.HitSlop}
+                            onPress={() => props.cancel()}
+                        >
+                            <Text style={styles.ModalText}>Cancel</Text>
+                        </Pressable>
+                    </View>
                 </View>
                 <View style={styles.ModalButtonContainer}>
-                    <Touchable 
-                    style={styles.ModalButton}
-                    hitSlop={styles.HitSlop}
-                    foreground={Touchable.Ripple('white', true)}
-                    onPress={() => props.confirm()}
-                    >
-                        <Text style={styles.ModalText}>Confirm</Text>
-                    </Touchable>
+                    <View style={styles.ModalButton}>
+                        <Pressable 
+                            style={styles.ModalButtonInside}
+                            android_ripple={{color:'white', borderless:false}}
+                            hitSlop={styles.HitSlop}
+                            onPress={() => props.confirm()}
+                        >
+                            <Text style={styles.ModalText}>Confirm</Text>
+                        </Pressable>
+                    </View>
                 </View>
             </View>
         </View>
@@ -61,10 +65,12 @@ const styles = EStyleSheet.create({
         paddingLeft:'10rem',
     },
     ModalButton:{
-        padding:'5rem',
         backgroundColor: '$primaryColorLightened',
         borderRadius: '10rem',
         overflow:'hidden'
+    },
+    ModalButtonInside:{
+        padding:'5rem',
     },
     DisplayText:{
         fontSize:'$fontSizeNormal',

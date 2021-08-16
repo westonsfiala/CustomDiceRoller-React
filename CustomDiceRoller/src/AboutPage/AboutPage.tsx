@@ -7,11 +7,11 @@ import {
     Text,
     FlatList,
     LayoutAnimation,
+    Pressable,
 } from 'react-native';
 
 import AboutManager from '../Common/managers/AboutManager';
 
-import Touchable from 'react-native-platform-touchable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 const tips = [
@@ -89,14 +89,17 @@ export function AboutPage(props : AboutInterface) {
                     keyExtractor={(item) => item}
                 />
                 <View style={styles.ButtonContainer}>
-                    <Touchable 
-                    style={styles.ButtonBackground}
-                    onPress={() => props.dismissPage()}
-                    foreground={Touchable.Ripple('white', true)}
-                    hitSlop={styles.HitSlop}
+                    <View
+                        style={styles.ButtonBackground}
                     >
-                        <Text style={styles.ButtonText}>Back</Text>
-                    </Touchable>
+                        <Pressable 
+                            android_ripple={{color:'white', borderless:false}}
+                            onPress={() => props.dismissPage()}
+                            hitSlop={styles.HitSlop}
+                        >
+                            <Text style={styles.ButtonText}>Back</Text>
+                        </Pressable>
+                    </View>
                 </View>
             </View>
         );
