@@ -14,7 +14,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { View, Dimensions, UIManager, LayoutAnimation, SafeAreaView } from 'react-native';
 
-import ViewPager from '@react-native-community/viewpager';
+import PagerView from 'react-native-pager-view';
 import EStyleSheet from 'react-native-extended-stylesheet'; 
 
 import { AppBar } from "./AppBar/AppBar";
@@ -44,7 +44,7 @@ import { RateMeDialog } from './SettingsPage/Advanced/RateMeDialog';
 
 // Main entry point for the app, controls the highest level of what is shown on the screen.
 export function MainEntry() {
-    const viewPager = useRef(null as ViewPager);
+    const pagerView = useRef(null as PagerView);
     const [window, setWindow] = useState(Dimensions.get('window'));
     const [showRateDialog, setShowRateDialog] = useState(false);
 
@@ -75,7 +75,7 @@ export function MainEntry() {
 
     function editRoll(existingRoll: Roll) {
         CustomRollManager.getInstance().setRoll(existingRoll);
-        viewPager.current.setPage(3);
+        pagerView.current.setPage(3);
     }
 
     function showAboutPage() {
@@ -91,7 +91,7 @@ export function MainEntry() {
     }
 
     function tabPressHandler(index: number) {
-        viewPager.current.setPage(index);
+        pagerView.current.setPage(index);
     }
 
     function handleScreenChange({window}) {
@@ -116,7 +116,7 @@ export function MainEntry() {
                 showAboutPage={showAboutPage}
                 window={window}
             />
-            <ViewPager style={styles.Pager} ref={viewPager} initialPage={TabManager.getInstance().tab} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
+            <PagerView style={styles.Pager} ref={pagerView} initialPage={TabManager.getInstance().tab} onPageSelected={(event) => TabManager.getInstance().tab = event.nativeEvent.position}>
                 <View key="a" >
                     <SettingsPage window={window}/>
                 </View>
@@ -132,7 +132,7 @@ export function MainEntry() {
                 <View key="e" >
                     <SavedRollPage displayRoll={addRoll} editRoll={editRoll} window={window}/>
                 </View>
-            </ViewPager>
+            </PagerView>
             <RollResultsPage dismissPage={dismissRollResultsPage} window={window}/>
             <AboutPage dismissPage={dismissAboutPage}/>
             <LastHistoryItemViewPopup window={window}/>
